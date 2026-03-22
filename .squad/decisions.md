@@ -36,6 +36,28 @@ Each step is a separate script under `.squad/skills/teams-watchdog/`, chained vi
 
 **Tracking:** Issues #1-#6 on `jbenami_microsoft/ms-pa`, labeled `squad` + `squad:gimli` (assigned to Gimli for implementation).
 
+### 2026-03-22T17:35:00Z: Skills Scan: squad-skills Plugin Catalog (Proposed)
+**Author:** Elrond (Researcher)  
+**Status:** Proposed  
+
+**Context:** Scanned all 20 plugins in tamirdresher/squad-skills to identify relevance to Teams message watchdog (Issues #1–#6).
+
+**Finding — Directly Useful (🟢):**
+1. **teams-monitor** — Demonstrates proven WorkIQ query patterns, filtering heuristics, and rate-limiting warnings. Critical reference for watchdog Probe/Filter steps.
+2. **news-broadcasting** — Documents Teams webhook delivery pattern (URL at `~\.squad\teams-webhook.url`, POST via `Invoke-RestMethod`, Adaptive Cards formatting). Directly applicable to Deliver step.
+3. **secrets-management** — Establishes security foundation: Windows Credential Manager for secrets, machine-local files (priority 2), `.env` (priority 3). Essential for production-ready watchdog scripts.
+
+**Key Insight:** WorkIQ is poll-based with indexing delay—well-aligned with our daily summary design. Rate-limit to one WorkIQ query per agent cycle.
+
+**Recommendation:** Install teams-monitor (P0), news-broadcasting (P0), secrets-management (P1) for watchdog work. Keep agency-optimal-config, teams-ui-automation, mail-mcp on radar for Phase 2.
+
+**Tracking:** Findings documented in `docs/squad-skills-catalog.md` (Bilbo's catalog, 25.2 KB).
+
+### 2026-03-22T17:40:00Z: User directive — work source policy
+**By:** Jonathan (via Copilot)  
+**What:** Only pull tasks from the board (GitHub issues), never from the chat. All work must be created as issues first.  
+**Why:** User request — captured for team memory
+
 ## Governance
 
 - All meaningful changes require team consensus
