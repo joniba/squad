@@ -58,6 +58,37 @@ Each step is a separate script under `.squad/skills/teams-watchdog/`, chained vi
 **What:** Only pull tasks from the board (GitHub issues), never from the chat. All work must be created as issues first.  
 **Why:** User request — captured for team memory
 
+### 2026-03-22T17:45:00Z: User directive — clean root chat
+**By:** Jonathan (via Copilot)  
+**What:** Whenever Jonathan mentions creating a task or mentions Gandalf, the Coordinator MUST pass the request to Gandalf via a subagent spawn to create an issue. The root chat must stay clean — only show handoffs to the squad, not planning or decomposition work.  
+**Why:** User request — captured for team memory
+
+### 2026-03-22T17:40:00Z: Coffee-Ratings Squad-Infra Audit & Port Plan (Proposed)
+**Author:** Gandalf  
+**Status:** Proposed  
+
+**Context:** Jonathan requested an audit of coffee-ratings squad-infra work to identify reusable patterns for ms-pa, plus hiring a Reviewer agent based on the coffee-ratings "Bobbie" charter.
+
+**Decision:** Two parallel initiatives tracked as dependent issue chains on `jbenami_microsoft/ms-pa`:
+
+**Squad-Infra Audit (5-step pipeline, Issues #7–#11):**
+1. **#7** — Elrond researches squad-infra git history + GitHub issues from coffee-ratings (11 known commits)
+2. **#8** — Bilbo documents findings with links, diffs, and category groupings
+3. **#9** — Gandalf decides PORT/SKIP/ADAPT for each item with reasoning
+4. **#10** — Gimli ports approved changes to ms-pa
+5. **#11** — Bilbo creates a reusable squad bootstrap template from ported patterns
+
+**Reviewer Hire (2-step chain, Issues #12–#13):**
+1. **#12** — Elrond studies Bobbie's charter and history, extracts generalizable patterns
+2. **#13** — Gandalf hires new LotR-cast Reviewer agent adapted from Bobbie's patterns
+
+**Reasoning:**
+- Sequential dependency chain ensures full context before each step
+- Bilbo's template (#11) is the most valuable long-term artifact
+- Reviewer hire fills team gap (no dedicated quality gate) and applies proven patterns from mature squad
+
+**Tracking:** Issues #7–#13 labeled with `squad` + agent-specific labels.
+
 ## Governance
 
 - All meaningful changes require team consensus
