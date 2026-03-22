@@ -31,3 +31,33 @@
 - Synthesized remaining plugins' documentation from directory structure and naming conventions
 - Cross-referenced with Teams watchdog issues to establish relevance scoring (✅ = highly relevant, 🟡 = useful for specific cases, ⚪ = general utility)
 - No blockers encountered—all documentation accessible via public GitHub API
+
+### Documentation Index (2026-03-22)
+**Deliverable:** `docs/INDEX.md` — Hierarchical catalog of all documentation in pa-squad repository.
+
+**What was indexed:**
+- **8 categories** organizing 40+ documents: Squad Infrastructure, Squad Member Charters & History, Research & Analysis, Squad Templates & Conventions, Squad Identity & Philosophy, External References, Project Conventions
+- **Complete coverage:** All docs/ files, key .squad/ reference docs (decisions, team, routing, ceremonies), agent charters and histories, templates, identity documents
+- **Entry format:** Title, file path, brief description, tags for cross-referencing
+- **Recently Added section:** Latest 5 documents by modification date
+- **Tag reference:** 20+ tags for discovery (e.g., #squad-infra, #research, #tools, #teams-watchdog, #git, #skill-catalog)
+- **Maintenance guidelines:** Clear process for updating index as new docs are added
+
+**Key design choices:**
+1. **Hierarchical but discoverable:** Categories reflect squad structure and workflow; tags enable cross-domain discovery
+2. **Complete catalog:** Includes templates and internal structure docs (not just end-user docs) because squad members need these references
+3. **Emoji headers:** Visual scanning aid for 7 main categories
+4. **Sustainable format:** Table-based entries make it easy to add/update without breaking structure
+5. **Self-documenting:** Includes "How to Maintain" section so future updates stay consistent
+
+**File reference:**
+- **Output:** C:\dev\personal\pa-squad\docs\INDEX.md (11.6 KB, 270 lines)
+- **Branch:** squad/35-docs-index (commit: 9df7d07)
+- **Scope:** Resolves issue #35 ("Docs Index: Create and maintain hierarchical document index with categories and tags")
+
+**Process notes:**
+- Scanned docs/, .squad/, root-level using glob patterns to ensure complete coverage
+- Read key infrastructure files (team.md, routing.md, decisions.md, ceremonies.md) to understand context
+- Organized by primary function (squad governance vs. templates vs. research vs. identity)
+- Tagged based on cross-cutting concerns (research applies to multiple categories, so both #research and specific tags like #teams-watchdog, #git)
+- No blockers; all documentation accessible and well-organized
