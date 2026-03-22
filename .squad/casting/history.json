@@ -1,0 +1,18 @@
+{
+  "history_version": "1.0",
+  "assignments": [
+    {
+      "assignment_id": "lotr-2026-03-22",
+      "universe": "Lord of the Rings",
+      "timestamp": "2026-03-22T13:14:55Z",
+      "agents": [
+        { "name": "Gandalf", "role": "Lead" },
+        { "name": "Elrond", "role": "Researcher" },
+        { "name": "Bilbo", "role": "Documentarian" },
+        { "name": "Gimli", "role": "Tool Builder" },
+        { "name": "Aragorn", "role": "Operator" }
+      ],
+      "reason": "User-selected universe. Personal assistant squad for everyday tasks, research, docs, tools, and livesite."
+    }
+  ]
+}
