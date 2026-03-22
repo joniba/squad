@@ -9,6 +9,17 @@
 
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
 
+### 2026-03-22 — Triage Squad Feedback Issues #44-#49
+- **Routing patterns:** Feedback on external squad product (cli, watch mode, defaults) routes to Gandalf (product feedback tracking). Tool fixes (PR flags, model defaults) route to Gimli. Documentation/charter patterns route to Bilbo.
+- **Issue sources:** All 6 issues are Jonathan's onboarding feedback observations, filed on ms-pa repo because EMU tokens cannot write to bradygaster/squad directly.
+- **Issues triaged:**
+  - **#44** (PR draft flag) → `squad:gimli` (CLI fix)
+  - **#45** (OAuth scopes) → `squad:gandalf` (external feedback)
+  - **#46** (model defaults 4.6) → `squad:gimli` (config)
+  - **#47** (watch UX) → `squad:gandalf` (external feedback)
+  - **#48** (reviewer charter quality) → `squad:bilbo` (documentation patterns)
+  - **#49** (default reviewer charter) → `squad:bilbo` (documentation patterns)
+
 ### 2026-03-22 — Teams Watchdog Decomposition
 - **Architecture:** Teams watchdog is a 4-step pipeline (probe → filter → extract → format) + a watchdog orchestrator + delivery. Each step is a separate script under `.squad/skills/teams-watchdog/`.
 - **Key constraint:** `gh copilot` doesn't work. Must use `copilot -p` or `copilot -i`. Cannot save Copilot output to a variable — use file-based I/O between steps.
