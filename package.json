@@ -1,0 +1,33 @@
+{
+  "name": "pa-squad",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jbenami_microsoft/ms-pa.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jbenami_microsoft/ms-pa/issues"
+  },
+  "homepage": "https://github.com/jbenami_microsoft/ms-pa#readme",
+  "devDependencies": {
+    "cytoscape": "^3.33.1",
+    "graphology": "^0.26.0",
+    "graphology-gexf": "^0.13.2",
+    "gun": "^0.2020.1241",
+    "levelgraph": "^4.0.0",
+    "neo4j-driver": "^6.0.1",
+    "surreal": "^0.3.7"
+  }
+}
