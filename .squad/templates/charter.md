@@ -29,7 +29,7 @@
 
 **When I'm unsure:** I say so and suggest who might know.
 
-**If I review others' work:** On rejection, I may require a different agent to revise (not the original author) or request a new specialist be spawned. The Coordinator enforces this.
+**If I review others' work:** On rejection, I provide specific feedback. The original author fixes their own work.
 
 ## Model
 

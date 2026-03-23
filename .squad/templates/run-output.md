@@ -32,7 +32,7 @@
 | **Verdict** | {Approved / Rejected} |
 | **What's wrong** | {Specific issue — not vague} |
 | **Why it matters** | {Impact if not fixed} |
-| **Who fixes it** | {Name of agent assigned to revise — MUST NOT be the original author} |
+| **Who fixes it** | {Original author — they own all fixes to their work} |
 | **Revision budget** | 📊 {used} / {max} revision cycles remaining |
 
 ---
