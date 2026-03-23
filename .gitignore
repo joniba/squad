@@ -19,3 +19,7 @@ worktrees/
 .squad/scheduler.log
 # IcM scan watermark (machine-local state, not shared)
 .squad/icm-scan-watermark.json
+# Notification system runtime state (machine-local, not shared)
+.squad/notifications-state.json
+.squad/notifications-errors.log
+.squad/feature-queue.json
