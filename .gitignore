@@ -9,3 +9,8 @@
 node_modules/
 # Git worktrees (created dynamically for parallel agent isolation)
 worktrees/
+.squad/skills/teams-watchdog/.watchdog.lock
+.squad/skills/teams-watchdog/watchdog-heartbeat.json
+.squad/skills/teams-watchdog/watchdog.log
+.squad/skills/teams-watchdog/work/
+.squad-monitor/

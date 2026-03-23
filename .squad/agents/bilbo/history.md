@@ -106,3 +106,68 @@
 - Created worked examples to make customization process concrete and approachable
 - Included anti-patterns section so implementers learn from gotchas, not experience them
 - Documentation follows consistent structure: problem → pattern → examples → mistakes → checklist
+
+### Comprehensive Feature Documentation — 6 How-To Guides (2024-12-19)
+**Deliverables:** 
+- `docs/guides/teams-watchdog-setup.md` (8,661 chars) — Daily Teams monitor for decisions/action items
+- `docs/guides/agent-dashboard-setup.md` (8,666 chars) — Live terminal dashboard with 8 monitoring panels
+- `docs/guides/teams-notifications-setup.md` (11,323 chars) — Webhook-based notifications (reusable for future squads)
+- `docs/guides/semantic-model-usage.md` (13,430 chars) — Build and query squad knowledge graph
+- `docs/guides/worktree-usage.md` (10,943 chars) — Coordinate parallel agent work with isolation rules
+- `docs/guides/icm-investigation-guide.md` (16,974 chars) — Structured 4-stage incident investigation RCA
+- `docs/guides/INDEX.md` — Master index (Guides category, sorted by date)
+- `docs/guides/TAGS.md` — Reverse tag index (13 tags, cross-referencing all guides)
+- `docs/guides/RECENT.md` — Chronological index (6 new entries)
+
+**What was documented:**
+
+*Teams Watchdog Daily Summary Setup:*
+- 2-step architecture (PowerShell script + GitHub Actions scheduler)
+- Prerequisite setup, configuration, output format, troubleshooting (7 scenarios)
+- Cost model and performance tuning
+
+*Agent Dashboard Setup:*
+- Live terminal dashboard launcher with 4 launch modes
+- 8 dashboard panels (agents, status, recent decisions, action items, error log, token usage, pending work, quick actions)
+- Prerequisites (.NET 10, squad-monitor tool), troubleshooting (5 scenarios)
+
+*Teams Notifications Setup:*
+- Webhook registration with secure token storage
+- Adaptive Cards message format with 28 KB payload limit
+- Security rules (5 critical), real webhook examples, reusable for future squads
+
+*Semantic Model Usage:*
+- Building the knowledge index (8 node types: Person, Decision, Task, Meeting, Document, Feature, Bug, Pattern)
+- Querying patterns (5 types: entity search, relationship traversal, time-range queries, tag-based discovery, tag frequency analysis)
+- JSON structure, real-world examples for each query type
+
+*Worktree Usage:*
+- Isolation rules (6 critical rules for safe parallel work)
+- Decision table: worktrees vs. checkout -b trade-offs
+- Spawn prompt template, cleanup procedures, error handling (6 scenarios)
+
+*ICM Investigation Guide:*
+- 4-stage pipeline: Triage (classify severity/category) → Enrichment (collect context) → RCA (identify root cause with evidence) → Remediation (fix + prevention)
+- Evidence formatting, confidence levels (high/medium/low), output checklist (10 items)
+- Real incident example walkthrough
+
+**Key design choices:**
+1. **Production-ready documentation:** Each guide includes real examples, prerequisites, configuration steps, troubleshooting sections
+2. **Proper frontmatter:** All guides tagged with type (guide) + domain tags (tooling, teams, workflow, icm, etc.) + author + documentarian (bilbo) + status (final)
+3. **Complete indexing:** Three index files (INDEX.md, TAGS.md, RECENT.md) make guides discoverable per knowledge-management system requirements
+4. **Reusability:** Teams Notifications guide marked as reusable pattern for future squads; worktree and semantic-model docs serve as foundational patterns
+5. **Source documentation:** Each guide source-read from actual implementation (.squad/skills/, PowerShell scripts, feature code) to ensure accuracy
+
+**File references:**
+- **Guides:** C:\dev\personal\pa-squad\docs\guides\*.md (all 6 guides, 69.9 KB total)
+- **Indexes:** INDEX.md (master by category), TAGS.md (reverse by 13 tags), RECENT.md (chronological)
+- **Commit:** 495e4eb (9 files changed: 6 guides + 3 index files)
+- **Related issues:** Documented as part of sprint deliverables for feature team
+
+**Process notes:**
+- Read each feature's implementation to extract accurate technical details
+- Structured each guide with consistent format: What It Does, Prerequisites, Step-by-step Setup, Configuration, Examples, Troubleshooting, Cost/Performance where relevant
+- Applied tagging taxonomy consistently (guide + domain + bilbo + final)
+- Created three index files (INDEX.md, TAGS.md, RECENT.md) to make guides discoverable per knowledge-management/SKILL.md specification
+- All guides verified to load without rendering errors, frontmatter properly formatted for system parsing
+- No blockers; all documentation complete and committed
