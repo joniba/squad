@@ -69,6 +69,12 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+# Dot-source failure recovery functions (dead letter queue, retry, health)
+$recoveryScript = Join-Path $PSScriptRoot "notification-recovery.ps1"
+if (Test-Path $recoveryScript) {
+    . $recoveryScript
+}
+
 # Resolve state file relative to repo root
 if (-not $StateFile) {
     $repoRoot = & git rev-parse --show-toplevel 2>$null
@@ -532,6 +538,23 @@ $result = Send-TeamsWebhook -Card $card -WebhookUrl $webhookUrl -EventId ($Event
 if ($result.Success) {
     Write-Host "✅ $Type notification sent: $($Event.title)"
     Update-StateAfterSend -Type $Type -Event $Event -State $state
+    # Update last-success marker for health check
+    if (Get-Command Update-LastSuccess -ErrorAction SilentlyContinue) {
+        Update-LastSuccess
+    }
+} else {
+    # Write to dead letter queue for persistent retry
+    if (Get-Command Write-DeadLetter -ErrorAction SilentlyContinue) {
+        $dlPath = Write-DeadLetter -Notification @{
+            Type       = $Type
+            Event      = $Event
+            Card       = $card
+            WebhookUrl = $webhookUrl
+            Error      = $result.Error
+            Attempts   = $result.Attempts
+        }
+        Write-Host "📬 Notification queued for retry: $($Event.eventId ?? $Event.title) → $dlPath"
+    }
 }
 
 Save-State -State $state -Path $StateFile
