@@ -88,6 +88,36 @@
 
 **Key insight:** Real-time notifications are achievable via existing squad infrastructure (WorkIQ + webhooks) without new dependencies. The hybrid poll-based approach aligns with squad's event-driven architecture and WorkIQ's indexing characteristics. Implementation is a 4-step process; Phase 1 MVP can launch within days.
 
+### 2026-03-24: Squad Monitoring & Ralph Watch Reliability Research (GitHub Issue #30)
+
+**Context:** Jonathan filed Issue #30 requesting deep research on ralph-watch reliability for 8+ agent squad, specifically: distributed lock detection mechanisms, rate governor design extending prior rate-limiting-research.md, dashboard metrics and alert thresholds, implementation roadmap, and auth race condition root cause analysis. Conducted comprehensive research synthesizing watchdog.ps1 pattern, rate-limiting-research.md foundations, squad-skills monitoring plugins, and 37 documented auth failures.
+
+**Problem Statement:** Ralph-watch coordinates 8+ agents executing 12+ rounds/hour. Three critical reliability gaps: (1) auth race conditions on `~/.config/gh/hosts.yml` lock (37 documented failures), (2) missed monitoring rounds (silent crashes/hangs without heartbeat detection), (3) cascading quota exhaustion during GitHub API rate limits.
+
+**Key findings (6 acceptance criteria addressed):**
+1. **Lock Detection (3+ mechanisms):** File-based with heartbeat validation (ADOPT Phase 1), process registry with stale cleanup (ADOPT Phase 2), TTL-based lease (DEFER Phase 2+). File-based mechanism recommended for simplicity and watchdog.ps1 compatibility.
+2. **Rate Governor Design:** Token Bucket + Shared Pool + Priority Queuing extending rate-limiting-research.md Phase 1 recommendation. Ralph-watch gets P0 priority; prevents starvation. Handles quota reset gracefully. Fair distribution across 8 agents via per-agent reserved quota (625 tokens each from 5,000 total).
+3. **Dashboard Metrics (Top 10):** Ralph-watch heartbeat age & uptime, rate limit token availability & events, queue depth, active agents, auth failures, lock contention, task completion rate. Physical text-based dashboard + metric history (7-day window).
+4. **Alert Thresholds:** 10 critical alerts (heartbeat missing > 30s, quota exhaustion < 5%, queue backlog > 2 agents, auth race > 2/hour, agent missing < 6/8, task completion < 95%, lock contention > 5/hour, consecutive failures ≥ 3, rate limits > 3/hour). Owner routing: Aragorn (livesite), Elrond (quota), Gimli (locks), Gandalf (triage).
+5. **Implementation Roadmap (4 phases):** Phase 1 (8d): Foundation lock + rate governor + basic metrics. Phase 2 (6d): Process registry + full metrics + dashboard. Phase 3 (5d): Stale recovery + quota borrowing + auto-remediation. Phase 4 (4d): TTL leases + failure analysis. Total: 23 days (3.3 weeks full-time).
+6. **Auth Race Root Cause (37 Failures):** 8 agents spawn simultaneously → all hit `~/.config/gh/hosts.yml` concurrently → OS file lock contention → EACCES cascades → 35–70 failures/week. Root cause chain: (1) OS-level file locking on hosts.yml, (2) concurrent authentication by 8 agents, (3) squad agent concurrency model (no staggering), (4) independent retry logic (thundering herd), (5) lack of distributed coordination. Recovery: Mechanism 1 (file-based lock) + heartbeat validation + staggered retry backoff.
+
+**Validation Approach:** Phase 1 success criteria — 48-hour zero auth race failures, all agents complete round, heartbeat < 10s, dashboard renders. Phase 2 — 7-day metric history, alert routing, 99.5%+ completion. Phase 3 — stale lock auto-recovery, auto-restart ralph-watch, zero manual intervention.
+
+**Operational Insights:**
+- Squad file-I/O philosophy aligns perfectly with file-based lock patterns (no external services needed).
+- Watchdog.ps1 (46 lines) provides proven reference: PID-based lockfile, JSON heartbeat, append-only log, consecutive failure tracking.
+- Rate-limiting-research.md (Phase 1: Token Bucket + Shared Pool + Predictive Circuit Breaker) forms foundation; priority queuing extends it.
+- Teams-monitor, news-broadcasting, secrets-management plugins from squad-skills catalog cover monitoring infrastructure needs.
+
+**Deliverables:**
+- `docs/research/squad-monitoring-reliability-research.md` — 37.7 KB comprehensive research document with mechanisms, design, metrics, thresholds, roadmap, RCA analysis
+- Implementation assignment: Gimli (lock utils + rate governor Phase 1), Aragorn (alert escalation + testing), Elrond (metrics strategy + RCA tooling), Bilbo (runbooks + documentation)
+
+**Key Insight:** Squad's 37 auth race failures stem not from complexity but from missing coordination layer. A simple file-based distributed lock (Mechanism 1) + rate governor + alert infrastructure prevents cascade failures without new dependencies. The phased roadmap (4 phases, 23 days) builds foundation first (Phase 1 addresses 95% of failures), then adds observability and self-healing incrementally.
+
+**Next Steps:** Assign Phase 1 to Gimli; target completion 2026-03-29. Briefing for Aragorn on alert thresholds. Monitor for auth race regression during production rollout.
+
 ### 2026-03-23: SubSquads architecture research — multi-team monorepo patterns (GitHub Issue #24)
 
 **Context:** Jonathan filed Issue #24 requesting deep research on SubSquads architecture patterns, specifically: label leakage prevention, CODEOWNERS integration, 3+ team routing patterns, failure modes, and feasibility for ms-pa adoption. Conducted comprehensive research synthesizing Tamir Dresher's blog series (Parts 0–3), web sources on label governance and monorepo scaling, and real-world case studies (Tetris experiment).
