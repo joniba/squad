@@ -107,12 +107,12 @@ namespace DgrepCli
             if (errors.Any())
                 return PrintValidationErrors(errors);
 
-            Console.WriteLine($"Saved query '{opts.Action}' parsed successfully.");
-            if (!string.IsNullOrEmpty(opts.Name))
-                Console.WriteLine($"  Name: {opts.Name}");
-
-            Console.Error.WriteLine("\nNote: Saved query persistence not yet implemented (Phase 1.7).");
-            return 0;
+            var configManager = new ConfigManager();
+            var config = configManager.Load();
+            var authProvider = AuthProviderFactory.Create(config);
+            var executor = new KustoQueryExecutor(authProvider);
+            var command = new SavedCommand(executor, configManager);
+            return command.Execute(opts);
         }
 
         static int RunQuery(QueryVerbOptions opts)

@@ -209,19 +209,19 @@ namespace DgrepCli.Tests.Commands
         #region Saved Validation
 
         [Fact]
-        public void SavedSave_MissingName_Error()
+        public void SavedAdd_MissingName_Error()
         {
-            var opts = new SavedOptions { Action = "save", Name = null, Endpoint = "e", Namespace = "n", Event = "ev", Query = "q" };
+            var opts = new SavedOptions { Action = "add", Name = null, Query = "q" };
             var errors = OptionValidator.ValidateSavedOptions(opts);
             Assert.Contains(errors, e => e.Contains("requires a query name"));
         }
 
         [Fact]
-        public void SavedSave_MissingEndpoint_Error()
+        public void SavedAdd_MissingQuery_Error()
         {
-            var opts = new SavedOptions { Action = "save", Name = "q1", Endpoint = null, Namespace = "n", Event = "ev", Query = "q" };
+            var opts = new SavedOptions { Action = "add", Name = "q1", Query = null };
             var errors = OptionValidator.ValidateSavedOptions(opts);
-            Assert.Contains(errors, e => e.Contains("requires --endpoint"));
+            Assert.Contains(errors, e => e.Contains("requires --query"));
         }
 
         [Fact]
@@ -233,9 +233,17 @@ namespace DgrepCli.Tests.Commands
         }
 
         [Fact]
-        public void SavedDelete_MissingName_Error()
+        public void SavedRemove_MissingName_Error()
         {
-            var opts = new SavedOptions { Action = "delete", Name = null };
+            var opts = new SavedOptions { Action = "remove", Name = null };
+            var errors = OptionValidator.ValidateSavedOptions(opts);
+            Assert.Contains(errors, e => e.Contains("requires a query name"));
+        }
+
+        [Fact]
+        public void SavedShow_MissingName_Error()
+        {
+            var opts = new SavedOptions { Action = "show", Name = null };
             var errors = OptionValidator.ValidateSavedOptions(opts);
             Assert.Contains(errors, e => e.Contains("requires a query name"));
         }
