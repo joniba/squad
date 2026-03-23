@@ -83,7 +83,7 @@ function Start-SpinnerSleep([int]$totalSeconds, $taskList) {
     for ($i = $totalSeconds; $i -gt 0; $i--) {
         $spin = $spinChars[$spinIdx % 4]; $spinIdx++
         $parts = @(foreach ($t in $taskList) { "$($t.name) in $(Format-Remaining (Get-Remaining $t))" })
-        $summary = "Next check in ${i}s | $($parts -join ' | ')"
+        $summary = $parts -join ' | '
         if (-not $initialized) {
             Write-Host -NoNewline "$($summary.PadRight(120))`n⏳ $spin  "
             $initialized = $true
