@@ -136,15 +136,19 @@ $existingIssues = gh issue list --label "squad,squad:aragorn" --state open --jso
 $existingTitles = $existingIssues | ForEach-Object { $_.title }
 
 $created = 0
+$notifyLines = @()
 foreach ($inc in $issuesCreated) {
     $issueTitle = "ICM $($inc.IcmId): $($inc.Title)"
+    $icmLink = "https://portal.microsofticm.com/imp/v5/incidents/details/$($inc.IcmId)/home"
+    
     if ($existingTitles -contains $issueTitle) {
         Write-Host "  ⏭️  $issueTitle (already tracked)" -ForegroundColor DarkGray
+        $notifyLines += "• **$($inc.Sev)** [$($inc.Type)] [IcM#$($inc.IcmId)]($icmLink) — $($inc.Title) _(Aragorn tracking)_"
         continue
     }
 
     $body = "## IcM Investigation Task`n`n" +
-        "**IcM ID:** [$($inc.IcmId)](https://portal.microsofticm.com/imp/v5/incidents/details/$($inc.IcmId)/home)`n" +
+        "**IcM ID:** [$($inc.IcmId)]($icmLink)`n" +
         "**Severity:** $($inc.Sev)`n" +
         "**Type:** $($inc.Type)`n`n" +
         "Aragorn: investigate this incident using the ICM investigator skill.`n" +
@@ -152,6 +156,7 @@ foreach ($inc in $issuesCreated) {
 
     gh issue create --title $issueTitle --body $body --label "squad,squad:aragorn" --repo jbenami_microsoft/ms-pa 2>$null | Out-Null
     Write-Host "  📋 Created: $issueTitle" -ForegroundColor Green
+    $notifyLines += "• **$($inc.Sev)** [$($inc.Type)] [IcM#$($inc.IcmId)]($icmLink) — $($inc.Title) ⚡ **NEW — Aragorn assigned**"
     $created++
 }
 
@@ -160,12 +165,11 @@ if ($created -gt 0) {
     Write-Host "✅ $created new investigation task(s) created on board" -ForegroundColor Green
 }
 
-# Send Teams notification with specific incident list
+# Send Teams notification with incident links + tracking status
 $notifyScript = Join-Path $root "scripts\send-teams-notification.ps1"
-if ((Test-Path $notifyScript) -and $issuesCreated.Count -gt 0) {
-    $body = ($issuesCreated | ForEach-Object {
-        "• **$($_.Sev)** [$($_.Type)] [IcM#$($_.IcmId)](https://portal.microsofticm.com/imp/v5/incidents/details/$($_.IcmId)/home) — $($_.Title)"
-    }) -join "`n"
-    if ($created -gt 0) { $body += "`n`n📋 $created new task(s) created on board" }
-    & $notifyScript -Title "🚨 IcM Scan: $count incident(s)" -Body $body
+if ((Test-Path $notifyScript) -and $notifyLines.Count -gt 0) {
+    $notifyBody = ($notifyLines -join "`n")
+    if ($created -gt 0) { $notifyBody += "`n`n📋 $created new task(s) → Aragorn investigating" }
+    else { $notifyBody += "`n`n✅ All incidents already tracked" }
+    & $notifyScript -Title "🚨 IcM Scan: $count incident(s)" -Body $notifyBody
 }
