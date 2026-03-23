@@ -3,19 +3,18 @@
     Invokes Aragorn via copilot -p to scan IcM for active incidents.
 .DESCRIPTION
     Uses copilot -p --yolo --no-ask-user for LLM-in-the-loop IcM scanning with full
-    MCP tool access. Aragorn reasons about the results and produces a structured markdown
-    report saved via --share to docs/investigations/. Sends a Teams notification if
-    incidents are found.
+    MCP tool access. Aragorn scans, prints a concise inline summary, and creates
+    GitHub issues for each incident needing investigation. NO report files are created
+    — scans trigger tasks, not documents.
 .PARAMETER TeamId
     IcM team ID (default: 116041 = DAKOTA\ThreatIntelligence)
 .PARAMETER Model
-    LLM model to use (default: claude-sonnet-4.6; use claude-opus-4.5 for deep investigation)
+    LLM model to use (default: claude-sonnet-4.6)
 .PARAMETER DryRun
     Print the prompt and exit without invoking the LLM.
 .EXAMPLE
     .\scripts\icm-scan.ps1
     .\scripts\icm-scan.ps1 -DryRun
-    .\scripts\icm-scan.ps1 -TeamId "116041" -Model "claude-opus-4.5"
 #>
 param(
     [string]$TeamId = "116041",
@@ -25,9 +24,6 @@ param(
 
 $ErrorActionPreference = "Stop"
 $root = Split-Path $PSScriptRoot -Parent
-$timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
-$reportPath = Join-Path $root "docs\investigations\icm-scan-$timestamp.md"
-New-Item -ItemType Directory -Path (Split-Path $reportPath -Parent) -Force | Out-Null
 
 $prompt = @"
 You are Aragorn, the Livesite Responder for the pa-squad team.
@@ -49,47 +45,43 @@ incidents. Filter client-side using the criteria below.
 - Sev4 and Sev5
 - State: Mitigated, Resolved, or False Positive
 
-## For Each Matching Incident, Report
+## Required Output Format
 
-IcM ID | Severity | Title | Incident Type | Created Date | Owning Contact | State
+Print ONLY a concise summary. Do NOT write files. Do NOT create markdown reports.
 
-## Required Output
+**If incidents found, output EXACTLY this format:**
 
-Produce a structured markdown report:
+SCAN_RESULT|found|{total_count}
+INCIDENT|{icmId}|Sev{severity}|{type}|{title}|{owningContact}|{createdDate}
+INCIDENT|{icmId}|Sev{severity}|{type}|{title}|{owningContact}|{createdDate}
+...
+HIGHLIGHT|{one-line summary of most urgent item}
 
-### IcM Scan — $(Get-Date -Format "yyyy-MM-dd HH:mm") UTC
+**If NO incidents match, output EXACTLY:**
 
-**Team:** $TeamId (DAKOTA\ThreatIntelligence)
-**Filter:** Sev0–2 (all types) + CRIs (any sev) + Sev2.5 candidates
+SCAN_RESULT|clear|0
 
-#### Summary
-Total: N | Sev0: N | Sev1: N | Sev2: N | CRIs: N | Sev2.5: N
-
-#### Active Incidents
-[Markdown table with all matching incidents]
-
-#### Highlights
-[One-line callout for any Sev0/Sev1 or high-impact CRIs needing immediate attention]
-
-If NO incidents match, output exactly: No active incidents matching scan criteria.
+Example:
+SCAN_RESULT|found|3
+INCIDENT|766712513|Sev2|LiveSite|ARM Watchlist API Error Rates|jdoe|2026-03-20
+INCIDENT|51000000954460|Sev3|CRI|Revoked TI Indicators Still Triggering|ssmith|2026-03-18
+INCIDENT|21000000951041|Sev3|CRI|Azure Gov TAXII Ingestion Shortfall|mjones|2026-03-17
+HIGHLIGHT|Sev2 766712513 is recurring (5th time in March) — needs root cause
 "@
 
 if ($DryRun) {
     Write-Host "DRY RUN — would invoke: copilot -p with model $Model" -ForegroundColor Yellow
-    Write-Host "Report path: $reportPath" -ForegroundColor Yellow
     Write-Host ""
     Write-Host $prompt
     exit 0
 }
 
-Write-Host "🔍 IcM scan starting — team $TeamId | model $Model" -ForegroundColor Cyan
-Write-Host "   Report: $reportPath"
+Write-Host "🔍 IcM scan — team $TeamId" -ForegroundColor Cyan
 
 $output = copilot -p $prompt `
     --yolo `
     --no-ask-user `
     --model $Model `
-    --share="$reportPath" `
     -s 2>&1
 
 if ($LASTEXITCODE -ne 0) {
@@ -97,16 +89,79 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
-Write-Host "✅ Scan complete" -ForegroundColor Green
-Write-Host "   Report: $reportPath"
+# Parse structured output
+$lines = $output -split "`n" | ForEach-Object { $_.Trim() } | Where-Object { $_ }
+$scanResult = $lines | Where-Object { $_ -match "^SCAN_RESULT\|" } | Select-Object -First 1
+$incidents = $lines | Where-Object { $_ -match "^INCIDENT\|" }
+$highlight = $lines | Where-Object { $_ -match "^HIGHLIGHT\|" } | Select-Object -First 1
 
-# Send Teams notification if incidents were found
-$foundIncidents = ($output -match "Sev[0-2]|IcM#|System/Customer Reported") -and
-                  ($output -notmatch "No active incidents matching scan criteria")
-if ($foundIncidents) {
-    $notifyScript = Join-Path $root "scripts\send-teams-notification.ps1"
-    if (Test-Path $notifyScript) {
-        & $notifyScript -Title "🚨 IcM Scan — Incidents Found" `
-            -Body "Active incidents detected for team $TeamId. Report: $reportPath"
+if (-not $scanResult -or $scanResult -match "\|clear\|") {
+    Write-Host "✅ No active incidents matching scan criteria" -ForegroundColor Green
+    exit 0
+}
+
+# Print concise inline summary
+$count = ($scanResult -split "\|")[2]
+Write-Host "🚨 $count incident(s) found:" -ForegroundColor Yellow
+Write-Host ""
+
+$issuesCreated = @()
+foreach ($inc in $incidents) {
+    $parts = $inc -split "\|"
+    if ($parts.Count -ge 6) {
+        $icmId = $parts[1]
+        $sev = $parts[2]
+        $type = $parts[3]
+        $title = $parts[4]
+        $contact = $parts[5]
+        Write-Host "  • $sev [$type] IcM#$icmId — $title ($contact)" -ForegroundColor White
+        $issuesCreated += @{ IcmId=$icmId; Sev=$sev; Type=$type; Title=$title }
     }
+}
+
+if ($highlight) {
+    $hlText = ($highlight -split "\|", 2)[1]
+    Write-Host ""
+    Write-Host "  ⚡ $hlText" -ForegroundColor Red
+}
+
+Write-Host ""
+
+# Create GitHub issues for new incidents (dedup against existing)
+$existingIssues = gh issue list --label "squad,squad:aragorn" --state open --json title --limit 50 --repo jbenami_microsoft/ms-pa 2>$null | ConvertFrom-Json
+$existingTitles = $existingIssues | ForEach-Object { $_.title }
+
+$created = 0
+foreach ($inc in $issuesCreated) {
+    $issueTitle = "ICM $($inc.IcmId): $($inc.Title)"
+    if ($existingTitles -contains $issueTitle) {
+        Write-Host "  ⏭️  $issueTitle (already tracked)" -ForegroundColor DarkGray
+        continue
+    }
+
+    $body = "## IcM Investigation Task`n`n" +
+        "**IcM ID:** [$($inc.IcmId)](https://portal.microsofticm.com/imp/v5/incidents/details/$($inc.IcmId)/home)`n" +
+        "**Severity:** $($inc.Sev)`n" +
+        "**Type:** $($inc.Type)`n`n" +
+        "Aragorn: investigate this incident using the ICM investigator skill.`n" +
+        "Follow the pipeline in ``.squad/skills/icm-investigator/SKILL.md``."
+
+    gh issue create --title $issueTitle --body $body --label "squad,squad:aragorn" --repo jbenami_microsoft/ms-pa 2>$null | Out-Null
+    Write-Host "  📋 Created: $issueTitle" -ForegroundColor Green
+    $created++
+}
+
+if ($created -gt 0) {
+    Write-Host ""
+    Write-Host "✅ $created new investigation task(s) created on board" -ForegroundColor Green
+}
+
+# Send Teams notification with specific incident list
+$notifyScript = Join-Path $root "scripts\send-teams-notification.ps1"
+if ((Test-Path $notifyScript) -and $issuesCreated.Count -gt 0) {
+    $body = ($issuesCreated | ForEach-Object {
+        "• **$($_.Sev)** [$($_.Type)] [IcM#$($_.IcmId)](https://portal.microsofticm.com/imp/v5/incidents/details/$($_.IcmId)/home) — $($_.Title)"
+    }) -join "`n"
+    if ($created -gt 0) { $body += "`n`n📋 $created new task(s) created on board" }
+    & $notifyScript -Title "🚨 IcM Scan: $count incident(s)" -Body $body
 }

@@ -11,7 +11,7 @@
       "name": "icm-scan",
       "type": "script",
       "script": "scripts/icm-scan.ps1",
-      "interval": "4h",
+      "interval": "30m",
       "enabled": false,
       "condition": "oncall"
     },

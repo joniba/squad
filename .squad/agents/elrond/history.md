@@ -683,3 +683,19 @@ Deep-dived into WorkIQ's Teams chat message retrieval to determine whether it ca
 **Key insight:** The Copilot CLI IS the headless LLM execution engine we were looking for. It already has MCP tool integration, permission controls, output capture, and session management. We don't need to build anything — we need to invoke what already exists with the right flags.
 
 **Sources:** copilot --help output, copilot help permissions, copilot help config, copilot help environment, GitHub Docs (CLI command reference, programmatic reference, autopilot, ACP server, custom agents), local testing (5 tests all passing).
+
+### 2025-07-10: TI Pipeline integration analysis — Sagi's TiExpert PR (PR 15064785)
+
+**Context:** Jonathan asked me to analyze Sagi Marcus's TiExpert PR on Sentinel-TiPipeline for research and investigation integration opportunities. Galadriel had already reviewed the PR (docs/reviews/pr-review-15064785-v2.md) and found 4 bugs + security concerns.
+
+**Key findings:**
+- The PR introduces a **TiExpert GitHub Copilot agent**, 5 PowerShell validation scripts (STIX API, Bulk Actions, File Import, Web API, Ingestion), an orchestrator, shared config/helpers, and 6 SKILL.md API reference files.
+- **SKILL.md files are the highest-value assets for our squad** — they're the best TI API documentation I've seen, better than scattered TSGs. `stix-api-operations/SKILL.md` was confirmed clean by Galadriel.
+- **Direct relevance to 4 of 5 active investigations:** Revoked indicators (ICM 51000000954460) maps to bulk-actions SKILL.md; Upload API pattern_type bug (ICM 51000000943039) maps to STIX API validation; TAXII ingestion (ICM 21000000951041) maps to ingestion API docs; Deleted watchlist items (ICM 21000000917983) maps to bulk delete validation.
+- **Sentinel-TiPipeline is already in repo-map.json** (entry #18) but description doesn't mention the agent/skills content. Recommended updating the entry.
+- **3 bugs make scripts unsafe for automated execution:** BUG-1 (poll loop never exits on Failed), BUG-2 (token failure exits 0), BUG-3 (silent exception swallowing). SKILL.md files are safe for read-only reference now.
+
+**Deliverables:**
+- `.squad/decisions/inbox/elrond-ti-pipeline-integration.md` — Full decision proposal with tool inventory, relevance mapping to research + investigations, integration recommendations (6 actions), and risk assessment.
+
+**Key insight:** The real value isn't the validation scripts (which have bugs) — it's the SKILL.md API documentation. These files encode operational knowledge about TI API behavior, field semantics, and edge cases that would take hours to reconstruct from TSGs and source code. Reference them before any TI research or investigation.

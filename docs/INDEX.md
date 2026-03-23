@@ -56,6 +56,7 @@ Master index organized by the 9-category knowledge management system. Documents 
 
 | Document | Date | Tags | Status |
 |----------|------|------|--------|
+| [Threat Intelligence Pipeline Integration Guide](guides/ti-pipeline-integration-guide.md) | 2026-03-24 | guide, threat-intelligence, integration, ti-pipeline, tooling, investigations, bilbo, active |
 | [Unified Scheduler Guide](guides/unified-scheduler-guide.md) | 2026-03-24 | guide, tooling, workflow, squad-infra, bilbo, final |
 | [Email Watchdog Setup Guide](guides/email-watchdog-setup.md) | 2026-03-24 | guide, tooling, workflow, teams, bilbo, final |
 | [Teams Knowledge Library Guide](guides/teams-knowledge-library-guide.md) | 2026-03-24 | guide, squad-infra, teams, bilbo, final |
@@ -72,6 +73,6 @@ Master index organized by the 9-category knowledge management system. Documents 
 
 ---
 
-**Last Updated:** 2026-03-23  
-**Total Documents:** 19  
+**Last Updated:** 2026-03-24  
+**Total Documents:** 20  
 **Categories Populated:** 5 / 9

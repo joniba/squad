@@ -71,3 +71,28 @@
 5. For Geneva metrics, the monitor config (account, namespace, metric name) is needed — extract from ICM enrichment or monitor trigger data.
 
 **Delivered:** `docs/investigations/icm-766712513-v2-report.md`
+
+### 2026-03-23: TI Pipeline Tools Assessment — Sagi's PR #15064785
+
+**Context:** Jonathan asked for an evaluation of Sagi's TiExpert agent skills and scripts (ADO PR #15064785, reviewed by Galadriel as CHANGES_REQUESTED) against my 5 TI-related CRIs from this session.
+
+**Tool-to-CRI mapping:**
+- **Revoked TI indicators (51000000954460)**: 🟢 High fit — `validate-bulkactions.ps1` + `bulk-actions-api/SKILL.md`. Can reproduce revocation state issues in PPE in under 5 minutes. The DOC-2 finding (revoked/SetFalse inconsistency) is directly the suspect.
+- **TAXII ingestion (21000000951041)**: 🟡 Medium fit — `validate-ingestionapi.ps1` + `validate-fileimport.ps1`. File import vs. TAXII comparison isolates whether the issue is in the connector or the parser.
+- **Upload API pattern_type (51000000943039)**: 🟢 High fit — `validate-stixapi.ps1` + `stix-api-operations/SKILL.md`. Tightest fit; scripts test the exact API layer implicated in the CRI.
+- **Deleted watchlist items (21000000917983)**: 🟡 Partial fit — `Poll-LAQuery` in `ti-helpers.ps1` useful for LA-verified deletion confirmation, but no watchlist-specific validation script.
+- **MDTI Premium connector (766937015)**: 🔴 Low fit — Sagi's tools are pipeline-API-centric, not connector-centric.
+
+**Blocking issues before investigation use:**
+- BUG-2: `validate-stixapi.ps1` returns exit 0 on auth failure — gives false "environment healthy" signal during live investigations.
+- BUG-3: `Poll-LAQuery` silently swallows exceptions for up to 7.5 minutes — unacceptable during timed on-call investigations.
+
+**Repo-map finding:** Sentinel-TiPipeline is already in `repo-map.json` but lacks `keyPaths` to surface the `.github/scripts/` and `.github/skills/` directories added by this PR. Recommended adding `keyPaths` and `investigationUse` fields post-merge.
+
+**Lasting lessons:**
+1. A "reproduction before Kusto" step (PPE validation scripts) would accelerate CRI triage for STIX API incidents — add as Step 0 to investigation pipeline.
+2. SKILL.md files serve as API contract references in Stage 3b — faster than reading C# source for understanding intended vs. actual behavior.
+3. `Poll-LAQuery` is a high-value primitive for watchlist/indicator investigations if BUG-3 is fixed — LA propagation lag vs. actual data loss disambiguation.
+4. Connector-layer CRIs (MDTI, TAXII pull) are not covered by pipeline validation scripts — this gap should inform future tooling requests.
+
+**Delivered:** `.squad/decisions/inbox/aragorn-ti-tools-assessment.md`
