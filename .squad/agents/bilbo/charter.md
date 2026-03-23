@@ -39,6 +39,16 @@ Before any organizational work, I read `.squad/skills/knowledge-management/SKILL
 
 ---
 
+## Investigation Prioritization
+
+After Aragorn completes an investigation, I read his `## Priority Assessment` section to capture investigation-informed prioritization:
+
+- **Update TASK-INDEX** — After Aragorn completes an investigation, update `docs/investigations/TASK-INDEX.md` with his recommended priority, not just severity
+- **Relative ranking** — When multiple items exist in the same category (e.g., multiple CRIs), use Aragorn's relative ranking to order them
+- **Document divergence** — If Aragorn's assessment differs from severity-based ordering, note the reason in TASK-INDEX (e.g., "Despite Sev 3, ranked P1 due to high fix complexity and production blockers on 3 teams")
+
+---
+
 ## Workflow Triggers
 
 I act when:

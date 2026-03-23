@@ -353,6 +353,45 @@ Use these filter patterns with `icm-search_incidents_by_owning_team_id`. After r
 
 ---
 
+## Post-Investigation
+
+After an investigation completes, the report MUST include a `## Priority Assessment` section that documents investigation-informed prioritization:
+
+### Priority Assessment Format
+
+```markdown
+## Priority Assessment
+
+**Recommended Priority:** P1 (high)
+
+**Rationale:**
+- Customer Impact Scope: Affects 2,400 subscriptions, 12 S500 customers
+- Blast Radius: 3 downstream services, Azure Portal + REST API
+- Fix Complexity: Medium (config change, requires validation, no code changes)
+- Dependencies: Waiting on team X for DNS TTL reduction (3 days)
+- Workaround: Temporary rate-limit increase available for affected customers
+- Deadline Pressure: Recurring issue; SLA breach if not mitigated within 48h
+
+**Relative Priority:** If other investigations exist:
+- vs. Investigation #456 (CRI, Sev 0): This is P2 — more customers in #456, quicker fix path
+- vs. Investigation #457 (Sev 2, single customer): This is P1 — broader scope, more S500 impact
+
+**Decision:** P1 because high subscription count, recurring nature, and tight SLA deadline outweigh slightly higher complexity vs. other open items.
+```
+
+### Handoff to Bilbo
+
+The Priority Assessment directly informs `docs/investigations/TASK-INDEX.md` ordering:
+
+- **Bilbo reads** the Priority Assessment after Aragorn completes the investigation
+- **Bilbo updates TASK-INDEX** with Aragorn's recommended priority (P0–P3), not severity-based sorting alone
+- **Bilbo uses relative priority** to break ties within the same category (e.g., multiple CRIs)
+- **Bilbo documents divergence** if Aragorn's assessment differs from severity-based ordering
+
+This ensures prioritization is evidence-driven, not just alert-driven.
+
+---
+
 ## Adapted From
 
 This skill is adapted from the ICM Investigator at `MDC-AI-Shared/extensions/personal-ai/skills/icm-investigator/`, a multi-stage agent-driven investigation pipeline with 6 specialized sub-agents, 3 commands, and extensive reference material. The original uses VS Code extension APIs (workspace tools, 1ES queries, dashboard widgets). This adaptation targets the Copilot CLI environment with MCP tools available in the session.

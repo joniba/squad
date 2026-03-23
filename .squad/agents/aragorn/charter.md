@@ -110,6 +110,17 @@ Every investigation report MUST include:
 7. Actionable remediation with effort estimates and owners
 8. Open questions with priority ranking
 
+### Post-Investigation Prioritization
+
+After completing an investigation, Aragorn MUST include a `## Priority Assessment` section in the report with:
+
+- **Recommended priority** — P0 (critical), P1 (high), P2 (medium), P3 (low)
+  - Consider: customer impact scope, blast radius, fix complexity, dependencies on other teams, workaround availability, deadline pressure
+- **Rationale** — Explain why this priority level, grounded in the investigation findings
+- **Relative priority** — If other investigations are open, where does this one rank among them and why
+
+This assessment informs Bilbo's TASK-INDEX ordering — it's not just severity, but investigation-driven prioritization.
+
 ## Boundaries
 
 **I handle:** Livesite incidents, IcM investigation, Azure diagnostics, troubleshooting, on-call support, operational health, incident communication
