@@ -5,6 +5,7 @@ using CommandLine;
 using CommandLine.Text;
 using DgrepCli.Commands;
 using DgrepCli.Config;
+using DgrepCli.Execution;
 
 namespace DgrepCli
 {
@@ -27,13 +28,14 @@ namespace DgrepCli
                 settings.AutoVersion = false;
             });
 
-            var result = parser.ParseArguments<SearchOptions, TailOptions, ConfigOptions, SavedOptions>(args);
+            var result = parser.ParseArguments<SearchOptions, TailOptions, ConfigOptions, SavedOptions, QueryVerbOptions>(args);
 
             return result.MapResult(
                 (SearchOptions opts) => RunSearch(opts),
                 (TailOptions opts) => RunTail(opts),
                 (ConfigOptions opts) => RunConfig(opts),
                 (SavedOptions opts) => RunSaved(opts),
+                (QueryVerbOptions opts) => RunQuery(opts),
                 errs => HandleParseErrors(result, errs)
             );
         }
@@ -111,6 +113,14 @@ namespace DgrepCli
             return 0;
         }
 
+        static int RunQuery(QueryVerbOptions opts)
+        {
+            var configManager = new ConfigManager();
+            var executor = new KustoQueryExecutor();
+            var command = new QueryCommand(executor, configManager);
+            return command.Execute(opts);
+        }
+
         static int PrintValidationErrors(System.Collections.Generic.List<string> errors)
         {
             Console.Error.WriteLine("Validation errors:");
@@ -133,6 +143,7 @@ namespace DgrepCli
                     h.AddPreOptionsLine("");
                     h.AddPreOptionsLine("Commands:");
                     h.AddPreOptionsLine("  search    Run a DGrep query and display results");
+                    h.AddPreOptionsLine("  query     Execute a KQL query against a Kusto cluster");
                     h.AddPreOptionsLine("  tail      Stream DGrep results in real-time");
                     h.AddPreOptionsLine("  config    Manage CLI configuration");
                     h.AddPreOptionsLine("  saved     Manage saved queries");
