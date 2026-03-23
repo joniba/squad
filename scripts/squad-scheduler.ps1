@@ -36,6 +36,13 @@ function Test-Due($task) {
     return ((Get-Date) - [datetime]$last.Value).TotalSeconds -ge (ConvertTo-Seconds $task.interval)
 }
 function Invoke-Task($task, [switch]$ForceCondition) {
+    if ($task.type -eq "agent") {
+        if (-not $ForceCondition -and -not (Test-Condition $task)) { Write-Log "  SKIP $($task.name) -- condition not met"; return }
+        Write-Log "  AGENT $($task.name) --> $($task.agent)"
+        Write-Host "AGENT_TASK|$($task.agent)|$($task.prompt)"
+        $state | Add-Member -NotePropertyName $task.name -NotePropertyValue (Get-Date -Format "o") -Force
+        return
+    }
     $script = Join-Path $root $task.script
     if (-not (Test-Path $script)) { Write-Log "  SKIP $($task.name) -- script not found"; return }
     if (-not $ForceCondition -and -not (Test-Condition $task)) { Write-Log "  SKIP $($task.name) -- condition not met"; return }
@@ -54,7 +61,8 @@ do {
     foreach ($t in (Get-TaskList)) {
         if ($DryRun) {
             $due = if (Test-Due $t) { "DUE" } else { "not due" }
-            Write-Log "  [DRY] $($t.name) | $($t.interval) | $due | condition=$(if (Test-Condition $t) {'met'} else {'unmet'})"
+            $type = if ($t.type) { $t.type } else { "script" }
+            Write-Log "  [DRY] $($t.name) | $type | $($t.interval) | $due | condition=$(if (Test-Condition $t) {'met'} else {'unmet'})"
         } elseif (Test-Due $t) {
             $force = ($Include -and $Include -contains $t.name) -or ($Tasks -and $Tasks -contains $t.name)
             Invoke-Task $t -ForceCondition:$force
