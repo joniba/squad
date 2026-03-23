@@ -208,10 +208,9 @@ if (-not $scanResult -or $scanResult -match "\|clear\|") {
 
 # Print concise inline summary
 $count = ($scanResult -split "\|")[2]
-Write-Host "🚨 $count incident(s) found:" -ForegroundColor Yellow
-Write-Host ""
 
-$issuesCreated = @()
+$newIncidents = @()
+$skippedCount = 0
 foreach ($inc in $incidents) {
     $parts = $inc -split "\|"
     if ($parts.Count -ge 6) {
@@ -220,9 +219,34 @@ foreach ($inc in $incidents) {
         $type    = $parts[3]
         $title   = $parts[4]
         $contact = $parts[5]
-        Write-Host "  • $sev [$type] IcM#$icmId — $title ($contact)" -ForegroundColor White
-        $issuesCreated += @{ IcmId=$icmId; Sev=$sev; Type=$type; Title=$title }
+        
+        $hasIssue  = $existingTitles | Where-Object { $_ -match $icmId }
+        $hasReport = $existingReports -contains $icmId
+        $inKnown   = $knownIdsList -contains $icmId
+        
+        if ($hasIssue -or $hasReport -or $inKnown) {
+            $skippedCount++
+            continue
+        }
+        
+        $newIncidents += @{ IcmId=$icmId; Sev=$sev; Type=$type; Title=$title; Contact=$contact }
     }
+}
+
+if ($skippedCount -gt 0) {
+    Write-Host "  ⏭️  $skippedCount known incident(s) skipped" -ForegroundColor DarkGray
+}
+
+if ($newIncidents.Count -eq 0) {
+    Write-Host "✅ No new incidents" -ForegroundColor Green
+    exit 0
+}
+
+Write-Host "🚨 $($newIncidents.Count) new incident(s):" -ForegroundColor Yellow
+Write-Host ""
+
+foreach ($inc in $newIncidents) {
+    Write-Host "  • $($inc.Sev) [$($inc.Type)] IcM#$($inc.IcmId) — $($inc.Title) ($($inc.Contact))" -ForegroundColor White
 }
 
 if ($highlight) {
@@ -233,26 +257,12 @@ if ($highlight) {
 
 Write-Host ""
 
-# Create GitHub issues for new incidents (dedup: existingTitles + existingReports already loaded above)
+# Create GitHub issues for new incidents
 $created = 0
 $notifyLines = @()
-foreach ($inc in $issuesCreated) {
+foreach ($inc in $newIncidents) {
     $issueTitle = "ICM $($inc.IcmId): $($inc.Title)"
     $icmLink    = "https://portal.microsofticm.com/imp/v5/incidents/details/$($inc.IcmId)/home"
-
-    $hasIssue  = $existingTitles | Where-Object { $_ -match $inc.IcmId }
-    $hasReport = $existingReports -contains $inc.IcmId
-
-    if ($hasIssue) {
-        Write-Host "  ⏭️  IcM#$($inc.IcmId) (issue exists on board)" -ForegroundColor DarkGray
-        $notifyLines += "• **$($inc.Sev)** [$($inc.Type)] [IcM#$($inc.IcmId)]($icmLink) — $($inc.Title) _(tracked)_"
-        continue
-    }
-    if ($hasReport) {
-        Write-Host "  ⏭️  IcM#$($inc.IcmId) (investigation report exists)" -ForegroundColor DarkGray
-        $notifyLines += "• **$($inc.Sev)** [$($inc.Type)] [IcM#$($inc.IcmId)]($icmLink) — $($inc.Title) _(investigated)_"
-        continue
-    }
 
     $body = "## IcM Investigation Task`n`n" +
         "**IcM ID:** [$($inc.IcmId)]($icmLink)`n" +
@@ -272,11 +282,10 @@ if ($created -gt 0) {
     Write-Host "✅ $created new investigation task(s) created on board" -ForegroundColor Green
 }
 
-# Send Teams notification with incident links + tracking status
+# Send Teams notification ONLY for new incidents (not already-investigated ones)
 $notifyScript = Join-Path $root "scripts\send-teams-notification.ps1"
 if ((Test-Path $notifyScript) -and $notifyLines.Count -gt 0) {
     $notifyBody = ($notifyLines -join "`n")
-    if ($created -gt 0) { $notifyBody += "`n`n📋 $created new task(s) → Aragorn investigating" }
-    else { $notifyBody += "`n`n✅ All incidents already tracked" }
-    & $notifyScript -Title "🚨 IcM Scan: $count incident(s)" -Body $notifyBody
+    $notifyBody += "`n`n📋 $created new task(s) → Aragorn investigating"
+    & $notifyScript -Title "🚨 IcM Scan: $created new incident(s)" -Body $notifyBody
 }
