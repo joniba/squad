@@ -4,17 +4,18 @@ How to decide who handles what.
 
 ## Routing Table
 
-| Work Type | Route To | Examples |
-|-----------|----------|----------|
-| General tasks, triage, coordination | 🏗️ Gandalf | "What should I work on?", prioritize tasks, general questions |
-| Research, investigation, analysis | 🔍 Elrond | "Research X", "What's the state of Y?", deep dives, competitive analysis |
-| Documentation, reports, summaries | 📝 Bilbo | "Write a doc for X", "Summarize this", create guides, READMEs |
-| Scripts, tools, automation | 🔧 Gimli | "Build a script to do X", "Automate Y", create utilities |
-| Livesite, incidents, Azure ops | ⚙️ Aragorn | "Investigate IcM #123", "Check service health", troubleshoot |
-| Scope & priorities | 🏗️ Gandalf | What to work on next, trade-offs, decisions |
-| Work review | 🏗️ Gandalf | Review output quality, check coherence |
-| Session logging | 📋 Scribe | Automatic — never needs routing |
-| Work queue monitoring | 🔄 Ralph | "Ralph, go", "What's on the board?", backlog status |
+| Work Type | Route To | Output Location | Examples |
+|-----------|----------|-----------------|----------|
+| General tasks, triage, coordination | 🏗️ Gandalf | — | "What should I work on?", prioritize tasks, general questions |
+| Research, investigation, analysis | 🔍 Elrond | `docs/research/` | "Research X", "What's the state of Y?", deep dives, competitive analysis |
+| Documentation, reports, summaries | 📝 Bilbo | `docs/` (category-specific) | "Write a doc for X", "Summarize this", create guides, READMEs |
+| Scripts, tools, automation | 🔧 Gimli | — | "Build a script to do X", "Automate Y", create utilities |
+| PR code review | 👑 Galadriel | `docs/reviews/` | "Review PR #42", code quality verification, finding reports |
+| Livesite, incidents, Azure ops | ⚙️ Aragorn | `docs/investigations/` | "Investigate IcM #123", "Check service health", troubleshoot |
+| Scope & priorities | 🏗️ Gandalf | — | What to work on next, trade-offs, decisions |
+| Work review | 🏗️ Gandalf | — | Review output quality, check coherence |
+| Session logging | 📋 Scribe | — | Automatic — never needs routing |
+| Work queue monitoring | 🔄 Ralph | — | "Ralph, go", "What's on the board?", backlog status |
 
 ## Issue Routing
 

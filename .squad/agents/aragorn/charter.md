@@ -16,6 +16,7 @@
 - Azure resource diagnostics and troubleshooting
 - System health checks and operational monitoring
 - Communication during incidents — clear status updates, timelines, next steps
+- Investigation reports are written to `docs/investigations/` for archival and team reference
 
 ## How I Work
 

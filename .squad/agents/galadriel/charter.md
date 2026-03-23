@@ -22,6 +22,7 @@
 - Architecture alignment verification (does this fit the squad's patterns?)
 - Quality gates before merge (APPROVE or CHANGES_REQUESTED verdict)
 - Finding documentation with severity, category, and suggested fix
+- PR review reports are written to `docs/reviews/` for archival and team reference
 
 ### ≡ƒÜ½ I Delegate
 
