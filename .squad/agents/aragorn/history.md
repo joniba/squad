@@ -21,6 +21,42 @@
 - **Critical gotcha:** G2 certs do NOT have ClientAuth EKU — services using certs for client auth cannot use central migration
 - **Delivered:** `docs/icm-764634026-resolution.md` — full walkthrough with queries, decision trees, verification commands, rollback procedures (PR #50, Issue #38)
 
+### 2025-02-13: ICM 764634026 — Deep Investigation Complete (Follow-up Q&A + Certificate Inventory)
+
+**Context**: Jonathan requested comprehensive deep-dive follow-up investigation with three deliverables: (1) Technical answers to 5 questions about MSPKI migration and ClientAuth blockers, (2) exhaustive certificate usage search across all 21 TI repositories, (3) updated investigation report with Follow-up Q&A and Complete Certificate Usage Inventory sections. April 10, 2025 deadline is critical for deciding between Option A (refactor to AAD) or Option B (stay on G1).
+
+**Search Strategy Executed**:
+- **Scope**: All 21 TI service repositories in `C:\dev\ti` (20 repos found with certificate patterns, 1 with no refs)
+- **Patterns Used**: X509Certificate, ClientCertificate, ClientCertificateCredential, ClientCertificateOption, thumbprint, certificate, mTLS, pfx, minimumTlsVersion, clientCertificateThumbprints, clientCertificateCommonNames
+- **Results**: 1,680+ matches across 20 repos. Top repositories: SecEng-SOCML (184), Sentinel-TiPublishers (162), Sentinel-TiActionPipeline (162), Sentinel-TiAutomation (159), SecEng-Augusta (157), Sentinel-TiPipeline (145)
+- **Confidence**: HIGH for obvious certificate patterns; possible gaps in environment-based refs, .cer/.crt files, deployment manifests
+
+**Key Technical Findings**:
+1. **CRITICAL mTLS Client Auth Blocker**: TAXIIRequestSender.cs (lines 55-56, 97-98) in SecEng-Augusta explicitly configures `ClientCertificateOption.Manual` and `handler.ClientCertificates.Add()`. When G2 certs lacking ClientAuth EKU are loaded here, TLS handshake will FAIL immediately because server validates EKU and rejects cert.
+2. **Azure SDK Pattern (May Be Resolvable)**: Sentinel-TiAutomation, Sentinel-Augusta, Sentinel-Synthetics use `ClientCertificateCredential` (Azure SDK). NOT mTLS client auth; used for Azure service identity token exchange. May be G2-compatible via Azure SDK (needs testing).
+3. **Certificate Usage Patterns**: Two distinct patterns: (1) mTLS client auth (TAXII only—BLOCKS G2), (2) Azure SDK service identity (multiple repos—may support G2 with Azure SDK handling)
+
+**Five Technical Questions Answered** (added to investigation report):
+1. **Q1 (MSPKI G1 vs G2)**: G1 has ClientAuth EKU, G2 does NOT (permanent architectural decision). April 10 = Microsoft central migration deadline; May 16 = self-migration deadline. Post-deadline = G1 certs rejected by Azure services = outage.
+2. **Q2 (ClientAuth EKU Issue)**: G2 lacks ClientAuth EKU permanently (not temporary) as part of Microsoft's shift from cert-based to OAuth/managed identity auth. Services MUST remove client cert code before migrating to G2.
+3. **Q3 (mTLS Definition)**: Client auth / mutual TLS = two-way certificate verification (server validates client cert, client validates server cert). TAXII uses mTLS for threat intelligence sharing protocol security. TAXIIRequestSender loads cert from Windows cert store and presents it on every TLS handshake.
+4. **Q4 (TI Certificate Usage)**: TAXII services (SecEng-Augusta) confirmed using mTLS client auth (BLOCKS G2). Azure SDK ClientCertificateCredential pattern in 7+ implementations (Sentinel-TiAutomation, Sentinel-Augusta, Sentinel-Synthetics, others) — may be resolvable via Azure SDK. Certificate config/storage references in 1,671+ locations (low priority, no blocking impact).
+5. **Q5 (Migration Options)**: Option A (RECOMMENDED) = Remove client cert code + implement alternative auth (AAD managed identity or API keys) = 5-8 weeks dev + test, full G2 migration enabled. Option B = Continue using G1 = no code changes, 3 weeks config audit, but temporary only (G1 sunset inevitable, technical debt).
+
+**Investigation Report Updated**:
+- ✅ Added comprehensive "Follow-up Q&A" section with 5 questions + detailed answers
+- ✅ Added "Complete Certificate Usage Inventory" section with categorized findings: (1) CRITICAL mTLS blocker (2 locations), (2) Medium-priority ClientCertificateCredential patterns (7+ implementations), (3) Low-priority config/storage refs (1,671+ matches)
+- ✅ Updated Evidence Summary and Impact Analysis with comprehensive findings
+- ✅ Recommended investigation follow-up actions (test TAXII with G2, test Azure SDK patterns, etc.)
+
+**Key Decision Drivers for Jonathan**:
+- **Timeline is Achievable**: Option A (code changes) can be completed in 5-8 weeks (well before May 16 deadline)
+- **Root Cause is Clear**: TAXII mTLS client auth cannot use G2 certs; must be refactored
+- **Azure SDK Pattern Uncertain**: ClientCertificateCredential usage may or may not be G2-compatible (needs pre-prod testing)
+- **Recommendation**: Start Option A immediately; contact OceanView by Feb 20 for alternative auth design; parallel-test Azure SDK patterns
+
+**Deliverable Location**: `docs/investigations/icm-764634026/icm-764634026-investigation.md` (updated with Follow-up Q&A + Inventory sections)
+
 ### 2026-03-22: ICM 766712513 — ARM WATCHLISTS 5xx Errors (West Europe)
 - **Incident type:** LiveSite — ARM detected increased HTTP 5xx error rates. Severity 2, ACTIVE, Public cloud West Europe.
 - **Owning team:** Threat Intelligence (USX Threat Intelligence)
