@@ -64,3 +64,26 @@
 **Deliverable:** `docs/research/worktree-lifecycle-research.md` (42.7 KB) — comprehensive research document with implementation priorities (4 phases), edge case strategies, cleanup automation options, and Windows platform notes.
 
 **Key insight:** Squad has all the infrastructure (merge drivers, drop-box pattern, Scribe integration) but lacks enforcement in the spawn template. A minimal 2-line change to `.squad/templates/squad.agent.md` (add pre-spawn worktree creation) fixes 4+ corrupted PR incidents and branch-drift problems completely.
+
+### 2025-01-16: Teams channel integration research — real-time squad notifications
+
+**Context:** Jonathan requested comprehensive research on enabling real-time squad notifications in Teams channels for blocked tasks, stale items, and significant events. Conducted 6-question deep investigation covering existing plugins, Graph API, webhooks, WorkIQ capabilities, Power Automate feasibility, and EMU-specific constraints.
+
+**Key findings (6 research questions answered):**
+1. **Integration options:** Three primary channels: Incoming Webhooks (✅ simplest, already in use), Microsoft Graph API (✅ scalable, requires app registration), Power Automate (feasible but adds abstraction layer)
+2. **WorkIQ for detection:** Poll-based (not event-driven), ~minutes to hours indexing delay, proven query patterns in teams-monitor plugin, recommended cadence: 1 query per agent cycle (per squad decisions)
+3. **Webhook setup & security:** Minimal 5-minute setup; store URL securely in `~\.squad\teams-webhook.url` (not git-tracked); proven delivery pattern in news-broadcasting plugin (PowerShell `Invoke-RestMethod` + Adaptive Cards)
+4. **Event types:** Blocked tasks (>12h), stale items (>5 days no activity), critical incidents (Sev2, outages), unreviewed PRs (>24h), decision announcements — filter via WorkIQ keywords + GitHub API
+5. **Best for EMU:** Hybrid webhook + WorkIQ polling approach (MVP-ready, no tenant admin approval, no external credentials, low operational overhead)
+6. **Implementation:** 4 steps — create webhook, build skill, register scheduler, test & iterate; Phase 1 ready for launch within days
+
+**Plugin analysis (evidence source):**
+- **teams-monitor:** WorkIQ query patterns (lines 28–52), actionable filtering (lines 54–70), rate-limit guidance, webhook URL storage pattern
+- **news-broadcasting:** Webhook POST via PowerShell, Adaptive Card formatting, message style guidelines
+- **teams-ui-automation:** Layer-based automation (Playwright → Keyboard → UIA); reference for future UI-based integrations
+
+**Recommendation:** Hybrid webhook + WorkIQ polling approach — production-ready, leverages existing squad infrastructure (scheduler, WorkIQ, Teams integration), requires no tenant admin approval, iterative Phase 1 → Phase 2 refinement model.
+
+**Deliverable:** `docs/research/teams-notification-research.md` (25.2 KB) — synthesizes all 6 questions with concrete implementation steps, phased rollout (Phase 1: MVP daily summary; Phase 2: real-time alerts; Phase 3: Graph API alternative), EMU-specific guidance, and success criteria.
+
+**Key insight:** Real-time notifications are achievable via existing squad infrastructure (WorkIQ + webhooks) without new dependencies. The hybrid poll-based approach aligns with squad's event-driven architecture and WorkIQ's indexing characteristics. Implementation is a 4-step process; Phase 1 MVP can launch within days.
