@@ -33,3 +33,41 @@
 - **TSG sources:** Brain ARM RP Investigation TSG (most actionable), ARM Instance Error Rate Outlier Detection
 - **Open items:** Kusto queries need to be run for actual impact; FCM change data needs checking; monitor if self-resolving
 - **Delivered:** `docs/icm-766712513-investigation.md` — committed directly to main per Jonathan's directive
+
+### 2026-03-23: ICM 766712513 v2 — Re-investigation with ICM Investigator Skill
+
+**Context:** Jonathan flagged v1 report as "terrible" — listed Kusto queries instead of running them, linked TSGs without reading them, didn't pull metrics, transcribed ICM metadata instead of synthesizing RCA. Re-investigated with full tool usage following `.squad/skills/icm-investigator/SKILL.md`.
+
+**Key improvements over v1:**
+- **Kusto queries executed:** Ran 4 queries on `sentinelwatchlistweu.westeurope.kusto.windows.net/SentinelWatchlistWEU` — discovered RP-side success rate is 99.94–99.97% (only 3–4 HTTP 500s per 5-min window), proving ARM→RP timeouts (httpStatusCode=0) are the dominant failure mode, not RP-side errors
+- **Offending subscription identified:** All 46 RP-side 500s came from single subscription `7d28c677-88e0-4011-b860-dd6b0206eb23`, workspace `learningenv-sentinel`, doing automated PUT retries on 4 watchlistItems in watchlist "ReportsNew"
+- **TSG read and applied:** Fetched Brain ARM RP Investigation TSG via `enghub-fetch` — extracted key insight that HTTP 0 = ARM→RP timeout, retries counted as separate calls
+- **Resource Health checked:** Confirmed zero Azure service health events in West Europe
+- **Synthesized RCA:** ARM reports 73.63% success, RP shows 99.94–99.97% → gap proves failures are connection-layer timeouts, not RP bugs
+
+**Tool access findings:**
+- ✅ ICM MCP: All tools work perfectly (9 tools used)
+- ✅ Kusto (SentinelWatchlistWEU): Full access — returned real data
+- ⚠️ Kusto (ARMProdEG): Cannot run macro-expand fan-out queries via MCP — requires SAW/DGrep
+- ❌ Kusto (Brain slidata): Table name resolution failed — needs `brain-dashboard-sg` security group
+- ❌ Kusto (Brain healthevents): Permission denied — needs `brain-dashboard-sg` via IDWeb
+- ✅ eng.ms: Search and fetch work — found and read Brain ARM RP Investigation TSG
+- ✅ Resource Health: Works — no events found (confirming no platform issue)
+- ⚠️ Geneva metrics: Accessible but need specific account/namespace from monitor config (not in ICM enrichment)
+- ⚠️ AppLens: Accessible but ARM-level incidents don't map to a single diagnosable resource
+- ⚠️ Azure Monitor: Accessible but requires Log Analytics workspace for resource-specific queries
+
+**Gaps vs Jonathan's report:**
+- Jonathan had codebase access (confirmed zero rate limiting middleware) — I cannot access the source code
+- Jonathan used WorkIQ (M365 Copilot) for email/Teams context — found 4 additional March incidents
+- Jonathan extracted Geneva monitor metric values showing ClientFailure 381–666/min — I couldn't access the specific Geneva account
+- My advantage: Actual Kusto results (Jonathan's queries returned 0 rows due to timing), specific failing operations identified, Brain TSG content read
+
+**Lasting lessons:**
+1. Always run Kusto queries yourself — never list them. Even if 0 rows, report that.
+2. ARM vs RP success rate discrepancy is the most diagnostic signal — always check both sides.
+3. Brain TSG is the authoritative source for httpStatusCode=0 interpretation — always fetch it.
+4. `macro-expand ARMProdEG` queries cannot run via standard Kusto MCP — need SAW access. Report this as a blocker, don't skip silently.
+5. For Geneva metrics, the monitor config (account, namespace, metric name) is needed — extract from ICM enrichment or monitor trigger data.
+
+**Delivered:** `docs/investigations/icm-766712513-v2-report.md`
