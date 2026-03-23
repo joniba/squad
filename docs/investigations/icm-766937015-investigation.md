@@ -25,6 +25,8 @@ related_incidents:
 
 # ICM 766937015 — MDTI Premium Sentinel Connector Enablement Delays
 
+**IcM Portal:** [IcM#766937015](https://portal.microsofticm.com/imp/v5/incidents/details/766937015/home)
+
 ## Executive Summary
 
 **Classification:** TRUE POSITIVE — real customer-blocking issue requiring manual intervention.

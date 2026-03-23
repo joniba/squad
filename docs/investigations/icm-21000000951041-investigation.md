@@ -25,7 +25,9 @@ tags:
 
 # ICM 21000000951041 — Azure Government Sentinel TI TAXII Ingestion Shortfall
 
-> **Incident:** `[Azure Government] Sentinel TI TAXII Ingestion count lower than whats being sent from threat connect`  
+**IcM Portal:** [IcM#21000000951041](https://portal.microsofticm.com/imp/v5/incidents/details/21000000951041/home)
+
+> **Incident:** `[Azure Government] Sentinel TI TAXII Ingestion count lower than whats being sent from threat connect`
 > **Classification:** True Positive | **Confidence:** MEDIUM | **Severity:** 3 (reported) → 3 (assessed, appropriate)
 
 ---

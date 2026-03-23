@@ -70,6 +70,14 @@ Every document must have:
 
 Indexes stay fresh — rebuilt when docs change, keeping the system responsive.
 
+### TASK-INDEX Rules for IcM Investigations
+
+For IcM investigation entries in `docs/investigations/TASK-INDEX.md`, each row must include **two links**:
+1. **Investigation report link** — relative path to `docs/investigations/icm-*.md`
+2. **IcM portal link** — `https://portal.microsofticm.com/imp/v5/incidents/details/{IcM-ID}/home`
+
+Both links enable readers to navigate from the task index directly to investigation details and live IcM incident context.
+
 ---
 
 ## Delegation

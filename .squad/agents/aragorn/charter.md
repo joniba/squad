@@ -109,6 +109,9 @@ Every investigation report MUST include:
 6. Root cause with confidence level and causal chain
 7. Actionable remediation with effort estimates and owners
 8. Open questions with priority ranking
+9. **IcM Portal link** — every report MUST include a direct link to the incident in the IcM portal, formatted as:
+   `**IcM Portal:** [IcM#{id}](https://portal.microsofticm.com/imp/v5/incidents/details/{id}/home)`
+   Place this in the report header or metadata section so readers can jump to the live incident immediately.
 
 ### Post-Investigation Prioritization
 
