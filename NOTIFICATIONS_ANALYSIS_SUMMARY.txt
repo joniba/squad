@@ -1,0 +1,95 @@
+CROSS-REFERENCE ANALYSIS: PROACTIVE NOTIFICATIONS DESIGN vs. TAMIR DRESHER'S PATTERNS
+Jonathan's Summary | Gandalf, Lead Architect
+March 24, 2026
+
+────────────────────────────────────────────────────────────────────────────────
+
+RECOMMENDATION: Design is VALIDATED. Proceed with implementation.
+
+────────────────────────────────────────────────────────────────────────────────
+
+KEY FINDINGS
+
+1. EVENT DETECTION (WorkIQ + GitHub polling)
+   ✅ ALIGNED: Your design uses Tamir's proven teams-monitor pattern.
+   - Tamir's squad-skills poll WorkIQ every 20 min; your design does the same.
+   - Tamir filters for urgent keywords ("blocked", "Sev2", "outage"); your design extends this with structured tiers (urgent/action/feature).
+   - No conflicts. Your approach is a natural evolution.
+
+2. DELIVERY MECHANISM (Teams Incoming Webhook)
+   ✅ ALIGNED: Uses Tamir's battle-tested pattern.
+   - Same storage: ~/.squad/teams-webhook.url
+   - Same transport: Invoke-RestMethod POST to webhook URL
+   - Same format: Adaptive Cards (Tamir uses v1.0+; you use v1.4—both supported)
+   - Your enhancement: Explicit retry logic (exponential backoff). Tamir's patterns don't document retries, but your approach is sound.
+
+3. MESSAGE FORMATTING (Adaptive Cards + Emoji)
+   ✅ ALIGNED: Inherits news-broadcasting pattern.
+   - Emoji headers (🔴 urgent, 🟡 action, 🔵 feature) match squad-skills style
+   - Metadata structure (title, reason, actionUrl) matches teams-monitor schema
+   - Your enhancement: tier-specific fields (estimatedTime, urgency rank). Tamir doesn't do this; you're improving on the pattern.
+
+4. BATCHING & REMINDERS (Hourly feature digest + active reminders)
+   ⚠️ ENHANCEMENT (not in Tamir's squad-skills):
+   - Tamir's patterns: immediate dispatch for all events
+   - Your design: batch Feature notifications hourly (or queue ≥ 5 items); send reminders at 6h (urgent) and 48h (action)
+   - Assessment: Smart innovation for high-volume scenarios. Tamir's immediate dispatch is fine for urgent items (which you keep immediate). Batching prevents notification fatigue for features.
+   - Validation needed: Test with squad. Run 1-week pilot; collect feedback on batch timing. Adjust if users prefer immediate dispatch or longer windows.
+
+5. STATE MANAGEMENT (notifications-state.json watermark)
+   ✅ SOUND: Tamir uses implicit GitHub issue state; you centralize state.
+   - Your approach: explicit .squad/notifications-state.json (gitignored) with per-event retry/error counts
+   - Advantage: More scalable, independent of GitHub API rate limits, easier to debug
+   - Watch for: State file growth. If >1000 events, implement archival (move >30-day-old events to archive file).
+
+6. INTEGRATION POINTS (Squad Scheduler, GitHub PRs, IcM incidents)
+   ✅ ALIGNED: All sources match existing squad-skills workflows.
+   - Script failures → teams-monitor already monitors these
+   - Blocked issues → teams-monitor filters for these
+   - PR reviews → teams-monitor can query these via WorkIQ
+   - Your design integrates all of these with structured routing. No conflicts.
+
+────────────────────────────────────────────────────────────────────────────────
+
+VALIDATION CHECKLIST
+
+✅ Does design conflict with Tamir's patterns?           No conflicts identified.
+✅ Is webhook delivery proven in production?             Yes. Squad-skills use it daily.
+✅ Are event detection methods sound?                    Yes. Proven by teams-monitor.
+✅ Is message formatting consistent?                     Yes. Uses squad-skills conventions.
+✅ Are security practices adequate?                      Yes. File-based secret storage matches squad standards.
+
+⚠️ Batching strategy needs user feedback?                1-week pilot recommended.
+⚠️ Reminder cadence might cause fatigue?                 Test with team; adjust thresholds.
+⚠️ State file scale concerns?                            Monitor file growth; archive after 30 days.
+
+────────────────────────────────────────────────────────────────────────────────
+
+IMMEDIATE NEXT STEPS
+
+1. [APPROVED] Adopt Teams Webhook as primary delivery (Tamir's pattern, proven)
+2. [APPROVED] Use Adaptive Cards v1.4 (consistent with squad-skills)
+3. [APPROVED] Implement retry logic (sound best practice)
+4. [TEST] 1-week pilot on batching window (measure queue depth, gather feedback)
+5. [TEST] Monitor state file size; adjust archival policy if needed
+6. [OPTIONAL] Collect feedback on reminder cadence (6h / 48h); adjust if spammy
+
+────────────────────────────────────────────────────────────────────────────────
+
+FUTURE OPTIONS (Phase 2, if needed)
+
+- Graph API fallback: If webhook rate limits (4 req/s) become constraint, switch to Graph API
+- Presence-based suppression: Suppress notifications during busy calendar slots (Tamir's research suggests this; not needed now)
+- Bidirectional sync: Close GitHub issues from Teams reactions (future enhancement, not in scope)
+
+────────────────────────────────────────────────────────────────────────────────
+
+CONCLUSION
+
+Your Proactive Notifications design is well-grounded in Tamir's proven patterns and extends them soundly. The three innovations (batching, reminders, centralized state) are complementary enhancements, not departures. All existing squad-skills integrations will work with your design.
+
+Status: READY FOR IMPLEMENTATION
+
+For detailed analysis, see: docs/designs/notifications-tamir-xref.md
+
+────────────────────────────────────────────────────────────────────────────────
