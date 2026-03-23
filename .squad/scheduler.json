@@ -27,6 +27,17 @@
       "interval": "12h",
       "enabled": true,
       "condition": null
+    },
+    {
+      "name": "email-watchdog",
+      "script": ".squad/skills/email-watchdog/email-scan.ps1",
+      "interval": "24h",
+      "enabled": true,
+      "condition": null,
+      "params": {
+        "Hours": 24,
+        "TeamWebhook": "env:EMAIL_WATCHDOG_WEBHOOK"
+      }
     }
   ],
   "oncall": {
