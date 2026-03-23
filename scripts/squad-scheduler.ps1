@@ -11,11 +11,30 @@ function Write-Log($msg) {
     $line = "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') $msg"
     Write-Host $line; Add-Content -Path $logFile -Value $line -EA SilentlyContinue
 }
+function Write-LogOnly($msg) {
+    Add-Content -Path $logFile -Value "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') $msg" -EA SilentlyContinue
+}
 function ConvertTo-Seconds($i) {
     if ($i -match '^(\d+)h$') { return [int]$Matches[1]*3600 }
     if ($i -match '^(\d+)m$') { return [int]$Matches[1]*60 }
     if ($i -match '^(\d+)d$') { return [int]$Matches[1]*86400 }
     return 3600
+}
+function Format-Remaining([int]$seconds) {
+    if ($seconds -le 0) { return "now" }
+    $h = [math]::Floor($seconds / 3600)
+    $m = [math]::Floor(($seconds % 3600) / 60)
+    $s = $seconds % 60
+    if ($h -gt 0) { return "${h}h ${m}m" }
+    if ($m -gt 0) { return "${m}m" }
+    return "${s}s"
+}
+function Get-Remaining($task) {
+    $last = $state.PSObject.Properties[$task.name]
+    if (-not $last) { return 0 }
+    $elapsed = ((Get-Date) - [datetime]$last.Value).TotalSeconds
+    $interval = ConvertTo-Seconds $task.interval
+    return [math]::Max(0, [int]($interval - $elapsed))
 }
 function Test-Condition($task) {
     if (-not $task.condition) { return $true }
@@ -55,23 +74,33 @@ function Invoke-Task($task, [switch]$ForceCondition) {
         $sw.Stop(); Write-Log "  FAIL $($task.name) ($([math]::Round($sw.Elapsed.TotalSeconds,1))s) -- $_"
     }
 }
+function Start-SpinnerSleep([int]$totalSeconds, $taskList) {
+    $spinChars = '|', '/', '-', '\'
+    $spinIdx = 0
+    for ($i = $totalSeconds; $i -gt 0; $i--) {
+        $spin = $spinChars[$spinIdx % 4]; $spinIdx++
+        $parts = @(foreach ($t in $taskList) { "$($t.name) in $(Format-Remaining (Get-Remaining $t))" })
+        $line = "⏳ $spin  Next check in ${i}s | $($parts -join ' | ')"
+        Write-Host -NoNewline "`r$($line.PadRight(120))"
+        Start-Sleep -Seconds 1
+    }
+    Write-Host -NoNewline "`r$(' ' * 120)`r"
+}
 
 do {
-    Write-Log "--- scheduler tick ---"
-    foreach ($t in (Get-TaskList)) {
+    $taskList = Get-TaskList
+    if ($DryRun) { Write-Log "--- scheduler tick ---" } else { Write-LogOnly "--- scheduler tick ---" }
+    foreach ($t in $taskList) {
         if ($DryRun) {
             $due = if (Test-Due $t) { "DUE" } else { "not due" }
             $type = if ($t.type) { $t.type } else { "script" }
             Write-Log "  [DRY] $($t.name) | $type | $($t.interval) | $due | condition=$(if (Test-Condition $t) {'met'} else {'unmet'})"
         } else {
             $force = ($Include -and $Include -contains $t.name) -or ($Tasks -and $Tasks -contains $t.name)
-            if ($force -or (Test-Due $t)) {
-                Invoke-Task $t -ForceCondition:$force
-            } else {
-                Write-Log "  SKIP $($t.name) -- not due (last: $($state.PSObject.Properties[$t.name].Value))"
-            }
+            if ($force -or (Test-Due $t)) { Invoke-Task $t -ForceCondition:$force }
+            else { Write-LogOnly "  SKIP $($t.name) -- not due (last: $($state.PSObject.Properties[$t.name].Value))" }
         }
     }
     if (-not $DryRun) { $state | ConvertTo-Json | Set-Content $statePath -Encoding UTF8 }
-    if (-not $Once -and -not $DryRun) { Write-Log "sleeping 60s..."; Start-Sleep -Seconds 60 }
+    if (-not $Once -and -not $DryRun) { Start-SpinnerSleep -totalSeconds 60 -taskList $taskList }
 } while (-not $Once -and -not $DryRun)
