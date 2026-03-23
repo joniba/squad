@@ -31,15 +31,26 @@ foreach ($agent in @("gandalf","aragorn","gimli","elrond","bilbo")) {
     if ($count -gt 0) { $agentCounts += "$agent`: $count" }
 }
 
+# Only notify if there's something worth reporting
+$hasContent = ($blockedList.Count -gt 0) -or (($staleList | Measure-Object).Count -gt 0) -or ($agentCounts.Count -gt 0)
+if (-not $hasContent) {
+    Write-Output "Nothing to report — skipping notification."
+    exit 0
+}
+
 # Build summary body
 $lines = @("📊 **Daily Squad Status** — $(Get-Date -Format 'yyyy-MM-dd')")
 $lines += ""
-$lines += "**Blocked Issues:** $($blockedList.Count)"
-$blockedList | ForEach-Object { $lines += "  - $_" }
-$lines += "**Stale PRs (>24h):** $(($staleList | Measure-Object).Count)"
-$staleList | ForEach-Object { $lines += "  - $_" }
-if ($agentCounts) { $lines += "**Open per agent:** $($agentCounts -join ', ')" }
+if ($blockedList.Count -gt 0) {
+    $lines += "🔴 **Blocked Issues:** $($blockedList.Count)"
+    $blockedList | ForEach-Object { $lines += "  - $_" }
+}
+if (($staleList | Measure-Object).Count -gt 0) {
+    $lines += "🟡 **Stale PRs (>24h):** $(($staleList | Measure-Object).Count)"
+    $staleList | ForEach-Object { $lines += "  - $_" }
+}
+if ($agentCounts) { $lines += "📋 **Open per agent:** $($agentCounts -join ', ')" }
 $body = $lines -join "`n"
 
 # Send via notification script
-& "$scriptDir\send-teams-notification.ps1" -Title "📊 Daily Squad Summary" -Body $body -WebhookFile $WebhookFile
+& "$scriptDir\send-teams-notification.ps1" -Title "📊 Squad Alert" -Body $body -WebhookFile $WebhookFile

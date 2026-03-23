@@ -88,3 +88,27 @@ For the daily summary specifically, use `scripts/squad-daily-summary.ps1` which 
 - Teams webhooks: max 4 req/sec, 28 KB/message.
 - WorkIQ: max 1 query per agent cycle (squad standard).
 - Daily summary: 1 notification/day to avoid fatigue.
+
+## Notification Criteria
+
+Only send notifications when there is actionable information. **Never send empty updates.**
+
+### Always Notify
+| Condition | Why |
+|-----------|-----|
+| Blocked issues (>0) | Something is stuck, needs attention |
+| Stale PRs (no update >24h) | Work is languishing |
+| CRI detected (new, unacknowledged) | Customer impact |
+| Sev2 incident (new or unmitigated) | Urgent livesite |
+| Design review awaiting approval (>24h) | Blocking downstream work |
+| Agent failed repeatedly (3+ failures) | System health |
+
+### Never Notify
+| Condition | Why |
+|-----------|-----|
+| Board is clear, no blocked items | Empty update = noise |
+| All PRs recently updated | Things are moving, no action needed |
+| Routine task completed | Not urgent, visible in logs |
+
+### Evolving This List
+Add new criteria to the tables above. The daily summary script checks these conditions — if none are true, it exits silently.
