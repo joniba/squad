@@ -40,3 +40,27 @@
 - `.squad/decisions/inbox/elrond-aragorn-icm-upgrade.md` — Decision memo proposing charter upgrade
 
 **Key insight:** The difference between a shallow and deep ICM investigation is not more tools — it's executing queries instead of listing them, reading TSGs instead of linking them, and forming hypotheses instead of transcribing metadata. The methodology matters more than the tool count.
+
+### 2026-03-22: Worktree lifecycle research for parallel agent execution (Issue #59)
+
+**Context:** Jonathan reported workspace corruption when 8 squad agents spawned in parallel on 2026-03-22 — despite successful PR pushes, local branches were corrupted. Investigated root cause and designed worktree-based isolation strategy.
+
+**Problem:** Squad agents spawn via `.squad/templates/squad.agent.md` (line 609+) using generic prompt that does NOT include `WORKTREE_PATH`. All agents race in same working tree executing `git checkout -b squad/{issue}-{slug}`, final tree state corrupts with stashes and uncommitted files.
+
+**Root cause:** Gap between documented strategy (squad.agent.md lines 562–600 document worktree awareness) and enforced behavior (spawn template lines 609–650 don't create worktrees).
+
+**Key findings (8 research questions answered):**
+1. **Current flow:** Coordinator → spawn prompt → agents infer branch creation, all in same tree → race condition
+2. **Minimal change:** Pre-spawn worktree creation in Coordinator; pass `TEAM_ROOT` (main checkout for `.squad/` state) and `WORKTREE_PATH` (isolated working dir) to agents
+3. **WORKTREE_PATH vs TEAM_ROOT:** Complementary paths — agents work in `WORKTREE_PATH`, read state from `TEAM_ROOT`
+4. **Cleanup lifecycle:** After PR merge (most reliable, requires GitHub Actions webhook or post-merge hook automation)
+5. **Edge cases:** Worktree collision detection, remote branch cleanup, locked worktree handling, branch switching prevention — all addressable with `--force` flags and pre-spawn cleanup
+6. **Scribe integration:** Scribe operates from `TEAM_ROOT` (main), agents write to separate inbox files (`.squad/decisions/inbox/{agent}-{slug}.md`), union merge driver handles clean merges
+7. **Existing patterns:** Squad already has infrastructure (union merge in `.gitattributes`, drop-box pattern documented, branch-per-issue naming) — just not enforced in spawn template
+8. **Platform constraints:** `git worktree add` fully supported on Windows; VS Code has native worktree UI; no path-length issues; works identically to Unix/Mac
+
+**Solution:** Implement Coordinator-managed worktrees with post-merge cleanup, main-checkout strategy for shared `.squad/` state.
+
+**Deliverable:** `docs/research/worktree-lifecycle-research.md` (42.7 KB) — comprehensive research document with implementation priorities (4 phases), edge case strategies, cleanup automation options, and Windows platform notes.
+
+**Key insight:** Squad has all the infrastructure (merge drivers, drop-box pattern, Scribe integration) but lacks enforcement in the spawn template. A minimal 2-line change to `.squad/templates/squad.agent.md` (add pre-spawn worktree creation) fixes 4+ corrupted PR incidents and branch-drift problems completely.
