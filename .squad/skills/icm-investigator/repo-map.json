@@ -1,0 +1,149 @@
+[
+  {
+    "name": "AI.Workspace",
+    "path": "C:\\dev\\ti\\AI.Workspace",
+    "defaultBranch": "main",
+    "description": "AI Workspace — cloned from WDATP/AI.Workspace",
+    "relevance": "tool"
+  },
+  {
+    "name": "Amba.SituationalAwarenessData",
+    "path": "C:\\dev\\ti\\Amba.SituationalAwarenessData",
+    "defaultBranch": "users/joniba/max-header-size",
+    "description": "Amba Situational Awareness Data service",
+    "relevance": "service"
+  },
+  {
+    "name": "Amba.TIMatching",
+    "path": "C:\\dev\\ti\\Amba.TIMatching",
+    "defaultBranch": "users/joniba/bbti-indicators-publisher-bdd",
+    "description": "Amba Threat Intelligence Matching service",
+    "relevance": "service"
+  },
+  {
+    "name": "Amba.TIMatching.Resources",
+    "path": "C:\\dev\\ti\\Amba.TIMatching.Resources",
+    "defaultBranch": "main",
+    "description": "Azure resources and infrastructure for Amba TI Matching",
+    "relevance": "service"
+  },
+  {
+    "name": "analysis-project",
+    "path": "C:\\dev\\ti\\analysis-project",
+    "defaultBranch": "main",
+    "description": "Unknown",
+    "relevance": "unknown"
+  },
+  {
+    "name": "SecEng-Augusta",
+    "path": "C:\\dev\\ti\\SecEng-Augusta",
+    "defaultBranch": "master",
+    "description": "Security Engineering Augusta project",
+    "relevance": "service"
+  },
+  {
+    "name": "SecEng-SOCML",
+    "path": "C:\\dev\\ti\\SecEng-SOCML",
+    "defaultBranch": "main",
+    "description": "SOC Machine Learning algorithms and tools",
+    "relevance": "service"
+  },
+  {
+    "name": "SecEng-SOCML-Anomalies",
+    "path": "C:\\dev\\ti\\SecEng-SOCML-Anomalies",
+    "defaultBranch": "master",
+    "description": "SOC-ML anomaly detection algorithms, libraries, and tools",
+    "relevance": "service"
+  },
+  {
+    "name": "Sentinel-Augusta",
+    "path": "C:\\dev\\ti\\Sentinel-Augusta",
+    "defaultBranch": "master",
+    "description": "Sentinel Augusta service",
+    "relevance": "service"
+  },
+  {
+    "name": "Sentinel-Common",
+    "path": "C:\\dev\\ti\\Sentinel-Common",
+    "defaultBranch": "main",
+    "description": "Sentinel common NuGet packages repository",
+    "relevance": "service"
+  },
+  {
+    "name": "Sentinel-Synthetics",
+    "path": "C:\\dev\\ti\\Sentinel-Synthetics",
+    "defaultBranch": "main",
+    "description": "Common structure and library for building team synthetics",
+    "relevance": "tool"
+  },
+  {
+    "name": "Sentinel-ThreatIntelligenceMatching",
+    "path": "C:\\dev\\ti\\Sentinel-ThreatIntelligenceMatching",
+    "defaultBranch": "master",
+    "description": "Sentinel Threat Intelligence Matching service",
+    "relevance": "service"
+  },
+  {
+    "name": "Sentinel-TiActionPipeline",
+    "path": "C:\\dev\\ti\\Sentinel-TiActionPipeline",
+    "defaultBranch": "users/joniba/fix-delete-release-pipeline4",
+    "description": "Sentinel TI Action Pipeline — processes TI actions",
+    "relevance": "service"
+  },
+  {
+    "name": "Sentinel-TiAITools",
+    "path": "C:\\dev\\ti\\Sentinel-TiAITools",
+    "defaultBranch": "users/joniba/cg-mcp",
+    "description": "MCP servers for Azure Data Explorer (Kusto) and other AI tools",
+    "relevance": "tool"
+  },
+  {
+    "name": "Sentinel-TiAutomation",
+    "path": "C:\\dev\\ti\\Sentinel-TiAutomation",
+    "defaultBranch": "main",
+    "description": "Sentinel TI Automation service",
+    "relevance": "service"
+  },
+  {
+    "name": "Sentinel-TiCommon",
+    "path": "C:\\dev\\ti\\Sentinel-TiCommon",
+    "defaultBranch": "users/joniba/ai-workspace-docs",
+    "description": "Sentinel TI Common shared libraries and documentation",
+    "relevance": "service"
+  },
+  {
+    "name": "Sentinel-TiIngestion",
+    "path": "C:\\dev\\ti\\Sentinel-TiIngestion",
+    "defaultBranch": "main",
+    "description": "Sentinel TI Ingestion pipeline service",
+    "relevance": "service"
+  },
+  {
+    "name": "Sentinel-TiPipeline",
+    "path": "C:\\dev\\ti\\Sentinel-TiPipeline",
+    "defaultBranch": "users/joniba/aspire-bdd",
+    "description": "Customer Threat Intelligence Pipeline — code, tests, and deployment scripts",
+    "relevance": "service"
+  },
+  {
+    "name": "Sentinel-TiPublishers",
+    "path": "C:\\dev\\ti\\Sentinel-TiPublishers",
+    "defaultBranch": "main",
+    "description": "Sentinel TI Publishers service",
+    "relevance": "service"
+  },
+  {
+    "name": "Sentinel-TiSharedInfra-Resources",
+    "path": "C:\\dev\\ti\\Sentinel-TiSharedInfra-Resources",
+    "defaultBranch": "main",
+    "description": "Azure resource definitions for Sentinel TI shared infrastructure",
+    "relevance": "service"
+  },
+  {
+    "name": "Sentinel-Watchlist",
+    "path": "C:\\dev\\ti\\Sentinel-Watchlist",
+    "defaultBranch": "develop",
+    "description": "Sentinel Watchlist service",
+    "relevance": "service"
+  }
+]

@@ -75,6 +75,14 @@ Every ICM investigation MUST follow this sequence:
 - [ ] Assign **confidence level** (LOW/MEDIUM/HIGH)
 - [ ] Document the **deduction process** — show reasoning, not just conclusions
 
+#### Stage 3b: Source Code Research (When RCA Points to Code)
+- [ ] Read `.squad/skills/icm-investigator/repo-map.json` to identify which repo contains the affected service
+- [ ] After forming RCA hypothesis, search service repos for the affected component (function names, class names, API endpoints from ICM)
+- [ ] Use `grep`/`glob` to find relevant files in repos under `C:\dev\ti`
+- [ ] Read key files with `view` to confirm or refute the hypothesis
+- [ ] Include **file paths and code snippets** in the report as evidence
+- [ ] Check git log for recent changes to affected files that may correlate with the incident
+
 #### Stage 4: Remediation
 - [ ] **Immediate mitigations** (< 1 hour) — stop active impact
 - [ ] **Short-term fixes** (1–3 days) — address direct cause

@@ -147,6 +147,47 @@ This answers: "Is the issue still happening? When did it start? Is it recovering
 
 ---
 
+### Stage 3b: Source Code Research (When RCA Points to a Code Issue)
+
+**Goal:** Confirm or refute the RCA hypothesis by searching the team's service repositories for the affected component.
+
+#### Process:
+
+1. **Read the repo map** — load `.squad/skills/icm-investigator/repo-map.json` to identify which repos are relevant to the affected service or component.
+2. **Identify search targets** — extract function names, class names, API endpoint paths, error strings, or config keys from the ICM data, Kusto results, or TSG content.
+3. **Search repos with grep/glob** — use the `grep` and `glob` tools to find matching files across the relevant repo paths listed in `repo-map.json`:
+   ```
+   grep(pattern: "<error class or function name>", path: "<repo path from repo-map.json>")
+   glob(pattern: "**/*<component>*", path: "<repo path from repo-map.json>")
+   ```
+4. **Read key files** — use the `view` tool to read the matching source files. Focus on:
+   - The function or class that throws the error seen in the incident
+   - Configuration files that control the affected behavior
+   - Recent changes (check git log for the file if relevant)
+5. **Check for existing fixes** — search for branches that reference the incident or the fix:
+   ```powershell
+   git -C <repo path> branch -a --list "*<incident keyword>*"
+   git -C <repo path> log --oneline -10 -- <affected file>
+   ```
+6. **Include evidence in the report** — add file paths and code snippets to the RCA section:
+   ```
+   **Evidence**: Function `ProcessIndicator()` missing null check at line 142 | Source: Sentinel-TiPipeline/src/Pipeline/Processor.cs | Impact: high
+   ```
+
+#### When to Use:
+
+- The RCA hypothesis points to a **code bug**, **missing validation**, **config error**, or **deployment issue**
+- The ICM references a specific **API endpoint**, **function**, **pipeline step**, or **component name**
+- Kusto/Geneva data shows errors originating from a **known service** in the repo map
+
+#### When to Skip:
+
+- The issue is purely infrastructure (Azure platform outage, capacity limits)
+- The root cause is external (third-party dependency, network issue)
+- No repos in the map are relevant to the affected service
+
+---
+
 ### Stage 4: Remediation
 
 **Goal:** Actionable fix and prevention plan.
