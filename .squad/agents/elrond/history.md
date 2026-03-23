@@ -87,3 +87,26 @@
 **Deliverable:** `docs/research/teams-notification-research.md` (25.2 KB) — synthesizes all 6 questions with concrete implementation steps, phased rollout (Phase 1: MVP daily summary; Phase 2: real-time alerts; Phase 3: Graph API alternative), EMU-specific guidance, and success criteria.
 
 **Key insight:** Real-time notifications are achievable via existing squad infrastructure (WorkIQ + webhooks) without new dependencies. The hybrid poll-based approach aligns with squad's event-driven architecture and WorkIQ's indexing characteristics. Implementation is a 4-step process; Phase 1 MVP can launch within days.
+
+### 2026-03-23: SubSquads architecture research — multi-team monorepo patterns (GitHub Issue #24)
+
+**Context:** Jonathan filed Issue #24 requesting deep research on SubSquads architecture patterns, specifically: label leakage prevention, CODEOWNERS integration, 3+ team routing patterns, failure modes, and feasibility for ms-pa adoption. Conducted comprehensive research synthesizing Tamir Dresher's blog series (Parts 0–3), web sources on label governance and monorepo scaling, and real-world case studies (Tetris experiment).
+
+**Key findings (5 research questions answered):**
+1. **Label leakage prevention:** Centralized label ownership (single team controls creation/deletion), team-prefixed labels (`team:ui`, `team:backend`), automated sync via `github-label-sync` tool, quarterly audits — prevents drift and collisions.
+2. **CODEOWNERS integration:** File-based (`/.github/CODEOWNERS`) with glob patterns → GitHub teams; hard-enforced via branch protection rules; supports multi-team ownership with spaces; stronger enforcement than folder scopes (which are advisory).
+3. **3+ team routing:** SubSquads sweet spot is 2–5 teams (minimal coordination overhead). At 4–5 teams, cross-team PRs remain manageable. Beyond 5–8 teams, coordination overhead rises sharply; dashboards and advanced tooling required; >8 teams challenging without fragmentation.
+4. **Failure modes (4 primary):** Branch conflicts in shared code (mitigate: staggered merges, explicit interfaces), label routing breakdown (mitigate: centralized governance + github-label-sync), CODEOWNERS staleness (mitigate: PR template updates + quarterly audits), branch-per-issue discipline collapse (mitigate: branch protection rules + CI/CD gates).
+5. **ms-pa feasibility:** ADOPT SubSquads. Natural domains (frontend/CLI, backend/agents, infra/CI-CD, docs/knowledge), 4–5 teams (ideal), no restructuring needed. Repository already has domain boundaries. Tetris experiment (3 teams, 2h, 9 issues, minimal conflicts) validates the pattern at scale.
+
+**Tetris Experiment Validation:** 3 teams, 2-hour sprint, 9 issues closed (3 per team), minimal merge conflicts. Proved label isolation + CODEOWNERS + branch discipline = scalable multi-team workflow. Conflicts only surface at merge time (coordinated via PR review), not during day-to-day work.
+
+**Evidence sources:**
+- Tamir Dresher's blog series (SubSquads architecture, scalability limits, CODEOWNERS patterns)
+- GitHub documentation (CODEOWNERS syntax, label governance best practices)
+- Squad infrastructure research (2–5 team sweet spot from real-world scaling)
+- Tetris experiment case study (validation of label isolation + branch discipline effectiveness)
+
+**Deliverable:** `docs/research/sub-squad-architecture-research.md` (28.1 KB) — 8-section research document with Bilbo frontmatter, Executive Summary, Context/Motivation, Methodology, SubSquads Overview, Label Leakage Prevention, CODEOWNERS Integration, Tetris Case Study, Scaling Limits/Failure Modes, ms-pa Feasibility Assessment, Decision Statement, and 2 Appendices (label spec template, CODEOWNERS templates).
+
+**Key insight:** SubSquads effectiveness depends on three complementary mechanisms: (1) centralized label governance (prevent collisions), (2) CODEOWNERS enforcement (hard-gated reviews), (3) branch-per-issue discipline (minimize conflicts). The pattern scales to 5–8 teams; beyond that, coordination overhead becomes the bottleneck. For ms-pa, adoption is low-risk: repository structure already supports it, team count is ideal, and the Tetris experiment proves the pattern works at scale.
