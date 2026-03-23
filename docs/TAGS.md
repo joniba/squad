@@ -48,6 +48,7 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 
 ## bilbo
 
+- [Notifications System Guide](guides/notifications-guide.md) — guides
 - [Unified Scheduler Guide](guides/unified-scheduler-guide.md) — guides
 - [Email Watchdog Setup Guide](guides/email-watchdog-setup.md) — guides
 - [Teams Knowledge Library Guide](guides/teams-knowledge-library-guide.md) — guides
@@ -67,6 +68,7 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 
 ## final
 
+- [Notifications System Guide](guides/notifications-guide.md) — guides
 - [Unified Scheduler Guide](guides/unified-scheduler-guide.md) — guides
 - [Email Watchdog Setup Guide](guides/email-watchdog-setup.md) — guides
 - [Teams Knowledge Library Guide](guides/teams-knowledge-library-guide.md) — guides
@@ -86,6 +88,7 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 
 ## guide
 
+- [Notifications System Guide](guides/notifications-guide.md) — guides
 - [Unified Scheduler Guide](guides/unified-scheduler-guide.md) — guides
 - [Email Watchdog Setup Guide](guides/email-watchdog-setup.md) — guides
 - [Teams Knowledge Library Guide](guides/teams-knowledge-library-guide.md) — guides
@@ -182,6 +185,7 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 
 ## squad-infra
 
+- [Notifications System Guide](guides/notifications-guide.md) — guides
 - [Unified Scheduler Guide](guides/unified-scheduler-guide.md) — guides
 - [Teams Knowledge Library Guide](guides/teams-knowledge-library-guide.md) — guides
 - [SubSquads Architecture at Scale: Multi-Team Monorepo Patterns](research/sub-squad-architecture-research.md) — research
@@ -202,6 +206,7 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 
 ## teams
 
+- [Notifications System Guide](guides/notifications-guide.md) — guides
 - [Email Watchdog Setup Guide](guides/email-watchdog-setup.md) — guides
 - [Teams Knowledge Library Guide](guides/teams-knowledge-library-guide.md) — guides
 - [Teams Channel Notifications for Squad: Research & Recommendations](research/teams-notification-research.md) — research
@@ -247,5 +252,5 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 ---
 
 **Last Updated:** 2026-03-24  
-**Unique Tags:** 37  
+**Unique Tags:** 38
 **Total Tag Assignments:** 73
