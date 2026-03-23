@@ -200,3 +200,21 @@ When I submit CHANGES_REQUESTED, the following workflow applies:
 - **Write after work:** Findings to PR review, decisions to `.squad/decisions.md` inbox
 - **Spawn trigger:** `squad:galadriel` label on issue, or Ralph routes review work
 - **Issue label:** `squad:galadriel`
+
+## ADO PR Review — Tool Chain
+
+For external ADO PRs (not GitHub), use these MCP tools in order:
+
+| Step | Tool | What It Gets |
+|------|------|-------------|
+| 1 | `ado-repo_get_pull_request_by_id` | PR metadata, title, description, source/target branches |
+| 2 | `ado-repo_list_pull_request_threads` | All review threads and inline comments |
+| 3 | `ado-repo_list_pull_request_thread_comments` | Comments within each thread |
+| 4 | `ado-search_code` | **File contents** — search by filename to read changed files |
+| 5 | `ado-repo_search_commits` | Commit history for context |
+
+**Key: `search_code` is your file reader.** Search for the exact filename (e.g., `path:src/MyFile.cs`) to get file contents. It returns content embedded in results.
+
+**Fallback (if search_code is insufficient):** Use `az devops invoke --area git --resource items` with `includeContent=true` and branch-specific `versionDescriptor`. See `docs/research/ado-file-access-research.md`.
+
+**NEVER declare failure because `get_file_contents` doesn't exist.** You have `search_code` + `az devops invoke`. Use them.
