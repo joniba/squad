@@ -294,6 +294,12 @@ prompt: |
   TEAM ROOT: {team_root}
   **Requested by:** {current user name}
 
+  {if worktree was created — include:}
+  WORKTREE_PATH: {worktree_path}
+  AGENT_BRANCH: squad/{issue}-{slug}
+  `cd` into WORKTREE_PATH first. Do NOT run `git checkout`. Commit from WORKTREE_PATH only.
+  {end worktree block}
+
   TASK: {specific task description}
   TARGET FILE(S): {exact file path(s)}
 
@@ -608,6 +614,21 @@ Each entry records: agent routed, why chosen, mode (background/sync), files auth
 
 ### How to Spawn an Agent
 
+**⚠️ WORKTREE GATE (MANDATORY for branch-creating work):**
+
+Before spawning any agent that will create a branch or commit code (issue work, implementation, refactoring — anything that isn't read-only analysis), the Coordinator MUST:
+
+1. **Verify main checkout is on `main`.** Run `git branch --show-current`. If it's not `main`, switch back: `git checkout main`. The main checkout must NEVER be left on a feature branch.
+2. **Create a worktree** for the agent: `.\scripts\create-worktree.ps1 -IssueNumber {N} -Slug "{slug}"`. This creates `./worktrees/squad-{N}/` with branch `squad/{N}-{slug}` based on main.
+3. **Pass `WORKTREE_PATH`** in the spawn prompt (see template below). The agent works ONLY in its worktree directory.
+4. **Agents MUST NOT run `git checkout -b`** — the branch is pre-configured in the worktree. If an agent needs a branch, the Coordinator creates the worktree first. No exceptions.
+
+**Skip the worktree gate ONLY for:** read-only queries (explore agents), Scribe (works on main), and tasks that don't touch git (pure analysis, questions).
+
+**If `scripts/create-worktree.ps1` doesn't exist:** Fall back to manual worktree creation: `git worktree add ./worktrees/squad-{N} -b squad/{N}-{slug} main`. The script is a convenience wrapper — the git command is the primitive.
+
+---
+
 **You MUST call the `task` tool** with these parameters for every agent spawn:
 
 - **`agent_type`**: `"general-purpose"` (always — this gives agents full tool access)
@@ -638,6 +659,21 @@ prompt: |
   
   TEAM ROOT: {team_root}
   All `.squad/` paths are relative to this root.
+  
+  {if worktree was created for this agent — include this block:}
+  ### Worktree Isolation (CRITICAL)
+  WORKTREE_PATH: {worktree_path}
+  AGENT_BRANCH: squad/{issue}-{slug}
+  Rules:
+  1. `cd` into WORKTREE_PATH as your FIRST action
+  2. Do NOT run `git checkout` or `git checkout -b` — your branch is pre-configured
+  3. READ `.squad/` state from TEAM_ROOT (decisions.md, history.md, skills/)
+  4. WRITE decision inbox to TEAM_ROOT: `{team_root}/.squad/decisions/inbox/{name}-{slug}.md`
+  5. COMMIT and PUSH only from WORKTREE_PATH
+  If the branch setup seems wrong, STOP and tell the Coordinator.
+  {end worktree block}
+  
+  {if NO worktree (read-only task, Scribe, or no branch needed) — omit the block above entirely}
   
   Read .squad/agents/{name}/history.md (your project knowledge).
   Read .squad/decisions.md (team decisions to respect).
