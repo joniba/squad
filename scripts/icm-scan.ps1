@@ -65,6 +65,6 @@ For each match: ID, severity, title, type, created date.
 If none found, say 'No matching incidents'.
 "@
 
-$result = copilot -p $prompt 2>$null
+$result = copilot -p $prompt --allow-tool='icm' 2>$null
 $matchCount = ([regex]::Matches($result, '^\s*\d+\.|\|\s*\d{5,}', 'Multiline')).Count
 Write-Host "ICM scan: $matchCount incidents matched [$Filter] in last ${SinceHours}h"
