@@ -245,3 +245,60 @@
 - Consolidated duplicate tag sections and added new investigation-specific tags
 - Verified TASK-INDEX.md discoverable via category (INDEX), tag (TAGS), and recency (RECENT)
 - Committed with Co-authored-by trailer; all work complete and verified
+
+### User-Facing Feature Documentation — Three Shipped Feature Guides (2026-03-24)
+
+**Deliverables:**
+- `docs/guides/unified-scheduler-guide.md` (9,383 chars) — User guide for unified task scheduler covering quick start (dry run, run once, daemon modes), CLI flags reference, scheduler configuration, task management, and troubleshooting
+- `docs/guides/email-watchdog-setup.md` (10,228 chars) — Complete setup guide for email watchdog (Outlook scanner) with prerequisites, quick start, CLI parameters, scheduler integration, Teams delivery, WorkIQ integration cost analysis, and troubleshooting
+- `docs/guides/teams-knowledge-library-guide.md` (11,264 chars) — User guide to Teams Knowledge Library with library structure, browsing patterns using INDEX.md/TAGS.md, document creation workflow, document status tracking, tag taxonomy reference, and cross-referencing
+- `docs/INDEX.md` (updated) — Added 3 new guide entries under Guides section (scheduler, email-watchdog, teams-knowledge-library); Guides section now has 5 total. Updated metadata: Last Updated → 2026-03-24, Total Documents → 18
+- `docs/TAGS.md` (updated) — Added entries for all three guides under 6 tags (guide, bilbo, final, squad-infra, teams, tooling, workflow). Updated metadata: Last Updated → 2026-03-24, Total Tag Assignments → 73
+- `docs/RECENT.md` (updated) — Added 3 new entries (all dated 2026-03-24) at top of list, removed oldest entry (#10 worktree-lifecycle) to maintain 10-item limit
+
+**What was documented:**
+
+*Unified Scheduler Guide:*
+- Quick Start: Dry run mode, run-once mode, daemon mode with restart behavior
+- CLI Flags: Complete reference table for all --flags (dry-run, once, help, config-path, etc.)
+- Scheduler Configuration: .squad/scheduler.json structure and task definitions
+- On-Call Setup: Integration with squad ceremonies for coverage rotation
+- Troubleshooting: 6 scenarios (tasks not running, daemon crashes, wrong output, performance, logs, recovery)
+
+*Email Watchdog Setup Guide:*
+- Prerequisites: Outlook OAuth setup, Teams webhook registration, Kusto access prerequisites
+- Quick Start: Single-command setup for first run with expected output
+- CLI Parameters: Complete reference for all parameters (outlook-folders, teams-webhook, categories, etc.)
+- Scheduler Integration: How to configure watchdog in .squad/scheduler.json for recurring runs
+- Output Categories: Examples of Decisions, Action Items, Updates, Risks parsed from email
+- WorkIQ Integration: Usage patterns, cost analysis (token budgeting), query patterns
+- Troubleshooting: 7 scenarios (auth failures, empty results, Teams delivery issues, WorkIQ errors, etc.)
+
+*Teams Knowledge Library Guide:*
+- Library Purpose: Feed-driven repository for decisions, action items, context, thematic insights
+- Structure: decisions/, action-items/, context/, themes/ folders with naming conventions (YYYY-MM-DD-slug)
+- Browsing Patterns: Using INDEX.md for category discovery, TAGS.md for tag-based lookup, RECENT.md for timeline view
+- Document Creation: Manual document creation workflow with template frontmatter
+- Document Status Tracking: How status field (active/archived/deprecated) controls discoverability
+- Tag Taxonomy: Domain tags (teams, azure, tooling, architecture, etc.), project tags, type tags, status tags
+- Cross-Referencing: How related_docs field creates discoverable connections
+
+**Key design choices:**
+1. **Consistent format across all three guides:** Quick start section for immediate usefulness, CLI/parameter reference for completeness, practical examples from actual workflows, troubleshooting sections addressing common issues, related documentation cross-references
+2. **Production-ready documentation:** Each guide source-read from actual implementation (scheduler.json, .squad/skills/, email-watchdog scripts) to ensure technical accuracy
+3. **Proper frontmatter & tagging:** All guides include YAML frontmatter with author (gimli for scheduler/watchdog features, bilbo for knowledge library), documentarian (bilbo), category (guide), tags (guide + domain-specific tags), status (final)
+4. **Complete indexing:** Updated all three index files (INDEX.md, TAGS.md, RECENT.md) per knowledge-management/SKILL.md specification; guides now discoverable via category browsing, tag searching, and recent activity feed
+5. **User-centric structure:** Each guide answers "What does this do?" (purpose), "How do I set it up?" (prerequisites + quick start), "What are all the options?" (CLI reference), "How do I troubleshoot?" (common issues + solutions)
+
+**File references:**
+- **Guides:** C:\dev\personal\pa-squad\docs\guides\unified-scheduler-guide.md, email-watchdog-setup.md, teams-knowledge-library-guide.md (30,875 chars total)
+- **Indexes:** docs/INDEX.md (Guides section + metadata), docs/TAGS.md (6 updated tags + metadata), docs/RECENT.md (top 3 entries, 10-item limit maintained)
+- **Commit:** cb92384 (6 files changed: 3 guides created, 3 indexes updated)
+
+**Process notes:**
+- Read source implementation files (scheduler.ps1, scheduler.json, email-watchdog production/POC scripts, teams-knowledge SKILL.md) to extract accurate technical details
+- Structured each guide with consistent pattern: Purpose → Quick Start → Parameter Reference → Configuration → Examples → Troubleshooting → Related Docs
+- Applied tagging taxonomy consistently: type:guide + domain tags (squad-infra, teams, tooling, workflow) + agent tags (bilbo) + status (final)
+- Updated all three index files to maintain discovery surfaces: INDEX.md (category browsing), TAGS.md (tag search), RECENT.md (timeline view)
+- Verified all frontmatter properly formatted for system parsing; all guides include related_docs cross-references for discoverability
+- No blockers; all documentation complete, indexed, and committed to main branch
