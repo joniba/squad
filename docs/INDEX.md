@@ -12,9 +12,14 @@ Master index organized by the 8-category knowledge management system. Documents 
 
 | Document | Date | Tags | Status |
 |----------|------|------|--------|
+| [Investigations Task Index](investigations/TASK-INDEX.md) | 2026-03-23 | index, task-tracking, priority, investigations | active |
+| [Investigation Report: ICM 766712513 (v2) — ARM Watchlist API Error Rate Analysis](investigations/icm-766712513-v2-report.md) | 2026-03-23 | investigation-method, icm, livesite, azure, operational | final |
+| [ICM 51000000954460 — Revoked TI Indicators Still Triggering Alerts](investigations/icm-51000000954460-investigation.md) | 2026-03-22 | icm, sentinel, threat-intelligence, analytic-rule, cri | active |
+| [ICM 51000000943039 — Threat Intelligence Upload STIX/HTTPS Pattern Type Mismatch](investigations/icm-51000000943039-investigation.md) | 2026-03-27 | icm, threat-intelligence, sentinel, stix, upload-api, cri | active |
+| [ICM 21000000951041 — Azure Government Sentinel TI TAXII Ingestion Shortfall](investigations/icm-21000000951041-investigation.md) | 2026-03-17 | icm, sentinel, taxii, threat-intelligence, azure-government, cri | active |
+| [ICM 21000000917983 — Deleted Watchlist Items Still Appear in _GetWatchlist](investigations/icm-21000000917983-investigation.md) | 2026-02-25 | sentinel, watchlist, log-analytics, stale-data, customer-reported, cri | active |
 | [Investigation Report — ICM #766712513 (Full Report)](investigations/icm-766712513-full-report.md) | 2026-03-22 | investigation-method, icm, livesite, arm, sentinel, auto-export | final |
 | [ICM 766712513 — Investigation Summary](investigations/icm-766712513-summary.md) | 2026-03-22 | investigation-method, icm, livesite, arm, sentinel | final |
-| [Investigation Report: ICM 766712513 (v2) — ARM Watchlist API Error Rate Analysis](investigations/icm-766712513-v2-report.md) | 2026-03-23 | investigation-method, icm, livesite, azure, operational | final |
 | [Aragorn ICM Investigation — Capability Upgrade Analysis](investigations/aragorn-icm-capability-upgrade.md) | 2026-03-22 | investigation-method, icm, architecture, aragorn, agent-capability | final |
 | [ICM 764634026 — MSPKI G1→G2 Root CA Migration Resolution Walkthrough](icm-764634026-resolution.md) | 2026-03-22 | investigation-method, icm, security, livesite, operational | final |
 
@@ -60,5 +65,5 @@ Master index organized by the 8-category knowledge management system. Documents 
 ---
 
 **Last Updated:** 2026-03-23  
-**Total Documents:** 11  
-**Categories Populated:** 3 / 8
+**Total Documents:** 15  
+**Categories Populated:** 4 / 8

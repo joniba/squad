@@ -31,6 +31,8 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 
 - [Investigation Report — ICM #766712513 (Full Report)](investigations/icm-766712513-full-report.md) — investigations
 - [ICM 766712513 — Investigation Summary](investigations/icm-766712513-summary.md) — investigations
+- [Investigation Report: ICM 766712513 (v2) — ARM Watchlist API Error Rate Analysis](investigations/icm-766712513-v2-report.md) — investigations
+- [Aragorn ICM Investigation — Capability Upgrade Analysis](investigations/aragorn-icm-capability-upgrade.md) — investigations
 
 ## auto-export
 
@@ -40,14 +42,25 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 
 - [Investigation Report: ICM 766712513 (v2) — ARM Watchlist API Error Rate Analysis](investigations/icm-766712513-v2-report.md) — investigations
 
+## azure-government
+
+- [ICM 21000000951041 — Azure Government Sentinel TI TAXII Ingestion Shortfall](investigations/icm-21000000951041-investigation.md) — investigations
+
 ## bilbo
 
 - [Squad Template Role Mapping & Customization Guide](guides/squad-template-role-mapping.md) — guides
 - [Squad Template Patterns & Design Principles](guides/squad-template-patterns.md) — guides
 
-## catalog
+## cri
 
-- [Squad Skills Catalog — tamirdresher/squad-skills](catalogs/squad-skills-catalog.md) — catalogs
+- [ICM 51000000954460 — Revoked TI Indicators Still Triggering Alerts](investigations/icm-51000000954460-investigation.md) — investigations
+- [ICM 51000000943039 — Threat Intelligence Upload STIX/HTTPS Pattern Type Mismatch](investigations/icm-51000000943039-investigation.md) — investigations
+- [ICM 21000000951041 — Azure Government Sentinel TI TAXII Ingestion Shortfall](investigations/icm-21000000951041-investigation.md) — investigations
+- [ICM 21000000917983 — Deleted Watchlist Items Still Appear in _GetWatchlist](investigations/icm-21000000917983-investigation.md) — investigations
+
+## customer-reported
+
+- [ICM 21000000917983 — Deleted Watchlist Items Still Appear in _GetWatchlist](investigations/icm-21000000917983-investigation.md) — investigations
 
 ## final
 
@@ -84,14 +97,14 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 - [Investigation Report: ICM 766712513 (v2) — ARM Watchlist API Error Rate Analysis](investigations/icm-766712513-v2-report.md) — investigations
 - [Aragorn ICM Investigation — Capability Upgrade Analysis](investigations/aragorn-icm-capability-upgrade.md) — investigations
 - [ICM 764634026 — MSPKI G1→G2 Root CA Migration Resolution Walkthrough](icm-764634026-resolution.md) — investigations
+- [ICM 51000000954460 — Revoked TI Indicators Still Triggering Alerts](investigations/icm-51000000954460-investigation.md) — investigations
+- [ICM 51000000943039 — Threat Intelligence Upload STIX/HTTPS Pattern Type Mismatch](investigations/icm-51000000943039-investigation.md) — investigations
+- [ICM 21000000951041 — Azure Government Sentinel TI TAXII Ingestion Shortfall](investigations/icm-21000000951041-investigation.md) — investigations
+- [ICM 21000000917983 — Deleted Watchlist Items Still Appear in _GetWatchlist](investigations/icm-21000000917983-investigation.md) — investigations
 
-## investigation-method
+## index
 
-- [Investigation Report — ICM #766712513 (Full Report)](investigations/icm-766712513-full-report.md) — investigations
-- [ICM 766712513 — Investigation Summary](investigations/icm-766712513-summary.md) — investigations
-- [Investigation Report: ICM 766712513 (v2) — ARM Watchlist API Error Rate Analysis](investigations/icm-766712513-v2-report.md) — investigations
-- [Aragorn ICM Investigation — Capability Upgrade Analysis](investigations/aragorn-icm-capability-upgrade.md) — investigations
-- [ICM 764634026 — MSPKI G1→G2 Root CA Migration Resolution Walkthrough](icm-764634026-resolution.md) — investigations
+- [Investigations Task Index](investigations/TASK-INDEX.md) — investigations
 
 ## livesite
 
@@ -104,6 +117,10 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 
 - [Investigation Report: ICM 766712513 (v2) — ARM Watchlist API Error Rate Analysis](investigations/icm-766712513-v2-report.md) — investigations
 - [ICM 764634026 — MSPKI G1→G2 Root CA Migration Resolution Walkthrough](icm-764634026-resolution.md) — investigations
+
+## priority
+
+- [Investigations Task Index](investigations/TASK-INDEX.md) — investigations
 
 ## parallel-execution
 
@@ -120,6 +137,11 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 - [Tamir Dresher's Git Worktrees Article: Comprehensive Analysis](research/worktrees/worktree-article-analysis.md) — research
 - [Teams Channel Notifications for Squad: Research & Recommendations](research/teams-notification-research.md) — research
 
+## s500
+
+- [ICM 51000000954460 — Revoked TI Indicators Still Triggering Alerts](investigations/icm-51000000954460-investigation.md) — investigations
+- [ICM 51000000943039 — Threat Intelligence Upload STIX/HTTPS Pattern Type Mismatch](investigations/icm-51000000943039-investigation.md) — investigations
+
 ## security
 
 - [ICM 764634026 — MSPKI G1→G2 Root CA Migration Resolution Walkthrough](icm-764634026-resolution.md) — investigations
@@ -128,11 +150,23 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 
 - [Investigation Report — ICM #766712513 (Full Report)](investigations/icm-766712513-full-report.md) — investigations
 - [ICM 766712513 — Investigation Summary](investigations/icm-766712513-summary.md) — investigations
+- [ICM 51000000954460 — Revoked TI Indicators Still Triggering Alerts](investigations/icm-51000000954460-investigation.md) — investigations
+- [ICM 51000000943039 — Threat Intelligence Upload STIX/HTTPS Pattern Type Mismatch](investigations/icm-51000000943039-investigation.md) — investigations
+- [ICM 21000000951041 — Azure Government Sentinel TI TAXII Ingestion Shortfall](investigations/icm-21000000951041-investigation.md) — investigations
+- [ICM 21000000917983 — Deleted Watchlist Items Still Appear in _GetWatchlist](investigations/icm-21000000917983-investigation.md) — investigations
 
 ## skills
 
 - [Squad Skills Catalog — tamirdresher/squad-skills](catalogs/squad-skills-catalog.md) — catalogs
 
+## stale-data
+
+- [ICM 21000000917983 — Deleted Watchlist Items Still Appear in _GetWatchlist](investigations/icm-21000000917983-investigation.md) — investigations
+
+## stix
+
+- [ICM 51000000943039 — Threat Intelligence Upload STIX/HTTPS Pattern Type Mismatch](investigations/icm-51000000943039-investigation.md) — investigations
+
 ## squad-infra
 
 - [SubSquads Architecture at Scale: Multi-Team Monorepo Patterns](research/sub-squad-architecture-research.md) — research
@@ -140,41 +174,48 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 - [Worktree Lifecycle for Parallel Agent Execution — Comprehensive Research](research/worktrees/worktree-lifecycle-research.md) — research
 - [Squad Skills Catalog — tamirdresher/squad-skills](catalogs/squad-skills-catalog.md) — catalogs
 - [Teams Channel Notifications for Squad: Research & Recommendations](research/teams-notification-research.md) — research
-
-## squad-infra
-
 - [Squad Template Role Mapping & Customization Guide](guides/squad-template-role-mapping.md) — guides
 - [Squad Template Patterns & Design Principles](guides/squad-template-patterns.md) — guides
-- [SubSquads Architecture at Scale: Multi-Team Monorepo Patterns](research/sub-squad-architecture-research.md) — research
-- [Research Report: Tamir's Worktree/Parallelism Insights & Squad's Gap](research/worktrees/worktree-parallelism-research.md) — research
-- [Worktree Lifecycle for Parallel Agent Execution — Comprehensive Research](research/worktrees/worktree-lifecycle-research.md) — research
-- [Squad Skills Catalog — tamirdresher/squad-skills](catalogs/squad-skills-catalog.md) — catalogs
-- [Teams Channel Notifications for Squad: Research & Recommendations](research/teams-notification-research.md) — research
+
+## task-tracking
+
+- [Investigations Task Index](investigations/TASK-INDEX.md) — investigations
+
+## taxii
+
+- [ICM 21000000951041 — Azure Government Sentinel TI TAXII Ingestion Shortfall](investigations/icm-21000000951041-investigation.md) — investigations
 
 ## teams
 
 - [Teams Channel Notifications for Squad: Research & Recommendations](research/teams-notification-research.md) — research
+
+## threat-intelligence
+
+- [ICM 51000000954460 — Revoked TI Indicators Still Triggering Alerts](investigations/icm-51000000954460-investigation.md) — investigations
+- [ICM 51000000943039 — Threat Intelligence Upload STIX/HTTPS Pattern Type Mismatch](investigations/icm-51000000943039-investigation.md) — investigations
+- [ICM 21000000951041 — Azure Government Sentinel TI TAXII Ingestion Shortfall](investigations/icm-21000000951041-investigation.md) — investigations
 
 ## tooling
 
 - [Squad Skills Catalog — tamirdresher/squad-skills](catalogs/squad-skills-catalog.md) — catalogs
 - [Teams Channel Notifications for Squad: Research & Recommendations](research/teams-notification-research.md) — research
 
+## upload-api
+
+- [ICM 51000000943039 — Threat Intelligence Upload STIX/HTTPS Pattern Type Mismatch](investigations/icm-51000000943039-investigation.md) — investigations
+
+## watchlist
+
+- [ICM 21000000917983 — Deleted Watchlist Items Still Appear in _GetWatchlist](investigations/icm-21000000917983-investigation.md) — investigations
+
 ## workflow
 
 - [SubSquads Architecture at Scale: Multi-Team Monorepo Patterns](research/sub-squad-architecture-research.md) — research
 - [Research Report: Tamir's Worktree/Parallelism Insights & Squad's Gap](research/worktrees/worktree-parallelism-research.md) — research
 - [Tamir Dresher's Git Worktrees Article: Comprehensive Analysis](research/worktrees/worktree-article-analysis.md) — research
 - [Teams Channel Notifications for Squad: Research & Recommendations](research/teams-notification-research.md) — research
-
-## workflow
-
 - [Squad Template Role Mapping & Customization Guide](guides/squad-template-role-mapping.md) — guides
 - [Squad Template Patterns & Design Principles](guides/squad-template-patterns.md) — guides
-- [SubSquads Architecture at Scale: Multi-Team Monorepo Patterns](research/sub-squad-architecture-research.md) — research
-- [Research Report: Tamir's Worktree/Parallelism Insights & Squad's Gap](research/worktrees/worktree-parallelism-research.md) — research
-- [Tamir Dresher's Git Worktrees Article: Comprehensive Analysis](research/worktrees/worktree-article-analysis.md) — research
-- [Teams Channel Notifications for Squad: Research & Recommendations](research/teams-notification-research.md) — research
 
 ## worktree
 
@@ -185,5 +226,5 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 ---
 
 **Last Updated:** 2026-03-23  
-**Unique Tags:** 26  
-**Total Tag Assignments:** 46
+**Unique Tags:** 36  
+**Total Tag Assignments:** 64
