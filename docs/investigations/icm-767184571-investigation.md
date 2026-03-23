@@ -12,6 +12,7 @@ tags:
   - recurrence
   - arm-throttling
 status: final
+updated: 2026-03-23 (v2 — corrected customer impact, added subscription throttling walkthrough)
 ---
 
 # Investigation Report: ICM 767184571
@@ -19,7 +20,7 @@ status: final
 **Title:** ARM has detected that customers making requests to [MICROSOFT.SECURITYINSIGHTS/WATCHLISTS] (on endpoint prd-weu-402.sentinel.microsoft.com and possibly others) through [ARM] are experiencing increased error rates
 
 **Investigator:** Aragorn (Operator) · **Requested by:** Jonathan
-**Date:** 2026-03-23 · **Version:** 1
+**Date:** 2026-03-23 · **Version:** 2 (corrected customer impact assessment)
 
 | Field | Value |
 |-------|-------|
@@ -43,7 +44,7 @@ status: final
 
 ## TL;DR
 
-> **True Positive — Confirmed recurrence of ICM 766712513.** This is the 6th+ occurrence of the identical ARM→RP timeout pattern on the `prd-weu-402` Watchlist endpoint in March 2026. Same endpoint, same resource type, same alert source, same Sev2. The root cause is unchanged: a noisy tenant's automated request flood saturates ARM-to-RP connections, producing httpStatusCode=0 timeouts that ARM counts as failures. The RP itself is healthy (99.94–99.97% success rate per previous investigation). Zero formal customer impact. **This is noise until per-tenant rate limiting is implemented.** ICM's own mitigation hints reference 766712513 directly.
+> **True Positive — Confirmed recurrence of ICM 766712513.** This is the 6th+ occurrence of the identical ARM→RP timeout pattern on the `prd-weu-402` Watchlist endpoint in March 2026. Same endpoint, same resource type, same alert source, same Sev2. The root cause is unchanged: a noisy tenant's automated request flood saturates ARM-to-RP connections, producing httpStatusCode=0 timeouts that ARM counts as failures. The RP itself is healthy (99.94–99.97% success rate per previous investigation). **Customer impact exists but is unquantified** — the noisy tenant receives errors, and co-located tenants on prd-weu-402 experience degraded service during saturation windows. No customers filed support requests. **This recurs until per-tenant rate limiting is implemented.** ICM's own mitigation hints reference 766712513 directly.
 
 ---
 
@@ -53,16 +54,30 @@ status: final
 
 **Reasoning:** The ARM monitor correctly detected a real API success rate drop, but the root cause is exogenous to the RP — a single tenant's request flood exhausting ARM-to-RP connections. This is identical to ICM 766712513 (investigated in detail on 2026-03-22/23) and at least 4 other prior incidents on the same endpoint.
 
-**Customer Impact: NO (formal) / MINIMAL (informal)**
-- Zero support requests (0 SRs)
-- Zero CritSits
-- Zero formally impacted subscriptions
-- Zero impacted services/regions/clouds in ICM
-- Informal: Other tenants hitting WEU-402 during spikes may experience transient Watchlist API latency
+**Customer Impact: YES (real but unquantified) — corrected from v1 assessment**
+
+> ⚠️ **v2 Correction:** The v1 report stated "zero customer impact." Jonathan challenged this, and upon re-examination, the evidence does NOT support a blanket "zero impact" claim. Here's the honest assessment:
+
+**Who is impacted:**
+
+1. **The noisy tenant itself (subscription `7d28c677-...`)** — They are a customer and they ARE receiving errors. The prior investigation confirmed all 46 RP-side HTTP 500s came from this subscription. Their automated retry loops generate errors that compound the problem. They are experiencing degraded service of their own making, but they're still a customer experiencing errors.
+
+2. **Other tenants co-located on prd-weu-402** — When the noisy tenant saturates ARM→RP connections, ALL requests routed through that endpoint compete for the same connection pool. ARM reported a 73.63% success rate while the RP saw 99.97% — meaning ~26% of all ARM requests (not just the noisy tenant's) timed out at the TCP layer. Other tenants' Watchlist API calls during these windows would experience elevated latency or outright timeouts.
+
+3. **The ICM title itself states it:** "customers making requests to [MICROSOFT.SECURITYINSIGHTS/WATCHLISTS]... are experiencing increased error rates" — ARM is saying customers (plural) are impacted.
+
+**What the formal ICM metrics show (and why they're misleading):**
+- Zero support requests (0 SRs) — customers didn't file tickets, but absence of SRs ≠ absence of impact
+- Zero CritSits — no critical escalation
+- Zero formally impacted subscriptions — ICM doesn't auto-detect co-located subscription impact
+- `isCustomerImpacting: false` — this was set by the on-call, not measured
+- `isNoise: false` — ICM doesn't classify it as noise either
+
+**Bottom line:** Real customers are affected. The noisy tenant gets errors. Co-located tenants experience collateral degradation. We just don't know how many co-located tenants or how severe their experience was, because we haven't queried ARM logs by subscription to find out. The "zero impact" framing was wrong — the correct framing is: **real impact, unquantified scope, no customer escalations.**
 
 **Severity Assessment:**
 - **Reported:** Sev 2
-- **Assessed:** Sev 2 is technically correct per ARM monitor rules, but the recurring, self-resolving, zero-customer-impact nature means this is **operationally a Sev 3/4 noise pattern**. Should be suppressed or auto-resolved.
+- **Assessed:** Sev 2 is correct. While recurring and self-resolving, this incident causes real (if unquantified) customer impact to co-located tenants. The lack of support tickets doesn't mean the impact isn't real — it means customers either tolerate transient failures or don't know to report them. The systemic fix (per-tenant throttling) should be treated with Sev 2 urgency.
 
 ---
 
@@ -80,9 +95,9 @@ status: final
 
 **Evidence:** Similar incident search returned: ICM 598566983 (Feb 2025, Sev2, THREATINTELLIGENCE, resolved — Cosmos outage), ICM 599126313 (Feb 2025, Sev2, THREATINTELLIGENCE, resolved — errors stopped). Mitigation hints additionally reference: ICM 757455363 (Mar 2026, WATCHLISTS, self-resolved), ICM 698715041 (prd-weu-402, THREATINTELLIGENCE), ICM 718932939 (prd-weu-402, THREATINTELLIGENCE), ICM 699318024 (prd-eus-402, ENRICHMENT). | Source: `icm-get_similar_incidents` + `icm-get_mitigation_hints` | Impact: high
 
-### E4: Zero Formal Customer Impact
+### E4: ICM Formal Customer Impact Metrics (Misleading)
 
-**Evidence:** 0 SRs, 0 CritSits, 0 impacted subscriptions, 0 impacted services/regions/clouds. `isCustomerImpacting: false`, `isNoise: false`, `isSupportEngagement: false`. | Source: `icm-get_incident_customer_impact` + `icm-get_support_requests_crisit` | Impact: low
+**Evidence:** 0 SRs, 0 CritSits, 0 impacted subscriptions, 0 impacted services/regions/clouds. `isCustomerImpacting: false`, `isNoise: false`, `isSupportEngagement: false`. However, these formal metrics only reflect whether customers filed support requests or whether the on-call explicitly flagged impact — they do NOT measure whether co-located tenants on prd-weu-402 experienced degraded service. The ARM success rate dropping to 73.63% means requests from ALL subscriptions on that endpoint were affected, not just the noisy tenant's. | Source: `icm-get_incident_customer_impact` + `icm-get_support_requests_crisit` (re-verified 2026-03-23) | Impact: **reassessed from LOW to MEDIUM**
 
 ### E5: Prior Investigation RCA (from ICM 766712513 v2 Report)
 
@@ -350,35 +365,297 @@ Given the recurring prd-weu-402 Watchlist timeout pattern, here is the prioritiz
 
 ---
 
+## Subscription Throttling & Blocking Walkthrough
+
+> **Added in v2** per Jonathan's request. This section provides actionable steps to identify, throttle, and block the offending subscription.
+
+### Step A: Identify the Offending Subscription
+
+The prior investigation (ICM 766712513) identified subscription `7d28c677-88e0-4011-b860-dd6b0206eb23` (workspace: `learningenv-sentinel`). To confirm it's the same subscription in this recurrence — or find a different one:
+
+#### Kusto Query: ARM-Side (Find top subscriptions by error count)
+
+Run this against the ARM Kusto cluster that logs requests for `Microsoft.SecurityInsights`:
+
+```kusto
+// ARM-side: Identify subscriptions generating the most failures on prd-weu-402
+ArmRequests
+| where timestamp between (datetime(2026-03-23T19:00:00Z) .. datetime(2026-03-23T21:00:00Z))
+| where resourceProvider =~ "Microsoft.SecurityInsights"
+| where resourceType =~ "watchlists" or resourceType =~ "watchlists/watchlistItems"
+| where targetEndpoint contains "prd-weu-402"
+| where httpStatusCode == 0 or httpStatusCode >= 400
+| summarize
+    ErrorCount = count(),
+    DistinctOperations = dcount(operationName),
+    SampleErrors = take_any(httpStatusCode, 5)
+    by subscriptionId
+| order by ErrorCount desc
+| take 20
+```
+
+#### Kusto Query: RP-Side (Find top subscriptions by request volume)
+
+Run this against the SecurityInsights RP logs:
+
+```kusto
+// RP-side: Find which subscriptions are generating the most requests
+SentinelApiRequests
+| where timestamp between (datetime(2026-03-23T19:00:00Z) .. datetime(2026-03-23T21:00:00Z))
+| where operationName has "watchlist"
+| where serverHost contains "prd-weu-402"
+| summarize
+    TotalRequests = count(),
+    FailedRequests = countif(httpStatusCode >= 400),
+    FailRate = round(100.0 * countif(httpStatusCode >= 400) / count(), 2)
+    by subscriptionId
+| order by TotalRequests desc
+| take 20
+```
+
+> **Note:** Table and column names may vary by your RP's logging schema. Check your RP's Kusto database for the actual table names (e.g., `ApiRequests`, `IncomingRequests`, `SentinelServiceRequests`, etc.).
+
+#### Alternative: Azure Monitor / Activity Log
+
+```powershell
+# Check Azure Activity Log for high-volume subscriptions
+Get-AzLog -ResourceProvider "Microsoft.SecurityInsights" `
+    -StartTime "2026-03-23T19:00:00Z" `
+    -EndTime "2026-03-23T21:00:00Z" `
+    -Status "Failed" |
+    Group-Object -Property SubscriptionId |
+    Sort-Object -Property Count -Descending |
+    Select-Object -First 10 Name, Count
+```
+
+### Step B: Throttle the Subscription via ARM Manifest (ProviderHub)
+
+ARM provides **per-resource-type throttling rules** configured through ProviderHub. These apply to ALL subscriptions equally (not per-subscription targeting), but they protect the RP from any single subscription's flood.
+
+#### B1: Check current throttling rules
+
+```powershell
+# Install the ProviderHub module if needed
+Install-Module -Name Az.ProviderHub -Force -AllowClobber
+
+# Get current resource type registration for Watchlists
+Get-AzProviderHubResourceTypeRegistration `
+    -ProviderNamespace "Microsoft.SecurityInsights" `
+    -ResourceType "watchlists" |
+    Select-Object -ExpandProperty ThrottlingRule |
+    Format-List
+```
+
+If this returns empty, no throttling rules are configured — which means ARM's default global limits apply (250 reads/sec, 200 writes/sec per subscription per service principal).
+
+#### B2: Add throttling rules via ProviderHub
+
+```powershell
+# Define throttling rules for Watchlist operations
+# These use the token bucket algorithm — "bucketSize" controls burst capacity
+
+$throttlingRules = @(
+    @{
+        Action = "Microsoft.SecurityInsights/watchlists/write"
+        Metric = @(
+            @{
+                Type = "NumberOfRequests"
+                Limit = 50  # max 50 write requests per interval
+                Interval = "PT1M"  # per minute
+            }
+        )
+    },
+    @{
+        Action = "Microsoft.SecurityInsights/watchlists/read"
+        Metric = @(
+            @{
+                Type = "NumberOfRequests"
+                Limit = 200  # max 200 read requests per interval
+                Interval = "PT1M"
+            }
+        )
+    },
+    @{
+        Action = "Microsoft.SecurityInsights/watchlists/watchlistItems/write"
+        Metric = @(
+            @{
+                Type = "NumberOfRequests"
+                Limit = 100  # max 100 watchlist item writes per interval
+                Interval = "PT1M"
+            }
+        )
+    }
+)
+
+# Apply the throttling rules
+Update-AzProviderHubResourceTypeRegistration `
+    -ProviderNamespace "Microsoft.SecurityInsights" `
+    -ResourceType "watchlists" `
+    -ThrottlingRule $throttlingRules
+```
+
+> **⚠️ Important:** This applies to ALL subscriptions, not just the offending one. Set limits that protect the RP without breaking legitimate high-volume customers. Test in canary/pilot first.
+
+#### B3: Verify throttling is active
+
+After deployment, the offending subscription will receive HTTP 429 (Too Many Requests) responses with a `Retry-After` header when they exceed the limits. Monitor:
+
+```powershell
+# Check for 429 responses in ARM logs after throttling rules are deployed
+# (Kusto query against ARM request logs)
+```
+
+```kusto
+ArmRequests
+| where timestamp > ago(1h)
+| where resourceProvider =~ "Microsoft.SecurityInsights"
+| where resourceType =~ "watchlists"
+| where httpStatusCode == 429
+| summarize ThrottledCount = count() by subscriptionId
+| order by ThrottledCount desc
+```
+
+### Step C: Block a Specific Subscription (If Throttling Isn't Enough)
+
+If the subscription continues causing problems even with throttling rules, there are several escalation options:
+
+#### C1: RP-Side Subscription Block (Fastest — You Own This)
+
+Add subscription-level filtering in your RP's request pipeline. This is the fastest option because it doesn't require ARM team involvement:
+
+```csharp
+// In your RP's middleware or request filter
+public class SubscriptionBlockFilter : IActionFilter
+{
+    // Blocklist — store in config or Azure App Configuration for hot-reload
+    private static readonly HashSet<string> BlockedSubscriptions = new()
+    {
+        "7d28c677-88e0-4011-b860-dd6b0206eb23"  // learningenv-sentinel — noisy tenant
+    };
+
+    public void OnActionExecuting(ActionExecutingContext context)
+    {
+        var subscriptionId = context.RouteData.Values["subscriptionId"]?.ToString();
+        if (subscriptionId != null && BlockedSubscriptions.Contains(subscriptionId))
+        {
+            context.Result = new ObjectResult(new
+            {
+                error = new
+                {
+                    code = "SubscriptionBlocked",
+                    message = "This subscription has been temporarily blocked due to excessive request volume. Contact support."
+                }
+            })
+            { StatusCode = 429 };
+        }
+    }
+}
+```
+
+**Better approach** — use Azure App Configuration or a feature flag so you can add/remove subscriptions without redeploying:
+
+```csharp
+// Read blocklist from App Configuration
+var blockedSubs = _configuration.GetSection("BlockedSubscriptions").Get<string[]>();
+```
+
+#### C2: ARM-Level Subscription Blocking (Requires ARM Team)
+
+ARM does not provide a self-service "deny list" for RPs to block specific subscriptions. To block at the ARM layer, you need to:
+
+1. **Contact the ARM team** (Julia Wang, Steve Arias) and request they add a subscription-level block for your RP
+2. **File a support request** through the ARM RP support channel
+3. **Use Azure Policy** — create a deny policy that prevents the subscription from creating/modifying watchlist resources:
+
+```json
+{
+  "mode": "All",
+  "policyRule": {
+    "if": {
+      "allOf": [
+        {
+          "field": "type",
+          "equals": "Microsoft.SecurityInsights/watchlists"
+        },
+        {
+          "field": "Microsoft.SecurityInsights/watchlists/subscriptionId",
+          "in": ["7d28c677-88e0-4011-b860-dd6b0206eb23"]
+        }
+      ]
+    },
+    "then": {
+      "effect": "deny"
+    }
+  }
+}
+```
+
+> **Note:** Azure Policy deny works for PUT/PATCH operations but doesn't block GET/LIST. For full blocking, RP-side filtering (C1) is more comprehensive.
+
+#### C3: Contact the Subscription Owner (Preferred Non-Technical Approach)
+
+Before blocking, consider reaching out to the subscription owner:
+
+```powershell
+# Find the subscription owner/admin
+Get-AzRoleAssignment -Scope "/subscriptions/7d28c677-88e0-4011-b860-dd6b0206eb23" |
+    Where-Object { $_.RoleDefinitionName -eq "Owner" } |
+    Select-Object DisplayName, SignInName
+```
+
+Then contact them to:
+- Explain their automation is causing service degradation
+- Ask them to implement backoff/retry logic in their client
+- Suggest they batch their watchlist item operations instead of individual PUTs
+
+### Step D: Decision Matrix — When to Use Which Approach
+
+| Scenario | Approach | Time to Implement | Reversibility |
+|----------|----------|-------------------|---------------|
+| Prevent future floods from ANY subscription | **B: ARM throttling rules** | 1–2 days (manifest rollout) | Easy (remove rules) |
+| Block ONE known bad subscription immediately | **C1: RP-side filter** | Hours (code deploy) | Easy (config change) |
+| Block a subscription at ARM layer | **C2: ARM team request** | Days (depends on ARM team) | Medium (requires ARM team) |
+| Prevent writes from a subscription via policy | **C3: Azure Policy deny** | Hours (policy assignment) | Easy (remove assignment) |
+| Fix the root cause collaboratively | **C3: Contact owner** | Days–weeks | N/A |
+
+**Recommended approach for this incident:**
+1. **Immediately:** Deploy RP-side subscription filter (C1) for `7d28c677-...` if it continues causing incidents
+2. **This week:** Add ARM throttling rules (B) for Watchlist operations to protect against ANY noisy tenant
+3. **This sprint:** Contact the subscription owner (C3) to fix their automation
+4. **Long-term:** Implement proper per-tenant rate limiting in the RP code
+
+---
+
 ## Open Questions
 
 1. **[HIGH]** Does the SecurityInsights ARM manifest currently define any `throttlingRules`? If not, adding them for Watchlist operations should be the first action.
-2. **[MEDIUM]** Is the offending subscription `7d28c677-...` the same one causing this recurrence, or is it a different noisy tenant?
-3. **[MEDIUM]** Can ADROCS be configured to auto-suppress alerts matching this specific pattern (prd-weu-402 + WATCHLISTS + duration < 4h + 0 SRs)?
-4. **[LOW]** What is the actual current timeout value in the SecurityInsights ARM manifest? Confirm whether it's `PT2M` (2 minutes).
+2. **[HIGH]** Is the offending subscription `7d28c677-...` the same one causing this recurrence, or is it a different noisy tenant? Run the Kusto queries from Step A above.
+3. **[HIGH]** How many co-located tenants on prd-weu-402 were affected during this incident window? Run ARM-side Kusto query filtering by endpoint + time window + httpStatusCode=0 and count distinct subscriptionIds.
+4. **[MEDIUM]** Can ADROCS be configured to auto-suppress alerts matching this specific pattern (prd-weu-402 + WATCHLISTS + duration < 4h + 0 SRs)?
+5. **[LOW]** What is the actual current timeout value in the SecurityInsights ARM manifest? Confirm whether it's `PT2M` (2 minutes).
 
 ---
 
 ## Priority Assessment
 
-**Recommended Priority:** P2 (medium)
+**Recommended Priority:** P1 (high) — **upgraded from P2 in v1**
 
 **Rationale:**
-- Customer Impact Scope: Zero — no SRs, no CritSits, no formally impacted subscriptions
-- Blast Radius: Narrow — single endpoint in West Europe, transient self-resolving pattern
-- Fix Complexity: Low-Medium — ARM manifest throttling rules are a config change; RP-side rate limiting requires code
-- Dependencies: ARM manifest rollout process; ARM team guidance on per-RP throttling options
-- Workaround: Self-resolving; can manually monitor and close
-- Deadline Pressure: None — this is a noise reduction issue, not an active outage
+- Customer Impact Scope: Real but unquantified — noisy tenant receives errors, co-located tenants on prd-weu-402 experience collateral degradation during saturation windows. No SRs filed but absence of SRs ≠ absence of impact.
+- Blast Radius: Narrow per-incident (single endpoint, West Europe), but recurring 6+ times — cumulative impact is significant
+- Fix Complexity: Low-Medium — ARM manifest throttling rules are a config change; RP-side subscription block is a few hours of work
+- Dependencies: ARM manifest rollout process for throttling; no external dependency for RP-side block
+- Workaround: Self-resolving per-occurrence, but recurs without fix — not a true workaround
+- Deadline Pressure: Each recurrence risks impacting co-located tenants; fixing this prevents future incidents
 
 **Relative Priority:**
-- vs. ICM 764634026 (MSPKI cert migration, Apr 10 deadline): Lower — no deadline, no customer block
-- vs. ICM 766937015 (MDTI Premium connector, named customers blocked): Lower — no customers waiting
-- vs. ICM 51000000943039 (TI Upload API bug, S500 customer): Lower — no S500 impact
+- vs. ICM 764634026 (MSPKI cert migration, Apr 10 deadline): Lower — cert has a hard deadline
+- vs. ICM 766937015 (MDTI Premium connector, named customers blocked): Comparable — both have real customer impact
+- vs. ICM 51000000943039 (TI Upload API bug, S500 customer): Lower — S500 customer takes priority
 - vs. ICM 766712513 (prior instance, same pattern): **Duplicate** — same investigation applies
 
-**Decision:** P2 because while the recurrence is annoying, it's zero-customer-impact noise. The systemic fix (ARM throttling rules) should be prioritized as a preventive measure, not as an urgent response.
+**Decision:** Upgraded to P1 because the v1 "zero customer impact" assessment was incorrect. Real customers are affected during each recurrence, the pattern repeats regularly, and the fix (ARM throttling + RP-side block) is low-effort. The RP-side subscription block (Step C1) can be deployed immediately to stop the bleeding while the ARM manifest throttling rules are rolled out.
 
 ---
 
-*Investigated by Aragorn (Operator) · pa-squad · 2026-03-23*
+*Investigated by Aragorn (Operator) · pa-squad · 2026-03-23 · v2 update: customer impact corrected, subscription throttling walkthrough added*
