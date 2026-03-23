@@ -131,9 +131,18 @@ if ($highlight) {
 
 Write-Host ""
 
-# Create GitHub issues for new incidents (dedup against existing)
-$existingIssues = gh issue list --label "squad,squad:aragorn" --state open --json title --limit 50 --repo jbenami_microsoft/ms-pa 2>$null | ConvertFrom-Json
+# Create GitHub issues for new incidents (dedup against existing issues + investigation reports)
+$existingIssues = gh issue list --label "squad,squad:aragorn" --state all --json title --limit 100 --repo jbenami_microsoft/ms-pa 2>$null | ConvertFrom-Json
 $existingTitles = $existingIssues | ForEach-Object { $_.title }
+
+# Also check for existing investigation reports in docs/investigations/
+$investigationsDir = Join-Path $root "docs\investigations"
+$existingReports = @()
+if (Test-Path $investigationsDir) {
+    $existingReports = Get-ChildItem -Path $investigationsDir -Filter "icm-*" -Name | ForEach-Object {
+        if ($_ -match "icm-(\d+)") { $Matches[1] }
+    }
+}
 
 $created = 0
 $notifyLines = @()
@@ -141,9 +150,21 @@ foreach ($inc in $issuesCreated) {
     $issueTitle = "ICM $($inc.IcmId): $($inc.Title)"
     $icmLink = "https://portal.microsofticm.com/imp/v5/incidents/details/$($inc.IcmId)/home"
     
-    if ($existingTitles -contains $issueTitle) {
-        Write-Host "  ⏭️  $issueTitle (already tracked)" -ForegroundColor DarkGray
-        $notifyLines += "• **$($inc.Sev)** [$($inc.Type)] [IcM#$($inc.IcmId)]($icmLink) — $($inc.Title) _(Aragorn tracking)_"
+    # Check 1: existing GitHub issue (any state — open or closed)
+    $hasIssue = $existingTitles | Where-Object { $_ -match $inc.IcmId }
+    
+    # Check 2: existing investigation report
+    $hasReport = $existingReports -contains $inc.IcmId
+    
+    if ($hasIssue) {
+        Write-Host "  ⏭️  IcM#$($inc.IcmId) (issue exists on board)" -ForegroundColor DarkGray
+        $notifyLines += "• **$($inc.Sev)** [$($inc.Type)] [IcM#$($inc.IcmId)]($icmLink) — $($inc.Title) _(tracked)_"
+        continue
+    }
+    
+    if ($hasReport) {
+        Write-Host "  ⏭️  IcM#$($inc.IcmId) (investigation report exists)" -ForegroundColor DarkGray
+        $notifyLines += "• **$($inc.Sev)** [$($inc.Type)] [IcM#$($inc.IcmId)]($icmLink) — $($inc.Title) _(investigated)_"
         continue
     }
 
