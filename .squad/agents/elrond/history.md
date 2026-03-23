@@ -576,3 +576,37 @@ Teams and Outlook bidirectional integration for Squad agents — how to read Tea
 - .squad/decisions.md: copilot -p ONLY constraint
 - docs/research/teams-outlook-integration-research.md: WorkIQ capabilities, rate-limiting guidance
 
+
+
+---
+
+## 2026-03-23 — WorkIQ Chat Message Retrieval: Capabilities, Limitations & Workarounds
+
+**Requested by:** Jonathan (HIGH PRIORITY)
+**Triggered by:** Aragorn failed to retrieve a specific Teams chat message via WorkIQ
+**Deliverable:** docs/research/workiq-chat-limitations-research.md
+
+### Summary
+
+Deep-dived into WorkIQ's Teams chat message retrieval to determine whether it can support a Teams watchdog that scans incoming messages. Conducted 11 live WorkIQ queries testing channel messages, group chats, meeting chats, 1:1 conversations, replies, historical messages, and specific message retrieval. Also researched Microsoft Graph API, Power Automate triggers, and change notification webhooks as alternatives.
+
+### Key Findings
+
+1. **WorkIQ CAN access:** channel messages, group chats, meeting chats, 1:1 chats, replies/threads, messages 7+ days old, and can extract action items via semantic queries
+2. **WorkIQ CANNOT:** retrieve messages by URL/message-ID, reliably distinguish private vs public channels, guarantee exhaustive results, or access messages within ~2-4 hours of creation (indexing delay)
+3. **Critical workaround:** Query by sender + meeting name + time range + content snippet instead of by URL — successfully retrieved exact message content this way
+4. **Graph API** can fill the gap for specific-message-by-ID retrieval but requires separate Azure AD app registration and OAuth2 flow
+5. **Power Automate** has NO trigger for private/group chat messages — only channel messages have automatic triggers
+6. **Recommended architecture:** WorkIQ for daily batch semantic queries + Graph API fallback for specific message retrieval + webhooks for future real-time capability
+
+### Sources Consulted
+- 11 live WorkIQ queries (all documented with results)
+- Microsoft Learn: WorkIQ overview, Graph API chat-list-messages, change notifications
+- GitHub: microsoft/work-iq-mcp README
+- Web search: WorkIQ MCP documentation, Graph API permissions, Power Automate triggers
+- eng.ms: ACCESS DENIED on all 3 queries attempted
+
+### Cross-References
+- docs/research/workiq-chat-limitations-research.md (primary deliverable)
+- .squad/decisions.md: Teams Watchdog Architecture (6-step pipeline)
+- teams-knowledge/skills/teams-monitor/SKILL.md: Prior WorkIQ analysis
