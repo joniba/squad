@@ -1,9 +1,9 @@
 # Project Context
 
 - **Owner:** Jonathan
-- **Project:** pa-squad ΓÇö a personal-assistant squad for everyday tasks, research, documentation, tool building, and livesite support
+- **Project:** pa-squad — a personal-assistant squad for everyday tasks, research, documentation, tool building, and livesite support
 - **Stack:** General-purpose (not a single-stack project)
-- **Role:** Reviewer ΓÇö quality gate for all PRs and deliverables
+- **Role:** Reviewer — quality gate for all PRs and deliverables
 - **Created:** 2026-03-23
 - **Hired by:** Gandalf (Lead), Issue #13
 
@@ -12,8 +12,8 @@
 Galadriel was hired based on Elrond's analysis of the coffee-ratings "Bobbie" charter (Issue #12). Key patterns adapted from Bobbie:
 
 - **Ownership model:** Author fixes their own work, reviewer finds issues
-- **PR Review Fix Workflow:** Structured 4-step process (read findings ΓåÆ fix ΓåÆ reply with SHA ΓåÆ signal completion)
-- **Escalation timing:** 3+ review cycles ΓåÆ escalate to Lead
+- **PR Review Fix Workflow:** Structured 4-step process (read findings → fix → reply with SHA → signal completion)
+- **Escalation timing:** 3+ review cycles → escalate to Lead
 - **Evidence-driven voice:** Every finding cites file, line, and reasoning
 - **Severity scale:** Critical/High/Medium/Low with clear action thresholds
 
