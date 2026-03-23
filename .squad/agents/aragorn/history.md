@@ -121,3 +121,28 @@
 - `.squad/decisions/inbox/aragorn-cri-priority-assessment.md` (full priority reasoning)
 - `docs/investigations/TASK-INDEX.md` (added Priority column + P1/P2/P3 legend; reordered Sev3 rows by priority)
 
+### 2026-03-27: ICM 51000000943039 — Stage 3b Source Code Review (Upload API pattern_type Bug)
+
+**Context:** Jonathan requested deeper investigation of ICM 51000000943039 (Upload Indicators V2 API — `pattern_type: "stix"` stored as `"https"`). Previous investigation (Stage 1-2) reached MEDIUM confidence without code access. This pass added Stage 3b: source code research.
+
+**Repos reviewed:** Sentinel-TiPipeline, Sentinel-TiCommon (msazure/One path), SecEng-Augusta
+**Files reviewed:** 10+ across ingestion API, builder/model layer, upgraders, Cosmos schema, LA conversion
+
+**Critical findings:**
+1. **Ingestion is CORRECT:** `StixTwoOneIndicatorBuilder` (line 94-98) correctly reads `pattern_type` from JSON and sets `Indicator.PatternType = "stix"`. All three schema upgraders (V1→V2, V2→V3, V3→V3.1) confirmed clean — none touch PatternType.
+2. **Bug is in LA projection:** `StixIndicatorToTiIndicatorConverter` does NOT map `PatternType` to `TiIndicator`. `LAFormattedIndicator` has NO `PatternType` property. The field is lost when converting from Cosmos DB to Log Analytics.
+3. **Naming confusion is a latent risk:** `PatternType` (singular) = STIX pattern language ("stix") vs `PatternTypes` (plural) = observable types from pattern content (["url"]). If the LA projection reads from `PatternTypes` instead of `PatternType`, it would produce the wrong value.
+4. **ANTLR parser is clean:** `StixPatternUtilities.GetLiteralsThatAppearInPattern()` correctly extracts observable types (e.g., "url" from `[url:value = '...']`), not URL schemes.
+
+**Confidence upgrade:** MEDIUM → HIGH. Source code confirms the ingestion path preserves "stix" correctly. The defect is localized to the Cosmos→LA projection layer.
+
+**Remaining gap:** The LA projection service code (change feed handler) is not in the local TI repos. The exact code that populates the LA `pattern_type` column needs to be found.
+
+**Lasting lessons:**
+1. `PatternType` (singular) vs `PatternTypes` (plural) naming confusion is a systemic risk. Recommending rename of `PatternTypes` to `ObservableTypes`.
+2. The Cosmos DB → LA projection layer is a separate service not co-located with the ingestion pipeline repos. For future TI investigations involving LA table discrepancies, need to identify which repo/service handles the projection.
+3. `StixIndicatorToTiIndicatorConverter` is the bottleneck for field fidelity between Cosmos DB and LA. Any STIX 2.1 field not explicitly mapped in this converter will be lost.
+4. Stage 3b source code review dramatically increases RCA confidence — went from "theory consistent with symptoms" to "exact missing field mapping identified."
+
+**Delivered:** Updated `docs/investigations/icm-51000000943039-investigation.md` (in-place, Stage 3b additions)
+
