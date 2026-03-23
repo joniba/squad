@@ -17,6 +17,8 @@
 
 Config lives at `.squad/scheduler.json`. Each task has:
 
+### Script task (default)
+
 ```json
 {
   "name": "teams-watchdog",
@@ -27,11 +29,34 @@ Config lives at `.squad/scheduler.json`. Each task has:
 }
 ```
 
+### Agent task
+
+```json
+{
+  "name": "icm-scan",
+  "type": "agent",
+  "agent": "aragorn",
+  "prompt": "Scan IcM team 116041 for active incidents...",
+  "interval": "4h",
+  "enabled": false,
+  "condition": "oncall"
+}
+```
+
+**Fields common to all tasks:**
+
 - **name** — unique task identifier
-- **script** — path relative to repo root
+- **type** — `"script"` (default, may be omitted) or `"agent"`
 - **interval** — how often to run (`4h`, `12h`, `24h`, `1d`)
 - **enabled** — whether it runs by default (overridable with `-Include`/`-Exclude`)
 - **condition** — `null` (always) or `"oncall"` (only when on-call is enabled)
+
+**Script task fields** (`type: "script"` or no `type`):
+- **script** — path to the PowerShell script, relative to repo root
+
+**Agent task fields** (`type: "agent"`):
+- **agent** — squad member to spawn (e.g., `"aragorn"`)
+- **prompt** — full instruction passed to the agent
 
 ### On-call configuration
 
@@ -57,6 +82,8 @@ Set `enabled: true` when Jonathan is on-call. Tasks with `"condition": "oncall"`
 
 ## Adding a New Task
 
+### Script task
+
 1. Create your script (e.g., `scripts/my-task.ps1`)
 2. Add an entry to `.squad/scheduler.json`:
    ```json
@@ -70,24 +97,50 @@ Set `enabled: true` when Jonathan is on-call. Tasks with `"condition": "oncall"`
    ```
 3. Test: `.\scripts\squad-scheduler.ps1 -Tasks my-task -Once`
 
+### Agent task
+
+1. Add an entry to `.squad/scheduler.json` with `"type": "agent"`:
+   ```json
+   {
+     "name": "my-agent-task",
+     "type": "agent",
+     "agent": "aragorn",
+     "prompt": "Full instructions for the agent...",
+     "interval": "6h",
+     "enabled": true,
+     "condition": null
+   }
+   ```
+2. Test (DryRun first): `.\scripts\squad-scheduler.ps1 -Tasks my-agent-task -DryRun`
+
 ## Task Types
 
-### Script-Only Tasks
-Simple scripts that run directly (e.g., teams-watchdog). No agent context needed.
+### Script tasks (`type: "script"` or no `type`)
 
-### Agent-Driven Tasks
-Tasks that require MCP tool access or complex decision-making. The scheduler spawns an agent to execute.
+The default. The scheduler runs a PowerShell script directly. Suitable for tasks that don't need MCP tools.
 
-**Example: `icm-scan`**
-- **Why an agent?** IcM querying requires MCP tools (`icm-search_incidents_by_owning_team_id`, `icm-get_incident_details_by_id`, etc.) which are only available in agent context.
-- **How it works:**
-  1. Scheduler detects the `icm-scan` task is due
-  2. Coordinator spawns **Aragorn** with task context: team ID, filter, since-time
-  3. Aragorn calls IcM MCP tools directly (no copilot -p needed, no permission issues)
-  4. Results logged back to `.squad/scheduler.log`
-- **Config script:** `scripts/icm-scan.ps1` exists only to print configuration parameters (team, filter, since) for transparency. The actual work is done by Aragorn.
+```json
+{ "name": "teams-watchdog", "script": ".squad/skills/teams-watchdog/run-pipeline.ps1", ... }
+```
 
-**Rule:** If a task needs MCP tools → use an agent, not `copilot -p`. Agents have direct MCP context; scripts do not.
+### Agent tasks (`type: "agent"`)
+
+Used when the task requires MCP tools (IcM, Geneva, Kusto, etc.) that are only available in agent context. Instead of running a script, the scheduler emits a structured signal on stdout:
+
+```
+AGENT_TASK|{agent}|{prompt}
+```
+
+**Example output:**
+```
+AGENT_TASK|aragorn|Scan IcM team 116041 for active incidents...
+```
+
+The coordinator, which invokes the scheduler as a skill (`-Once`), reads this signal from stdout and spawns the named agent with the given prompt. The agent then executes the work using its full MCP tool context.
+
+**Why not `copilot -p`?** Scripts cannot capture `copilot -p` output in variables (see team decisions). Agents have direct MCP context and are the correct mechanism for tool-calling work.
+
+**Rule:** If a task needs MCP tools → `type: "agent"`. If it's a pure script → `type: "script"` (or omit `type`).
 
 ## Logs
 

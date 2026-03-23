@@ -9,7 +9,9 @@
     },
     {
       "name": "icm-scan",
-      "script": "scripts/icm-scan.ps1",
+      "type": "agent",
+      "agent": "aragorn",
+      "prompt": "Scan IcM team 116041 for active incidents. Filter for: Sev2, Sev3 recommended for bump, and CRIs (Incident Type == System/Customer Reported). Report findings with ICM ID, severity, title, type, and created date.",
       "interval": "4h",
       "enabled": false,
       "condition": "oncall"
