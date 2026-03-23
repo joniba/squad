@@ -55,3 +55,14 @@
 - **Scaffolding delivered:** package.json, tsconfig, vitest config, types (QueryInput, RowSetResult, etc.), CLI entry point, 8 passing tests. All at `tools/dgrep-cli/`.
 - **Issues created:** #94–#100 on `jbenami_microsoft/ms-pa`. Phase 0: #94 (REST API spike), #95 (auth spike) → Elrond. Phase 1: #96 (CLI structure), #97 (formatters), #98 (time parser), #99 (config), #100 (saved queries) → Gimli.
 - **Known unknowns:** Streaming protocol (WebSocket? SSE? chunked HTTP?), whether dSTS tokens can be acquired via Azure Identity, NuGet package name for SDK decompilation.
+
+### 2026-03-24 — DGrep CLI Pivot: TypeScript → C# .NET Framework SDK Wrapper
+
+- **Decision:** Jonathan directed pivot from TypeScript/REST API to C# .NET Framework SDK wrapper. Cross-platform dropped as a requirement; Windows-only is fine. MCP integration deferred to later.
+- **Rationale:** Elrond's approach comparison showed SDK wrapper wins on 8 of 11 dimensions. Auth (dSTS) is the killer — SDK handles it in one line; REST approach requires weeks of reverse-engineering with real failure risk. Time-to-first-query drops from weeks to hours.
+- **Closed issues:** #94–#100 (TypeScript-specific — REST API spikes, Commander.js CLI, cosmiconfig, vitest formatters, time parser, saved queries).
+- **New issues created:** #101 (CLI arg parsing), #102 (config management), #103 (output formatters), #104 (auth flow), #105 (search command), #106 (tail/streaming), #107 (saved queries), #108 (error handling), #109 (documentation).
+- **Phasing:** Phase 1 (#101–#103) is SDK-independent — Gimli can start immediately. Phase 2 (#104–#106) needs Geneva access + NuGet package. Phase 3 (#107–#109) is polish.
+- **Scaffold replaced:** Deleted TypeScript files (package.json, tsconfig, vitest, src/, tests/). Created C# solution: DgrepCli.sln, src/DgrepCli/ (net472 console app with CommandLineParser + Newtonsoft.Json), tests/DgrepCli.Tests/ (xUnit). Solution builds clean, 1 placeholder test passes.
+- **Tech stack:** C# targeting net472, CommandLineParser for CLI, Newtonsoft.Json for serialization, xUnit for testing. SDK reference commented out until Phase 2.
+- **Key remaining unknown:** Whether `DefaultAzureCredential` / `az login` tokens can bridge to the SDK's dSTS auth. Interactive auth (`DGrepUserAuthClient`) works out of the box; this is a nice-to-have for Phase 2.
