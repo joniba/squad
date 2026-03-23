@@ -1,13 +1,13 @@
 # Teams Watchdog
 
-Daily Teams message scanner that summarizes Jonathan's decisions, action items, and key context.
+Daily Teams message scanner that summarizes Jonathan's decisions, action items, and key context from both sent and received messages.
 
 ## How It Works
 
 Two-step pipeline using `copilot -p` and the WorkIQ MCP tool:
 
 1. **probe-messages.ps1** — Fetches raw Teams messages via `workiq-ask_work_iq`
-2. **single-agent-scan.ps1** — Filters to Jonathan's messages, extracts decisions/action items, formats as markdown (replaces old 3-step filter→extract→format pipeline)
+2. **single-agent-scan.ps1** — Scans both sent AND received messages, extracts decisions/action items, formats as markdown (replaces old 3-step filter→extract→format pipeline)
 
 Output: dated markdown summary at `work/summary-YYYY-MM-DD.md`.
 
@@ -43,6 +43,13 @@ Output: dated markdown summary at `work/summary-YYYY-MM-DD.md`.
 | **Total** | **~4–6** |
 
 The single-agent scan replaced three separate `copilot -p` calls (filter, extract, format), reducing cost by ~50%.
+
+## Scan Coverage
+
+The watchdog now captures:
+- **Sent messages:** Decisions Jonathan made, commitments he announced, action items he assigned
+- **Received messages:** Replies to Jonathan's messages, @-mentions, direct requests, action items assigned to Jonathan
+- **Meeting chats:** Messages in meeting threads where Jonathan is a participant
 
 ## Constraints
 

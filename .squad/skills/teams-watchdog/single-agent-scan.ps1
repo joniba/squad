@@ -23,20 +23,24 @@ Below are raw Teams messages from the last $Hours hours.
 $messages
 --- END MESSAGES ---
 
-From these messages, identify content sent BY me (Jonathan).
+From these messages, extract content in TWO directions:
+
+1. Messages sent BY me (Jonathan): decisions, commitments, announcements
+2. Messages sent TO me (Jonathan): replies to my messages, @-mentions, direct requests, action items assigned to me
+
 Extract and format as markdown:
 
 ## Decisions
-List 3-5 decisions I made or announced (bullet points).
+List 3-5 decisions that were made or announced (both by me and directed at me from teammates) (bullet points).
 
 ## Action Items
-List 3-5 action items I committed to or assigned to others (bullet points).
+List 3-5 action items I committed to, assigned to others, OR that have been assigned to me by others (bullet points).
 
 ## Key Context
-2-3 sentences summarizing important context or findings I shared.
+2-3 sentences summarizing important context, findings, or requests shared with or directed at me.
 
-If no relevant messages from me, output:
-"No Teams activity from Jonathan in the last $Hours hours."
+If no relevant messages, output:
+"No Teams activity for Jonathan in the last $Hours hours."
 
 Keep it concise. Focus on actionable content only.
 "@
