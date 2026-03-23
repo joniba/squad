@@ -16,7 +16,7 @@ status: active
 
 **Purpose:** Prioritized tracking of investigation tasks requiring action. Sorted by severity (Sev2 → Sev3), then by Aragorn's investigation-driven priority ranking (P1 → P2 → P3).
 
-**Last Updated:** 2026-03-29  
+**Last Updated:** 2026-03-23  
 **Maintenance:** Update checkbox status as actions are completed. Mark `[x]` when action resolved.
 
 ---
@@ -27,6 +27,7 @@ status: active
 |--------|--------|-------|------|-------|---------------|---------|
 | 🔍 | 764634026 | AzRel Red Flag - Ocean View- SR17 - MSPKI Cert Attestation for Central or Self Migration | Security | [Report](icm-764634026/icm-764634026-investigation.md) · [Portal](https://portal.microsofticm.com/imp/v5/incidents/details/764634026/home) | **Investigate complete — awaiting remediation.** TI services confirmed using MSPKI certs for client auth (mTLS). Deadline: Apr 10 (central) / May 16 (self-migration) | HIGH confidence: TAXIIRequestSender.cs uses ClientCertificateOption.Manual. Two remediation paths documented. |
 | ⬜ | 766712513 | ARM Watchlist API Error Rates (WEU-402) | LiveSite | [Report](icm-766712513-summary.md) · [Portal](https://portal.microsofticm.com/imp/v5/incidents/details/766712513/home) | **Run Kusto queries** to confirm subscription impact and failure causes (Gateway vs RP-side); check FCM change data; determine if self-resolving | Recurring pattern on `prd-weu-402` endpoint; Sev2 ACTIVE; likely single-tenant request flood or infrastructure issue; 5th recurrence in March 2026 |
+| 🔁 | 767184571 | ARM Watchlist API Error Rates (WEU-402) — Recurrence | LiveSite | [Report](icm-767184571-investigation.md) · [Portal](https://portal.microsofticm.com/imp/v5/incidents/details/767184571/home) | **Confirmed recurrence of ICM 766712513.** Add ARM manifest throttling rules for Watchlist ops; investigate per-tenant rate limiting; ARM walkthrough included in report | 6th+ recurrence; same noisy-tenant pattern; P2 priority; zero customer impact; includes ARM throttling/timeout/message size configuration walkthrough |
 
 ---
 
@@ -67,13 +68,13 @@ status: active
 
 ## Progress Summary
 
-- **Total investigations:** 10 files
-- **Needs action (Sev2):** 2 (ICM 764634026 + 3 variants of ICM 766712513)
+- **Total investigations:** 11 files
+- **Needs action (Sev2):** 3 (ICM 764634026 + ICM 766712513 + ICM 767184571 recurrence)
 - **Needs action (Sev3):** 5 distinct incidents
 - **Informational:** 1
 - **Completed:** 0/5 active
 
-**Next step:** Start with Sev2 investigations; run recommended Kusto queries and check FCM change data.
+**Next step:** ICM 767184571 is a confirmed recurrence of 766712513 — implement ARM throttling rules for Watchlist operations (see walkthrough in 767184571 report). Start with Sev2 remediation actions.
 
 ---
 
