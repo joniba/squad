@@ -262,6 +262,56 @@ Bad examples:
 
 ---
 
+---
+
+## Scanning & Filtering
+
+### ICM Incident Types
+
+When scanning for specific incident categories, use the correct **Incident Type** field, not severity or tag heuristics. Always filter by the actual incident type value in ICM.
+
+#### Common Incident Types
+- **System/Customer Reported** — CRI (Customer Reported Incident). A customer-facing or customer-reported issue, not an automated alert.
+- **Alert Derived** — Alert-triggered incident, automated detection.
+- **Operational** — Internal operational incidents (on-call, runbook execution, etc.).
+
+### Common Scan Patterns
+
+Use these filter patterns with `icm-search_incidents_by_owning_team_id`. After retrieving results, filter client-side by the target field:
+
+| Scan Goal | Filter Pattern |
+|-----------|---|
+| **CRIs (Customer Reported)** | `Incident Type == System/Customer Reported`, `State == Active` |
+| **Sev 0-2 (High Priority)** | `Severity <= 2`, `State == Active` |
+| **Red Flags (AzRF)** | `Tags contains "AzRF"` |
+| **Unmitigated Incidents** | `State == Active`, no mitigation applied |
+| **High Customer Impact** | `ImpactedSubscriptionCount > 100` or `HasS500Customer == true` |
+| **Aged Incidents** | `CreatedTime < now - 24h`, `State == Active` |
+
+### Scanning Instructions for Agents
+
+**When asked to scan for X:**
+
+1. **Determine the correct ICM field** — don't guess. Reference the table above.
+2. **Don't use heuristics.** For example:
+   - ❌ "High severity = CRI" — CRIs are identified by **Incident Type == System/Customer Reported**, not severity
+   - ❌ "Old incidents are sev-2+" — severity is independent of age
+   - ✅ "Filter Incident Type field directly"
+   - ✅ "Filter State and CreatedTime for aged incidents"
+
+3. **Use `icm-search_incidents_by_owning_team_id`** to fetch broad results, then filter by:
+   - `Incident Type` (System/Customer Reported, Alert Derived, Operational)
+   - `Severity` (numeric: 0-5)
+   - `State` (Active, Mitigated, Resolved, False Positive)
+   - `Tags` (string array)
+   - `ImpactedSubscriptionCount` (numeric)
+   - `HasS500Customer` / `HasACECustomer` / `HasPriority0Customer` (boolean)
+   - `CreatedTime` / `LastModifiedTime` (timestamp)
+
+4. **If unsure about the correct field:** Scan broadly first (all incidents), then progressively filter by the dimension that matches the scan goal.
+
+---
+
 ## Adapted From
 
 This skill is adapted from the ICM Investigator at `MDC-AI-Shared/extensions/personal-ai/skills/icm-investigator/`, a multi-stage agent-driven investigation pipeline with 6 specialized sub-agents, 3 commands, and extensive reference material. The original uses VS Code extension APIs (workspace tools, 1ES queries, dashboard widgets). This adaptation targets the Copilot CLI environment with MCP tools available in the session.

@@ -29,6 +29,19 @@
 
 **Before any ICM investigation, read `.squad/skills/icm-investigator/SKILL.md`** — it defines the mandatory pipeline, tool usage, and output standards.
 
+### Scanning Incidents by Type
+
+**CRI vs. Severity Distinction:**
+- **CRI (Customer Reported Incident)** is determined by **Incident Type == System/Customer Reported** field, NOT by severity
+- Severity (Sev 0-5) is independent of incident type
+- When asked to scan for CRIs, filter by **Incident Type == System/Customer Reported, State == Active** — not by severity heuristics
+
+**Arbitrary Filter Support:**
+- Users may ask for: CRIs, red flags, sev-2+, unmitigated, customer-impacting, aged, etc.
+- Map each scan request to the correct ICM field (see `.squad/skills/icm-investigator/SKILL.md` "Common Scan Patterns" table)
+- When unsure, scan broadly first, then filter client-side by the target field
+- **Do not use heuristics.** Always filter by the actual field, not guesses.
+
 ### Mandatory Checklist
 
 Every ICM investigation MUST follow this sequence:
