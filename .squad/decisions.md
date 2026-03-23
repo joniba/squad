@@ -1862,3 +1862,47 @@ Phase 1.1 (scaffolding) and 1.3 (types) are already done — committed in the in
 - `tools/dgrep-cli/src/types/index.ts` — all TypeScript types derived from SDK docs
 - `tools/dgrep-cli/tests/types.test.ts` — 8 passing type contract tests
 
+## 2026-03-24T00:00:00Z: DGrep CLI — Use .NET Framework SDK Wrapper (Proposed)
+
+**Author:** Elrond (Researcher)  
+**Status:** Proposed  
+**Context:** Jonathan challenged the REST API approach; confirmed Windows-only is acceptable.
+
+**Decision:**
+Build the DGrep CLI as a C# console app targeting .NET Framework 4.7.2+, wrapping the Microsoft.Geneva.DGrep.SDK NuGet package. Ship as a Windows .exe. Do NOT reverse-engineer the REST API.
+
+**Rationale:**
+1. Cross-platform was the only reason for the REST approach, and it's not needed — Jonathan confirmed Windows-only is fine.
+2. Auth is the decisive factor — the SDK handles Geneva's dSTS authentication internally. Reverse-engineering dSTS token acquisition is weeks of work with real failure risk.
+3. Time-to-value: Working query in hours (SDK) vs. days-to-weeks (REST).
+4. Maintenance: NuGet updates (SDK) vs. owning an undocumented protocol (REST).
+5. Feature coverage: 100% on day 1 (SDK) vs. whatever subset we reverse-engineer (REST).
+6. Risk: Very low (SDK) vs. medium-high with an auth-based showstopper (REST).
+
+**.NET Framework Details:**
+- .NET Framework 4.8 ships pre-installed on Windows 10/11 — zero runtime install needed
+- It's in maintenance mode (security patches, no new features) — fine for a CLI wrapper
+- Visual Studio 2022 and dotnet CLI fully support it
+- The app is a simple console .exe — no deployment complexity
+
+**2-Hour Spike (Pre-Commitment Verification):**
+1. ✅ Can we create a 
+et472 project and add Microsoft.Geneva.DGrep.SDK without errors?
+2. ✅ Does DGrepUserAuthClient work for interactive auth on a developer machine?
+3. ✅ Does DGrepClient work with a certificate for automation?
+
+**Proposed Timeline:**
+- Spike: Day 1 (2 hours) — Verify SDK works, run sample query
+- Core CLI: Days 2-3 — Argument parser, basic dgrep search command
+- Output formats: Days 4-5 — Table, JSON, CSV, JSONL output
+- Polish: Week 2 — Config files, saved queries, error handling, streaming
+- Auth investigation: Week 2+ — Can we add z login/DefaultAzureCredential support?
+
+**Trade-offs Accepted:**
+- Windows-only (acceptable per Jonathan)
+- C# is the only language option (acceptable for an SDK wrapper)
+- .NET Framework is in maintenance mode (acceptable — security patches continue)
+- Cannot use latest .NET performance features (acceptable — CLI doesn't need them)
+
+**Reference:** Full analysis in docs/research/geneva-dgrep-research.md → "Approach Comparison: REST API vs .NET Framework SDK" section.
+
