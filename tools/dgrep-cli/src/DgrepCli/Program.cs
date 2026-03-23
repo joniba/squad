@@ -4,6 +4,7 @@ using System.Reflection;
 using CommandLine;
 using CommandLine.Text;
 using DgrepCli.Commands;
+using DgrepCli.Config;
 
 namespace DgrepCli
 {
@@ -91,14 +92,9 @@ namespace DgrepCli
             if (errors.Any())
                 return PrintValidationErrors(errors);
 
-            Console.WriteLine($"Config '{opts.Action}' parsed successfully.");
-            if (!string.IsNullOrEmpty(opts.Key))
-                Console.WriteLine($"  Key:   {opts.Key}");
-            if (!string.IsNullOrEmpty(opts.Value))
-                Console.WriteLine($"  Value: {opts.Value}");
-
-            Console.Error.WriteLine("\nNote: Config persistence not yet implemented (Phase 1.6).");
-            return 0;
+            var manager = new ConfigManager();
+            var command = new ConfigCommand(manager);
+            return command.Execute(opts);
         }
 
         static int RunSaved(SavedOptions opts)
