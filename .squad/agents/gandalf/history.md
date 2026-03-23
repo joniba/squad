@@ -28,7 +28,15 @@
 - **Repo:** Issues #1-#6 on `jbenami_microsoft/ms-pa`, labeled `squad` + `squad:gimli`.
 - **Labels created:** `squad` (purple, 6f42c1) and `squad:gimli` (red, d73a49) on the ms-pa repo.
 
-### 2026-03-22 — Coffee-Ratings Squad-Infra Audit & Reviewer Hire Plan
+### 2026-03-22 — Failure Recovery Pipeline Architecture
+
+- **Trigger:** Galadriel hit a wall trying to read ADO PR file contents — the `ado-repo_get_file_contents` tool doesn't exist. That near-miss made it clear the squad had no formal self-healing path.
+- **Pipeline:** Failed Agent → Gandalf (triage) → Elrond (research, opus-4.6) → Gandalf (review) → Ralph (route) → Gimli/assigned (build) → Galadriel (review) → Original Agent (retry)
+- **Signal format:** `.squad/decisions/inbox/{agent}-failure-{slug}.md` — structured failure report with slug convention, timestamp (ISO 8601 UTC), dedup check
+- **Notification rule:** Jonathan only hears about it if Elrond can't find a solution, Gandalf rejects twice, retry still fails, OR Aragorn is blocked on a live livesite incident (livesite exception bypasses the pipeline)
+- **All agents wired:** Elrond, Bilbo, Gimli, Aragorn, Scribe all updated with "On Failure" sections. Galadriel and Gandalf were already updated.
+- **Key design principle:** Elrond writing "no solution found" IS the Jonathan notification trigger — it's the squad's final escalation gate.
+- **Tracking:** `jbenami_microsoft/ms-pa#87`
 - **Squad-infra audit:** Scanned coffee-ratings repo, found 11 squad-infra commits covering: ralph-watch watchdog (install, CLI args, config, pre-flight checks, Phase 1), spawn templates (lightweight spawn mode), governance consolidation, and model reference audits.
 - **Audit pipeline:** Created 5 issues (#7–#11) as a dependency chain: Elrond researches → Bilbo documents → Gandalf decides PORT/SKIP/ADAPT → Gimli ports → Bilbo creates reusable squad template.
 - **Bobbie charter study:** Found Bobbie's charter at `C:\code\dev\coffee-ratings\.squad\agents\bobbie\charter.md`. Role is Tester with strong PR review fix workflow, ownership-first model (original author fixes), and escalation after 3+ cycles.
