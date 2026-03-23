@@ -9,9 +9,8 @@
     },
     {
       "name": "icm-scan",
-      "type": "agent",
-      "agent": "aragorn",
-      "prompt": "Scan IcM team 116041 for active incidents. Filter for: Sev2 incidents (any type), and CRIs (Incident Type == System/Customer Reported, any severity). Do NOT include Sev3 unless they are CRIs. Also check docs/investigations/TASK-INDEX.md for any Sev3 items with recommended Sev2 bump (Sev2.5) and include those. Report findings with ICM ID, severity, title, type, and created date.",
+      "type": "script",
+      "script": "scripts/icm-scan.ps1",
       "interval": "4h",
       "enabled": false,
       "condition": "oncall"
