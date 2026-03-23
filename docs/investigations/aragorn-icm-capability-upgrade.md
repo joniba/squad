@@ -1,3 +1,23 @@
+---
+title: "Aragorn ICM Investigation — Capability Upgrade Analysis"
+date: 2026-03-22
+author: Elrond
+documentarian: bilbo
+category: investigations
+tags:
+  - investigation
+  - icm
+  - architecture
+  - aragorn
+  - agent-capability
+status: final
+related_issues:
+  - "766712513"
+related_docs:
+  - investigations/icm-766712513-summary.md
+  - investigations/icm-766712513-full-report.md
+---
+
 # Aragorn ICM Investigation — Capability Upgrade Analysis
 
 **Author:** Elrond (Researcher)  

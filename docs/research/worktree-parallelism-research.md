@@ -1,3 +1,20 @@
+---
+title: "Research Report: Tamir's Worktree/Parallelism Insights & Squad's Gap"
+date: 2026-03-22
+author: Elrond
+documentarian: bilbo
+category: research
+tags:
+  - research-method
+  - workflow
+  - git
+  - agent-coordination
+  - squad-infra
+status: final
+related_docs:
+  - research/worktree-article-analysis.md
+---
+
 # Research Report: Tamir's Worktree/Parallelism Insights & Squad's Gap
 
 **Date:** 2026-03-22  

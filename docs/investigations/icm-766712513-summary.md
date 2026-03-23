@@ -1,3 +1,23 @@
+---
+title: "ICM 766712513 — Investigation Summary"
+date: 2026-03-22
+author: Aragorn
+documentarian: bilbo
+category: investigations
+tags:
+  - investigation
+  - icm
+  - livesite
+  - arm
+  - sentinel
+status: final
+related_issues: 
+  - "766712513"
+related_docs:
+  - investigations/icm-766712513-full-report.md
+  - investigations/aragorn-icm-capability-upgrade.md
+---
+
 # ICM 766712513 — Investigation Report
 
 **Incident:** ARM Increased Error Rates on MICROSOFT.SECURITYINSIGHTS/WATCHLISTS  

@@ -1,3 +1,17 @@
+---
+title: "Squad Skills Catalog — tamirdresher/squad-skills"
+date: 2026-03-22
+author: Jonathan
+documentarian: bilbo
+category: catalogs
+tags:
+  - catalog
+  - squad-infra
+  - tooling
+status: final
+related_docs: []
+---
+
 # Squad Skills Catalog — tamirdresher/squad-skills
 
 **Source URL:** https://github.com/tamirdresher/squad-skills/tree/main/plugins  
