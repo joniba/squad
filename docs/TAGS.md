@@ -40,9 +40,35 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 
 - [Investigation Report: ICM 766712513 (v2) — ARM Watchlist API Error Rate Analysis](investigations/icm-766712513-v2-report.md) — investigations
 
+## bilbo
+
+- [Squad Template Role Mapping & Customization Guide](guides/squad-template-role-mapping.md) — guides
+- [Squad Template Patterns & Design Principles](guides/squad-template-patterns.md) — guides
+
 ## catalog
 
 - [Squad Skills Catalog — tamirdresher/squad-skills](catalogs/squad-skills-catalog.md) — catalogs
+
+## final
+
+- [Squad Template Role Mapping & Customization Guide](guides/squad-template-role-mapping.md) — guides
+- [Squad Template Patterns & Design Principles](guides/squad-template-patterns.md) — guides
+- [SubSquads Architecture at Scale: Multi-Team Monorepo Patterns](research/sub-squad-architecture-research.md) — research
+- [Investigation Report: ICM 766712513 (v2) — ARM Watchlist API Error Rate Analysis](investigations/icm-766712513-v2-report.md) — investigations
+- [ICM 764634026 — MSPKI G1→G2 Root CA Migration Resolution Walkthrough](icm-764634026-resolution.md) — investigations
+- [Investigation Report — ICM #766712513 (Full Report)](investigations/icm-766712513-full-report.md) — investigations
+- [ICM 766712513 — Investigation Summary](investigations/icm-766712513-summary.md) — investigations
+- [Aragorn ICM Investigation — Capability Upgrade Analysis](investigations/aragorn-icm-capability-upgrade.md) — investigations
+- [Worktree Lifecycle for Parallel Agent Execution — Comprehensive Research](research/worktrees/worktree-lifecycle-research.md) — research
+- [Research Report: Tamir's Worktree/Parallelism Insights & Squad's Gap](research/worktrees/worktree-parallelism-research.md) — research
+- [Squad Skills Catalog — tamirdresher/squad-skills](catalogs/squad-skills-catalog.md) — catalogs
+- [Tamir Dresher's Git Worktrees Article: Comprehensive Analysis](research/worktrees/worktree-article-analysis.md) — research
+- [Teams Channel Notifications for Squad: Research & Recommendations](research/teams-notification-research.md) — research
+
+## guide
+
+- [Squad Template Role Mapping & Customization Guide](guides/squad-template-role-mapping.md) — guides
+- [Squad Template Patterns & Design Principles](guides/squad-template-patterns.md) — guides
 
 ## git
 
@@ -115,6 +141,16 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 - [Squad Skills Catalog — tamirdresher/squad-skills](catalogs/squad-skills-catalog.md) — catalogs
 - [Teams Channel Notifications for Squad: Research & Recommendations](research/teams-notification-research.md) — research
 
+## squad-infra
+
+- [Squad Template Role Mapping & Customization Guide](guides/squad-template-role-mapping.md) — guides
+- [Squad Template Patterns & Design Principles](guides/squad-template-patterns.md) — guides
+- [SubSquads Architecture at Scale: Multi-Team Monorepo Patterns](research/sub-squad-architecture-research.md) — research
+- [Research Report: Tamir's Worktree/Parallelism Insights & Squad's Gap](research/worktrees/worktree-parallelism-research.md) — research
+- [Worktree Lifecycle for Parallel Agent Execution — Comprehensive Research](research/worktrees/worktree-lifecycle-research.md) — research
+- [Squad Skills Catalog — tamirdresher/squad-skills](catalogs/squad-skills-catalog.md) — catalogs
+- [Teams Channel Notifications for Squad: Research & Recommendations](research/teams-notification-research.md) — research
+
 ## teams
 
 - [Teams Channel Notifications for Squad: Research & Recommendations](research/teams-notification-research.md) — research
@@ -126,6 +162,15 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 
 ## workflow
 
+- [SubSquads Architecture at Scale: Multi-Team Monorepo Patterns](research/sub-squad-architecture-research.md) — research
+- [Research Report: Tamir's Worktree/Parallelism Insights & Squad's Gap](research/worktrees/worktree-parallelism-research.md) — research
+- [Tamir Dresher's Git Worktrees Article: Comprehensive Analysis](research/worktrees/worktree-article-analysis.md) — research
+- [Teams Channel Notifications for Squad: Research & Recommendations](research/teams-notification-research.md) — research
+
+## workflow
+
+- [Squad Template Role Mapping & Customization Guide](guides/squad-template-role-mapping.md) — guides
+- [Squad Template Patterns & Design Principles](guides/squad-template-patterns.md) — guides
 - [SubSquads Architecture at Scale: Multi-Team Monorepo Patterns](research/sub-squad-architecture-research.md) — research
 - [Research Report: Tamir's Worktree/Parallelism Insights & Squad's Gap](research/worktrees/worktree-parallelism-research.md) — research
 - [Tamir Dresher's Git Worktrees Article: Comprehensive Analysis](research/worktrees/worktree-article-analysis.md) — research

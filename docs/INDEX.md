@@ -44,7 +44,10 @@ Master index organized by the 8-category knowledge management system. Documents 
 
 ## Guides
 
-*No documents yet.*
+| Document | Date | Tags | Status |
+|----------|------|------|--------|
+| [Squad Template Role Mapping & Customization Guide](guides/squad-template-role-mapping.md) | 2026-03-23 | guide, squad-infra, roles, workflow, bilbo, final |
+| [Squad Template Patterns & Design Principles](guides/squad-template-patterns.md) | 2026-03-23 | guide, squad-infra, patterns, workflow, bilbo, final |
 
 ## Feedback
 
