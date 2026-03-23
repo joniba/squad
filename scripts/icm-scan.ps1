@@ -77,6 +77,10 @@ if ($DryRun) {
 }
 
 Write-Host "🔍 IcM scan — team $TeamId" -ForegroundColor Cyan
+Write-Host "   Query: icm-search_incidents_by_owning_team_id (teamId=$TeamId)" -ForegroundColor DarkGray
+Write-Host "   Filter: Sev0-2 (any type) + CRIs (System/Customer Reported, any sev) + Sev2.5 candidates" -ForegroundColor DarkGray
+Write-Host "   Exclude: bare Sev3, Sev4-5, Mitigated/Resolved/False Positive" -ForegroundColor DarkGray
+Write-Host ""
 
 $output = copilot -p $prompt `
     --yolo `
