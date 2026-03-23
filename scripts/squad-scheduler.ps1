@@ -81,7 +81,10 @@ function Start-SpinnerSleep([int]$totalSeconds, $taskList) {
     $w = [Console]::WindowWidth - 1
     for ($i = $totalSeconds; $i -gt 0; $i--) {
         $spin = $spinChars[$spinIdx % 4]; $spinIdx++
-        $parts = @(foreach ($t in $taskList) { "$($t.name) in $(Format-Remaining (Get-Remaining $t))" })
+        $parts = @(foreach ($t in $taskList) {
+            if (-not (Test-Condition $t)) { continue }
+            "$($t.name) in $(Format-Remaining (Get-Remaining $t))"
+        })
         $line = "⏳ $spin $($parts -join ' | ')"
         if ($line.Length -gt $w) { $line = $line.Substring(0, $w) }
         Write-Host -NoNewline "`r$($line.PadRight($w))"
