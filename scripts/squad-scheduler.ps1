@@ -63,9 +63,13 @@ do {
             $due = if (Test-Due $t) { "DUE" } else { "not due" }
             $type = if ($t.type) { $t.type } else { "script" }
             Write-Log "  [DRY] $($t.name) | $type | $($t.interval) | $due | condition=$(if (Test-Condition $t) {'met'} else {'unmet'})"
-        } elseif (Test-Due $t) {
+        } else {
             $force = ($Include -and $Include -contains $t.name) -or ($Tasks -and $Tasks -contains $t.name)
-            Invoke-Task $t -ForceCondition:$force
+            if ($force -or (Test-Due $t)) {
+                Invoke-Task $t -ForceCondition:$force
+            } else {
+                Write-Log "  SKIP $($t.name) -- not due (last: $($state.PSObject.Properties[$t.name].Value))"
+            }
         }
     }
     if (-not $DryRun) { $state | ConvertTo-Json | Set-Content $statePath -Encoding UTF8 }
