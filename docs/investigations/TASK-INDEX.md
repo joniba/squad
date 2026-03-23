@@ -16,7 +16,7 @@ status: active
 
 **Purpose:** Prioritized tracking of investigation tasks requiring action. Sorted by severity (Sev2 → Sev3), then by Aragorn's investigation-driven priority ranking (P1 → P2 → P3).
 
-**Last Updated:** 2026-03-28  
+**Last Updated:** 2026-03-29  
 **Maintenance:** Update checkbox status as actions are completed. Mark `[x]` when action resolved.
 
 ---
@@ -25,7 +25,7 @@ status: active
 
 | Status | ICM ID | Title | Type | Links | Action Needed | Details |
 |--------|--------|-------|------|-------|---------------|---------|
-| 🔍 | 764634026 | AzRel Red Flag - Ocean View- SR17 - MSPKI Cert Attestation for Central or Self Migration | Security | [Report](icm-764634026-investigation.md) · [Portal](https://portal.microsofticm.com/imp/v5/incidents/details/764634026/home) | **Investigate complete — awaiting remediation.** TI services confirmed using MSPKI certs for client auth (mTLS). Deadline: Apr 10 (central) / May 16 (self-migration) | HIGH confidence: TAXIIRequestSender.cs uses ClientCertificateOption.Manual. Two remediation paths documented. |
+| 🔍 | 764634026 | AzRel Red Flag - Ocean View- SR17 - MSPKI Cert Attestation for Central or Self Migration | Security | [Report](icm-764634026/icm-764634026-investigation.md) · [Portal](https://portal.microsofticm.com/imp/v5/incidents/details/764634026/home) | **Investigate complete — awaiting remediation.** TI services confirmed using MSPKI certs for client auth (mTLS). Deadline: Apr 10 (central) / May 16 (self-migration) | HIGH confidence: TAXIIRequestSender.cs uses ClientCertificateOption.Manual. Two remediation paths documented. |
 | ⬜ | 766712513 | ARM Watchlist API Error Rates (WEU-402) | LiveSite | [Report](icm-766712513-summary.md) · [Portal](https://portal.microsofticm.com/imp/v5/incidents/details/766712513/home) | **Run Kusto queries** to confirm subscription impact and failure causes (Gateway vs RP-side); check FCM change data; determine if self-resolving | Recurring pattern on `prd-weu-402` endpoint; Sev2 ACTIVE; likely single-tenant request flood or infrastructure issue; 5th recurrence in March 2026 |
 
 ---
