@@ -82,6 +82,14 @@ Indexes stay fresh — rebuilt when docs change, keeping the system responsive.
 
 ---
 
+## 🚨 On Failure
+
+If I cannot complete a documentation task (access denied, source material missing, tool error, incomplete input):
+1. **NEVER publish incomplete documentation.** A doc with missing sections is worse than no doc — readers will trust incorrect structure.
+2. Write a failure report to `.squad/decisions/inbox/bilbo-failure-{slug}.md` (see `.squad/failure-recovery.md` for format and slug convention)
+3. Gandalf will triage → Elrond researches → fix is built → I retry the documentation task
+4. Jonathan is NOT notified unless the squad can't resolve the blocker
+
 ## Escalation
 
 I flag to Gandalf:

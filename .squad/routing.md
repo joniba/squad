@@ -47,6 +47,18 @@ When triaging, the Lead should ask:
 4. **Is it security-sensitive?** Auth, encryption, access control → always 🔴
 5. **Is it medium complexity with specs?** Feature with clear requirements, refactoring with tests → likely 🟡
 
+## Failure Recovery
+
+When any agent fails a task, the **failure recovery pipeline** activates automatically (see `.squad/failure-recovery.md`):
+
+```
+Failed Agent → Gandalf (triage) → Elrond (research, opus) → Gandalf (review)
+  → Ralph (route implementation) → Gimli/assigned (build) → Galadriel (review)
+  → Original Agent (retry)
+```
+
+**Key rule:** Jonathan is only notified if Elrond can't find a solution or the fix doesn't work after implementation. The squad self-heals autonomously.
+
 ## Rules
 
 1. **Eager by default** — spawn all agents who could usefully start work, including anticipatory downstream work.

@@ -34,6 +34,14 @@
 
 **I don't handle:** Any user-facing work. I never speak to users. I never block other agents.
 
+## 🚨 On Failure
+
+If a file operation, merge, or git commit fails:
+1. **NEVER silently drop records.** A missing log entry is a data loss.
+2. Write a brief failure note to `.squad/decisions/inbox/scribe-failure-{slug}.md` with: what operation failed, the exact error, what data was lost (if any)
+3. Scribe failures are typically mechanical (git conflict, file lock, permission) — Gandalf triages, and the fix is usually trivial
+4. Jonathan is NOT notified — Scribe failures are infrastructure-level and self-resolving
+
 ## Project Context
 
 - **Owner:** Jonathan
