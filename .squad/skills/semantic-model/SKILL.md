@@ -4,31 +4,34 @@
 
 ## Data Model
 
-### Node Types
+All 8 node types and 8 edge types are implemented in `scripts/semantic-index.ps1`.
 
-| Type | Key | Properties |
-|------|-----|------------|
-| **agent** | name | role, charter_path |
-| **doc** | path | title, category, tags[], status, date |
-| **issue** | number | title, owner, status, labels[] |
-| **pr** | number | title, author, status |
-| **decision** | slug | title, author, date, status |
-| **skill** | name | path, owner |
-| **session** | id | agent, date, branch |
-| **file** | path | last_modified_by, last_commit |
+### Node Types (8/8 implemented)
 
-### Edge Types
+| Type | Key | Source | Properties |
+|------|-----|--------|------------|
+| **agent** | name | `.squad/agents/*/charter.md` | role, charter_path |
+| **decision** | slug | `.squad/decisions.md` | title, author |
+| **skill** | name | `.squad/skills/*/SKILL.md` | path |
+| **doc** | path | `docs/**/*.md` frontmatter | title, tags[], status |
+| **commit** | short-sha | `git log -30` | author, message |
+| **issue** | number | `gh issue list` | title, state, labels[] |
+| **pr** | number | `gh pr list` | title, state |
+| **session** | basename | `.squad/log/`, `.squad/orchestration-log/` | path |
+| **file** | path | key `.squad/` config files | category |
 
-| Relationship | From → To | Example |
-|-------------|-----------|---------|
-| owns | agent → issue | gimli owns #36 |
-| authored | agent → doc | bilbo authored INDEX.md |
-| implements | pr → issue | PR #53 implements #52 |
-| modifies | session → file | session abc modifies watchdog.ps1 |
-| depends_on | issue → issue | #36 depends on #37 |
-| tagged_with | doc → tag | catalog tagged with "research" |
-| decided_in | decision → issue | PORT decided in #9 |
-| references | doc → doc | upgrade references catalog |
+### Edge Types (8/8 implemented)
+
+| Relationship | From → To | Source | Example |
+|-------------|-----------|--------|---------|
+| **tagged_with** | doc → tag | doc frontmatter `tags:` | catalog tagged with "research" |
+| **owns** | agent → skill/issue | SKILL.md `owner:` / issue `squad:X` label | gimli owns semantic-model |
+| **authored** | agent → doc/decision | frontmatter `author:` / decisions.md | bilbo authored INDEX.md |
+| **implements** | pr → issue | PR body `Resolves #N` | PR #53 implements #52 |
+| **modifies** | commit → file | `git diff-tree` | commit abc modifies watchdog.ps1 |
+| **depends_on** | issue → issue | issue body (future) | #36 depends on #37 |
+| **decided_in** | decision → issue | decision title contains `#N` | PORT decided in #9 |
+| **references** | doc → doc | markdown links `[](path.md)` | upgrade references catalog |
 
 ## Storage
 
