@@ -14,3 +14,6 @@ worktrees/
 .squad/skills/teams-watchdog/watchdog.log
 .squad/skills/teams-watchdog/work/
 .squad-monitor/
+# Scheduler runtime state
+.squad/scheduler-state.json
+.squad/scheduler.log

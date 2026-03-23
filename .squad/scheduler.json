@@ -1,0 +1,38 @@
+{
+  "tasks": [
+    {
+      "name": "teams-watchdog",
+      "script": ".squad/skills/teams-watchdog/run-pipeline.ps1",
+      "interval": "24h",
+      "enabled": true,
+      "condition": null
+    },
+    {
+      "name": "icm-scan",
+      "script": "scripts/icm-scan.ps1",
+      "interval": "4h",
+      "enabled": false,
+      "condition": "oncall"
+    },
+    {
+      "name": "daily-summary",
+      "script": "scripts/squad-daily-summary.ps1",
+      "interval": "24h",
+      "enabled": true,
+      "condition": null
+    },
+    {
+      "name": "semantic-refresh",
+      "script": "scripts/semantic-index.ps1",
+      "interval": "12h",
+      "enabled": true,
+      "condition": null
+    }
+  ],
+  "oncall": {
+    "enabled": false,
+    "team_id": 116041,
+    "check_alias": "jbenami"
+  },
+  "log_file": ".squad/scheduler.log"
+}
