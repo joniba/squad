@@ -12,6 +12,7 @@ How to decide who handles what.
 | Scripts, tools, automation | 🔧 Gimli | — | "Build a script to do X", "Automate Y", create utilities |
 | PR code review | 👑 Galadriel | `docs/reviews/` | "Review PR #42", code quality verification, finding reports |
 | Livesite, incidents, Azure ops | ⚙️ Aragorn | `docs/investigations/` | "Investigate IcM #123", "Check service health", troubleshoot |
+| TI domain backend code (C#, RP, STIX APIs) | 🗡️ Frodo | External repos (Sentinel-TiPipeline, SecurityInsights RP) | "Implement subscription filter", "Fix RP code", TI pipeline changes |
 | Scope & priorities | 🏗️ Gandalf | — | What to work on next, trade-offs, decisions |
 | Work review | 🏗️ Gandalf | — | Review output quality, check coherence |
 | Session logging | 📋 Scribe | — | Automatic — never needs routing |
@@ -27,6 +28,7 @@ How to decide who handles what.
 | `squad:bilbo` | Documentation, reports, summaries | 📝 Bilbo |
 | `squad:gimli` | Scripts, tools, automation | 🔧 Gimli |
 | `squad:aragorn` | Livesite, incidents, ops | ⚙️ Aragorn |
+| `squad:frodo` | TI domain backend code, RP changes | 🗡️ Frodo |
 
 ### How Issue Assignment Works
 

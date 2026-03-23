@@ -18,6 +18,7 @@
 | 🔧 Gimli | Tool Builder | `.squad/agents/gimli/charter.md` | ✅ Active |
 | ⚙️ Aragorn | Operator | `.squad/agents/aragorn/charter.md` | ✅ Active |
 | 📋 Scribe | Scribe | `.squad/agents/scribe/charter.md` | ✅ Active |
+| 🗡️ Frodo | TI Domain Backend Engineer | `.squad/agents/frodo/charter.md` | ✅ Active |
 | 🔄 Ralph | Work Monitor | — | 🔄 Monitor |
 
 ## Project Context
