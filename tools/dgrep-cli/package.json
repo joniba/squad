@@ -1,0 +1,46 @@
+{
+  "name": "@ms-pa/dgrep-cli",
+  "version": "0.1.0",
+  "description": "Cross-platform CLI for querying Geneva DGrep (Distributed Grep) logs",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "dgrep": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src/ tests/",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "geneva",
+    "dgrep",
+    "logs",
+    "cli",
+    "monitoring",
+    "microsoft"
+  ],
+  "author": "Jonathan Benami",
+  "license": "MIT",
+  "dependencies": {
+    "@azure/identity": "^4.0.0",
+    "cli-table3": "^0.6.0",
+    "commander": "^12.0.0",
+    "cosmiconfig": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "eslint": "^9.0.0",
+    "rimraf": "^5.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

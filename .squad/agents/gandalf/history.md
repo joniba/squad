@@ -43,3 +43,15 @@
 - **Reviewer hire:** Created 2 issues (#12–#13) to research Bobbie's patterns and hire a LotR-cast Reviewer agent for ms-pa. Fills the gap — team has Lead, Researcher, Documentarian, Tool Builder, Operator but no Reviewer.
 - **Labels created:** `squad:elrond` (blue, 1d76db), `squad:bilbo` (green, 0e8a16), `squad:gandalf` (yellow, fbca04) on ms-pa repo.
 - **Issues created:** #7–#13 on `jbenami_microsoft/ms-pa`, all labeled `squad` + agent-specific labels.
+
+### 2026-03-23 — DGrep CLI Project Decomposition
+
+- **Project:** `tools/dgrep-cli/` — cross-platform CLI for Geneva DGrep log search. No CLI exists anywhere in the ecosystem; our tool fills the gap.
+- **Research base:** Elrond's comprehensive research at `docs/research/geneva-dgrep-research.md` (23KB, covering API surface, KQL/MQL, auth, rate limits, tech stack recommendation).
+- **Tech stack:** TypeScript, Commander.js, vitest, tsup, @azure/identity, cosmiconfig, cli-table3. Accepted Elrond's recommendation — team already uses Node.js, and the .NET SDK gap forces REST API reverse-engineering anyway.
+- **Architecture pattern:** Two-track parallel execution. Phase 0 (API spikes → Elrond) runs alongside Phase 1 (foundation → Gimli). Phase 1 is 100% API-independent — uses mock data, builds types from SDK docs.
+- **Critical path:** REST API discovery (#94) and auth token format (#95) are the blockers. Everything in Phase 2 (transport, auth, end-to-end commands) gates on these spikes.
+- **Rate limit discipline:** 5 concurrent requests per user, orphaned queries block 20% of capacity. CLI must guarantee cleanup on Ctrl+C — this is a first-class requirement, not a nice-to-have.
+- **Scaffolding delivered:** package.json, tsconfig, vitest config, types (QueryInput, RowSetResult, etc.), CLI entry point, 8 passing tests. All at `tools/dgrep-cli/`.
+- **Issues created:** #94–#100 on `jbenami_microsoft/ms-pa`. Phase 0: #94 (REST API spike), #95 (auth spike) → Elrond. Phase 1: #96 (CLI structure), #97 (formatters), #98 (time parser), #99 (config), #100 (saved queries) → Gimli.
+- **Known unknowns:** Streaming protocol (WebSocket? SSE? chunked HTTP?), whether dSTS tokens can be acquired via Azure Identity, NuGet package name for SDK decompilation.

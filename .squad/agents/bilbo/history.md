@@ -302,3 +302,30 @@
 - Updated all three index files to maintain discovery surfaces: INDEX.md (category browsing), TAGS.md (tag search), RECENT.md (timeline view)
 - Verified all frontmatter properly formatted for system parsing; all guides include related_docs cross-references for discoverability
 - No blockers; all documentation complete, indexed, and committed to main branch
+
+### Tools & Integrations Catalog (2026-03-23)
+**Deliverable:** `docs/catalogs/tools-and-integrations.md` — Comprehensive inventory of every tool, integration, API, database, and reference source used by the pa-squad project.
+
+**What was cataloged:**
+- **8 MCP servers** with specific tool functions: IcM (19 tools), Geneva (5), EngHub (4), Azure (6), WorkIQ (2), ADO (5), GitHub (6), ConfigGen (available)
+- **3 databases:** IcM Kusto cluster, Copilot session store (SQLite), semantic model (JSON)
+- **4 direct APIs:** IcM REST, Kusto REST, Teams webhook, GitHub (via `gh`)
+- **6 CLI tools:** `copilot`, `git`, `gh`, `az`, `py`, `squad-monitor`
+- **5+ reference codebases:** Personal AI Companion, TI Pipeline repos (28), squad-skills, squad-monitor, squad-personal-demo
+- **5 scheduled tasks:** teams-watchdog, daily-summary, semantic-refresh, email-watchdog, icm-scan (disabled)
+- **2 notification channels:** Teams webhooks (Adaptive Cards), GitHub Issues
+- **Authentication matrix:** 9 services with auth methods documented
+
+**Research sources consulted:**
+- `.squad/scheduler.json` — scheduled task definitions
+- `.squad/agents/*/charter.md` — 7 agent charters for tool usage
+- `.squad/skills/*/SKILL.md` — 12 skill definitions for integrations
+- `scripts/*.ps1` — 10 scripts + 10 skill scripts for CLI/API usage
+- `docs/research/*.md` — research docs for tool discoveries and auth patterns
+- `docs/catalogs/reference-codebases.md` — reference repo inventory
+
+**Process notes:**
+- Ran 4 parallel explore agents to simultaneously research agents, skills, scripts, and docs
+- Cross-referenced all sources to avoid duplicates and ensure complete coverage
+- Organized into 8 categories with quick-reference tables per agent
+- Documented as a living document with last-updated date for ongoing maintenance

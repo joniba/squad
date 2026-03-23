@@ -1739,3 +1739,126 @@ These issues represent high-level product feedback from Jonathan's onboarding ex
 - All meaningful changes require team consensus
 - Document architectural decisions here
 - Keep history focused on work, decisions focused on direction
+
+### 2026-03-23T14:50:00Z: DGrep CLI Research — API Protocol & Auth Findings (Active)
+**Author:** Elrond
+**Status:** Complete, informs Phase 0
+**Related:** docs/research/geneva-dgrep-research.md
+
+# Decision Memo: Geneva DGrep Research for CLI Tool
+
+**From:** Elrond (Researcher)  
+**To:** Gandalf (Task Decomposer)  
+**Date:** 2026-03-23  
+**Priority:** Actionable  
+**Related:** `docs/research/geneva-dgrep-research.md`  
+
+---
+
+## Summary
+
+Completed comprehensive research on Geneva DGrep to support building `tools/dgrep-cli/`. The full research document is at `docs/research/geneva-dgrep-research.md`. Key findings that affect task decomposition:
+
+## Key Findings
+
+### 1. No CLI exists — the gap is real
+There is no existing DGrep CLI tool anywhere in the Geneva ecosystem. All programmatic access requires writing .NET code against the DGrep SDK. This validates the need for our CLI.
+
+### 2. The REST API is undocumented — this is the biggest risk
+The DGrep SDK is the only documented interface. The SDK talks to `dgrepv2-frontend-prod.trafficmanager.net` but the HTTP protocol is not publicly documented. We will need to **reverse-engineer the REST API** by capturing traffic from the .NET SDK, or find an internal contact who can share the API spec.
+
+**Recommendation for Gandalf:** The first task should be an API discovery spike — use the .NET SDK + Fiddler/mitmproxy to capture the exact HTTP requests, headers, and auth tokens.
+
+### 3. Auth is complex but solvable
+Geneva uses dSTS for authentication. The SDK supports cert-based auth (DGrepClient) and user-interactive auth (DGrepUserAuthClient, .NET Framework only). For our CLI, we should attempt using Azure Identity's `DefaultAzureCredential` (which leverages `az login` tokens). Whether this works with the DGrep frontend is unknown and needs a spike.
+
+### 4. KQL is the right query language to focus on
+Geneva is migrating from MQL to KQL. MQL is legacy-maintained. The CLI should default to KQL and support MQL as a secondary option. The KQL subset has specific pitfalls (no `has`, no `let`, use `mvexpand` not `mv-expand`, summarize in server queries produces duplicates).
+
+### 5. Rate limits require careful resource management
+5 concurrent requests per user. Queries must be explicitly closed (`CloseAsync()`). The CLI must guarantee cleanup even on Ctrl+C / crashes.
+
+### 6. TypeScript/Node.js is the recommended tech stack
+Cross-platform, good Azure Identity SDK, strong CLI ecosystem (Commander.js/oclif), streaming support, fast iteration. The team already uses Node.js tooling.
+
+## Risks to Plan For
+1. **REST API reverse-engineering** — may be time-consuming and fragile
+2. **Auth token compatibility** — dSTS tokens may not be acquirable via standard Azure Identity
+3. **Streaming protocol** — unknown mechanism for real-time result delivery
+4. **Server query summarize bug** — CLI should document this clearly and consider auto-fixing
+
+## Suggested Task Breakdown
+1. **Spike: Capture DGrep REST API** (research task → Elrond)
+2. **Spike: Auth token format** (research task → Elrond)
+3. **Design: CLI command structure** (design task → architecture review)
+4. **Implement: Core query flow** (dev task)
+5. **Implement: Auth layer** (dev task)
+6. **Implement: Output formats** (dev task)
+7. **Implement: Config & saved queries** (dev task)
+8. **Test: Cross-platform** (test task)
+
+
+---
+
+### 2026-03-23T15:00:00Z: DGrep CLI Project — 3-Phase Decomposition & Scaffolding (Active)
+**Author:** Gandalf
+**Status:** Active Project
+**Related:** tools/dgrep-cli/PLAN.md, GitHub issues #94-#100
+
+# Decision Memo: DGrep CLI Project Plan & Decomposition
+
+**From:** Gandalf (Lead)  
+**To:** Squad  
+**Date:** 2026-03-23  
+**Priority:** Active Project  
+**Related:** `tools/dgrep-cli/PLAN.md`, `docs/research/geneva-dgrep-research.md`
+
+---
+
+## Summary
+
+Decomposed the Geneva DGrep CLI project into 3 phases with 16 work items. Created project scaffolding at `tools/dgrep-cli/` and filed 7 GitHub issues for Phase 0 and Phase 1.
+
+## Key Decisions
+
+### 1. Two-track parallel execution
+Phase 0 (API spikes, Elrond) and Phase 1 (foundation, Gimli) run in parallel. This means Gimli has ~7 work items to start immediately while Elrond researches the undocumented REST API.
+
+### 2. Tech stack: TypeScript + Commander.js
+Accepted Elrond's recommendation. TypeScript gives us cross-platform, Azure Identity parity, and team familiarity. Commander.js over oclif — lighter weight for our needs.
+
+### 3. Phase 1 is fully API-independent
+All Phase 1 work (CLI structure, types, formatters, time parser, config, saved queries) uses mock data and has no dependency on the actual DGrep API. This was a deliberate architecture choice to maximize early velocity.
+
+### 4. Phase 2 gates on spike results
+The HTTP transport (2.1) and auth layer (2.2) are explicitly blocked on Elrond's spikes (0.1, 0.2). No implementation should begin until the REST API protocol is documented.
+
+### 5. Rate limit safety is a first-class requirement
+The CLI MUST guarantee CloseAsync-equivalent cleanup on Ctrl+C, crashes, and timeouts. 5 concurrent requests per user is unforgiving — an orphaned query blocks 20% of capacity.
+
+## Issues Created
+
+| Issue | Title | Phase | Owner |
+|-------|-------|-------|-------|
+| #94 | Spike: Capture DGrep REST API protocol | 0.1 | Elrond |
+| #95 | Spike: Auth token format | 0.2 | Elrond |
+| #96 | CLI command structure | 1.2 | Gimli |
+| #97 | Output formatters | 1.4 | Gimli |
+| #98 | Time range parser | 1.5 | Gimli |
+| #99 | Config management | 1.6 | Gimli |
+| #100 | Saved query management | 1.7 | Gimli |
+
+Phase 1.1 (scaffolding) and 1.3 (types) are already done — committed in the initial project setup.
+
+## Artifacts Created
+
+- `tools/dgrep-cli/PLAN.md` — full project plan
+- `tools/dgrep-cli/README.md` — project description & usage examples
+- `tools/dgrep-cli/package.json` — Node.js project with all dependencies
+- `tools/dgrep-cli/tsconfig.json` — TypeScript config
+- `tools/dgrep-cli/vitest.config.ts` — test config
+- `tools/dgrep-cli/.gitignore`
+- `tools/dgrep-cli/src/index.ts` — CLI entry point
+- `tools/dgrep-cli/src/types/index.ts` — all TypeScript types derived from SDK docs
+- `tools/dgrep-cli/tests/types.test.ts` — 8 passing type contract tests
+

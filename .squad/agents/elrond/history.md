@@ -699,3 +699,40 @@ Deep-dived into WorkIQ's Teams chat message retrieval to determine whether it ca
 - `.squad/decisions/inbox/elrond-ti-pipeline-integration.md` — Full decision proposal with tool inventory, relevance mapping to research + investigations, integration recommendations (6 actions), and risk assessment.
 
 **Key insight:** The real value isn't the validation scripts (which have bugs) — it's the SKILL.md API documentation. These files encode operational knowledge about TI API behavior, field semantics, and edge cases that would take hours to reconstruct from TSGs and source code. Reference them before any TI research or investigation.
+
+### 2026-03-23: Geneva DGrep Research — CLI Tool Feasibility
+**Context:** Jonathan tasked me with researching Geneva DGrep to support building a new CLI tool at 	ools/dgrep-cli/.
+**Key findings:**
+- DGrep is Geneva's distributed brute-force log search engine, auto-enabled on all Geneva Logs streams at zero cost. It searches raw blobs in Azure Storage with ~5 min ingestion latency.
+- **Two-tier query model:** Server Query (distributed, runs near data, blob-level granularity) + Client Query (in-memory, runs on returned results). Server query summarize/groupby produces partial aggregations (must re-summarize in client query).
+- **DGrep SDK (.NET only):** DGrepClient (cert auth) and DGrepUserAuthClient (user auth, .NET Framework only — not .NET Core). Core type is QueryInput with EventFilters, IdentityColumns, ServerQuery, ServerQueryType, MaxRowCount.
+- **Rate limits:** 5 concurrent requests per user, 500K default / 1M max rows, 7-day max query range, ~5 min ingestion latency. Must call IDGrepQuery.CloseAsync() to release quota.
+- **Query languages:** KQL (recommended, subset of full Kusto — no has, no let, use mvexpand not mv-expand, iif not iff) and MQL (legacy SQL/C#-like, maintained but no new features).
+- **Endpoints:** DGrep v2 frontend at dgrepv2-frontend-prod.trafficmanager.net; MDS endpoints vary by environment (FirstParty PROD, Diagnostics PROD, sovereign clouds).
+- **Biggest risk:** REST API between SDK and DGrep frontend is undocumented. Must reverse-engineer via traffic capture.
+- **No CLI exists anywhere in the Geneva ecosystem** — gap is validated.
+- **Recommended tech stack:** TypeScript/Node.js with Commander.js/oclif, @azure/identity for auth, streaming HTTP for real-time results.
+**Deliverables:**
+- docs/research/geneva-dgrep-research.md — Comprehensive research document covering API surface, query languages, auth, rate limits, existing tools, recommended architecture, risks/unknowns.
+- .squad/decisions/inbox/elrond-dgrep-research.md — Decision memo for Gandalf with key findings and suggested task breakdown.
+**Key insight:** The DGrep SDK is .NET-only and its user auth client doesn't work on .NET Core, which means even if we used .NET we'd need to reverse-engineer the REST API for cross-platform auth. This makes TypeScript the right choice — we need to talk to the REST API directly regardless of language.
+
+### 2026-03-24: DGrep approach comparison — SDK wrapper vs REST API reverse-engineering
+
+**Context:** Jonathan challenged the REST API approach from the initial DGrep research, clarifying that Windows-only is acceptable (cross-platform is NOT a requirement). Requested an honest side-by-side comparison of wrapping the .NET Framework SDK vs reverse-engineering the REST API.
+
+**Key findings:**
+1. **Cross-platform was the original justification for REST API approach — and that requirement is gone.** With Windows-only acceptable, the SDK wrapper approach is clearly superior on 7 of 8 dimensions.
+2. **Auth is the decisive factor.** Geneva uses dSTS (not standard AAD), and the SDK abstracts this entirely. Reverse-engineering dSTS token acquisition is weeks of work with real failure risk.
+3. **.NET Framework 4.7.2+ is reasonable in 2026:** ships with Windows 10/11, fully supported by VS 2022 and dotnet CLI, gets security patches via Windows Update, many internal Microsoft tools still target it.
+4. **DGrepUserAuthClient limitation is specific:** it uses WinForms/WPF for AAD login dialogs, which are Windows/.NET Framework-only. The certificate-based DGrepClient may actually work on .NET Core.
+5. **Time-to-value not close:** SDK wrapper = working query in hours; REST approach = working query in days/weeks after protocol analysis.
+6. **Maintenance cost not close:** SDK wrapper = NuGet package updates; REST approach = own the entire protocol layer, absorb every internal Geneva change.
+
+**Recommendation:** Approach A (wrap .NET Framework SDK). Build C# console app targeting net472, ship as Windows .exe. Proposed 2-hour spike first: verify SDK NuGet installs, DGrepUserAuthClient works interactively, DGrepClient works with certificates.
+
+**Deliverables:**
+- Updated docs/research/geneva-dgrep-research.md — Added "Approach Comparison: REST API vs .NET Framework SDK" section with 8-dimension analysis and recommendation.
+- .squad/decisions/inbox/elrond-dgrep-approach.md — Decision memo recommending SDK wrapper approach.
+
+**Key insight:** The original research defaulted to "build from scratch" because it assumed cross-platform was needed. Once that assumption was removed, the analysis flipped completely. Always challenge requirements before choosing the harder path.
