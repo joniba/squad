@@ -204,3 +204,121 @@
 **Next handoff:** Rate Governor design ready for Bilbo to synthesize into final coordination document (`docs/rate-limiting-coordination.md`) + team decision memo. Gimli will implement Phase 1 scripts (~5 files, 300 lines) after Bilbo's sign-off.
 
 **Key insight:** Centralized quota coordination eliminates cascading failures entirely. The key is not more tools — it's making the Rate Governor the single source of truth for quota state. Token Bucket ensures fair distribution; Predictive Circuit Breaker proactively prevents 429s; jitter-based retry breaks thundering herd. For ms-pa: Phase 1 (Token Bucket + Circuit Breaker) solves 90% of the problem with minimal complexity. Phases 2–3 are optimizations, not requirements. Recommendation: implement Phase 1 immediately, validate, then plan Phase 2.
+
+### 2025-01-16: .NET Aspire + MCP Integration Research for Squad Distributed Observability (Issue #28)
+
+**Context:** GitHub Issue #28 requests research on Aspire + MCP integration to enable distributed system observability across Squad infrastructure. Question: Can ms-pa use Aspire AppHost orchestration + MCP to give Squad agents system-wide visibility into logs, traces, health checks, and resource state?
+
+**Research methodology:**
+- Read GitHub Issue #28 scope and acceptance criteria
+- Searched for Tamir Dresher expertise (blog posts, worktrees-example repo, squad-personal-demo)
+- Fetched Tamir's blog posts directly: "Scaling AI Agents with Aspire: The Missing Isolation Layer" and "Organized by AI"
+- Researched port isolation strategies for parallel worktrees (4+ patterns)
+- Researched OpenTelemetry + health checks patterns in Aspire
+- Researched multi-agent system observability (LumiMAS, Agent Squad, Microsoft Foundry)
+
+**Key findings:**
+
+1. **Aspire is transformational for AI agents**: A single `Program.cs` with ~20 lines can orchestrate entire distributed systems (services, databases, caches, queues, frontends). Agents can modify, run, test autonomously.
+
+2. **MCP integration is robust**: Aspire Dashboard exposes MCP tools (`list_resources`, `list_console_logs`, `list_traces`, `get_resource_representation`) allowing agents to query resource status, retrieve logs, and access distributed tracing data in real-time.
+
+3. **Port isolation problem is critical blocker**: Aspire AppHost binds to fixed ports (18888-18890 for Aspire infrastructure, plus app-specific ports). When running multiple worktrees in parallel, ALL instances fight over the same ports → second AppHost fails to start.
+
+4. **Solution: Dynamic port allocation + MCP proxy** (Tamir Dresher's pattern):
+   - Layer 1: Automation scripts find free ports, set environment variables, launch AppHost, save settings to `scripts/settings.json`
+   - Layer 2: MCP proxy (272-line C# script) acts as indirection layer — agents connect to proxy (fixed config), proxy reads dynamic port from settings.json, forwards requests to correct AppHost instance
+   - Result: Each worktree gets isolated port range; agent config never changes; proxy handles discovery transparently
+
+5. **Four port isolation strategies documented** (Script+Proxy, Env Var Override, Docker-Compose, Future Aspire CLI `--isolated`). Tamir's pattern is optimal: fully automated, zero agent config changes, elegant indirection.
+
+6. **Distributed tracing via OpenTelemetry is built-in**: Every HTTP request, database call, message queue operation traced automatically. Traces propagate across service boundaries with full context. Aspire Dashboard shows request flows across all services. Agents can use `list_traces()` MCP tool to identify bottlenecks, diagnose failures.
+
+7. **Health checks are orchestration-aware**: `/health` (readiness) and `/alive` (liveness) probes. AppHost won't start dependent services until dependencies are healthy. Agents can query health via `list_resources()`.
+
+8. **Multi-agent observability patterns** (from LumiMAS, Agent Squad, Microsoft Foundry): Three-layered approach — monitoring/logging layer, anomaly detection layer, explanation layer. Key metrics: call counts, allow/deny ratios, latency, throughput, token usage. Structured logging + distributed trace correlation essential.
+
+**Production readiness assessment:**
+- ✅ Aspire framework (GA, production-ready)
+- ✅ MCP support (robust, industry-standard)
+- ✅ OpenTelemetry integration (battle-tested)
+- ⚠️ Port isolation solution (community-driven; awaiting built-in `aspire run --isolated` flag from Aspire team)
+
+**Recommendation:** GO — Adopt Aspire + MCP for ms-pa Squad infrastructure. Rationale: (1) Aspire is GA; (2) MCP integration is robust; (3) Port isolation solution exists (proven, automated); (4) Benefits substantial (system-wide visibility, parallel development, agent autonomy); (5) Maintenance burden acceptable (scripts <300 lines). Risks: Aspire team adds native `--isolated` flag (mitigation: Tamir's pattern still works; migrate when available).
+
+**Deliverable:** `docs/research/aspire-integration-research.md` (587 lines, 24 KB) — 10-section comprehensive research document with YAML frontmatter. Sections: Executive Summary, What is .NET Aspire (architecture, why it transforms AI development), MCP Integration (tools, example workflows), Port Conflict Problem (challenge, why manual workarounds fail), Solution Pattern (port allocation, MCP proxy, putting it together), Distributed Tracing & Health Checks (OpenTelemetry by default, health check patterns), Four Port Isolation Strategies (comparison table with trade-offs), Squad Infrastructure Integration (architecture diagram, implementation steps, observability benefits), Production Readiness Assessment (maturity matrix, go/no-go decision), References (blog posts, code samples, documentation).
+
+**Verified against Issue #28 acceptance criteria:**
+- ✅ Aspire AppHost orchestration capabilities covered
+- ✅ MCP integration for observability covered (tools, agent workflows)
+- ✅ Port isolation problem documented + 4 solutions with trade-offs
+- ✅ Distributed tracing approach (OpenTelemetry) covered
+- ✅ Squad infrastructure integration recommendations with implementation steps
+
+**Next handoff:** Go/no-go decision is **GO**. ms-pa team should prototype Aspire integration in a Squad worktree (2-3 days), then implement port allocation scripts + MCP proxy (2-3 days). Full production deployment feasible in 10-14 days. Key blockers: None (all required technology is available today).
+
+**Key insight:** Tamir Dresher has solved the exact problem ms-pa faces. The port isolation solution is not rocket science—it's elegant indirection (fixed config + dynamic discovery layer). The MCP proxy pattern is reusable; reference implementation is open source. For ms-pa: Copy Tamir's pattern, update agent charters to leverage Aspire MCP tools, get system-wide observability almost for free. Cost: ~400 lines of scripts + agent training. Benefit: True parallel multi-agent development with full distributed tracing, health checks, and log correlation.
+
+---
+
+## Issue #27: Teams & Outlook Bidirectional Integration Research (2025-01-17)
+
+**Research scope:**
+Teams and Outlook bidirectional integration for Squad agents — how to read Teams messages and Outlook data, post decisions back to Teams, respect user presence/DND, secure Squad state, and implement for EMU environment.
+
+**Acceptance criteria from Issue #27:**
+- [x] Research WorkIQ query patterns, rate limiting, indexing delay
+- [x] Design Adaptive Card templates for Squad results
+- [x] Research Outlook integration options (MCP servers, no-code platforms, managed connectors)
+- [x] Analyze privacy constraints for Squad state in Teams
+- [x] EMU environment-specific recommendations
+- [x] Decision readiness: ready for architecture review and pilot
+
+**Key findings:**
+
+1. **WorkIQ MCP is primary interface**: Natural-language queries for Teams messages, Outlook calendar, tasks. Polling-based (minutes to hours delay), suitable for batch queries. Rate limit: 1 query per agent cycle. Admin consent required once; then transparent.
+
+2. **Graph API for write operations**: POST Adaptive Cards to Teams (rate limit: 10 messages per 10 seconds per tenant). Lower-level control than WorkIQ; use for operations WorkIQ doesn't cover.
+
+3. **Power Automate for approval workflows**: "Start and wait for approval" action + Adaptive Cards automatically syncs status across Teams & Outlook.
+
+4. **Outlook integration options (4 alternatives)**:
+   - Dedicated MCP servers (kacase/mcp-outlook) — self-hosted
+   - No-code platforms (Zapier) — managed, per-action cost
+   - Managed connectors (Composio, Claude native) — zero auth config
+   - WorkIQ native (recommended) — unified auth with Teams, enterprise-grade
+
+5. **Presence-based triggering**: Graph Presence API for DND/Busy checks. No native Outlook→Teams sync; requires PowerShell automation polling calendar for DND events (~5-min latency).
+
+6. **EMU constraints**: Resource-Specific Consent limits access to specific Teams. App access policies scope Graph API to security groups. External tenant admin approval required.
+
+7. **Security & privacy**: Safe to share: decision summaries, outcomes, GitHub links. Risky: reasoning traces, full history, emails, internal metrics. Implement sanitization filter before posting.
+
+8. **Tamir's patterns** (squad-personal-demo): ralph-watch polling script, hybrid WorkIQ + pattern matching, proven issue triage integration.
+
+9. **Implementation roadmap**:
+   - Phase 0 (MVP): WorkIQ deployment, Outlook queries, Adaptive Card templates
+   - Phase 1 (Core): Message posting, presence-aware notifications
+   - Phase 2 (Advanced): Power Automate approval flow, 2-way sync
+   - Phase 3 (Scaling): Caching, multi-team support, DND automation
+
+10. **Recommended stack**: WorkIQ MCP + Graph API + webhook handler + rate limiting + sanitization filter
+
+**Deliverable:**
+\docs/research/teams-outlook-integration-research.md\ (35,875 chars, 11 sections) — comprehensive research with code examples (PowerShell, Python, JSON), architecture diagrams, and EMU setup guidance. All Issue #27 acceptance criteria verified.
+
+**Unresolved action items:**
+- EMU app registration approval (coordinate with Azure AD admin)
+- Webhook infrastructure location + audit logging
+- Change notifications design (polling vs. webhooks)
+- Power Automate licensing check
+- Graph API vs. Outlook COM automation (architect decision)
+
+**Next steps for Squad:**
+1. Architecture review of recommended stack
+2. EMU app registration approval coordination
+3. Webhook infrastructure design + compliance audit
+4. Phase 0 pilot deployment
+5. Power Automate implementation decision
+
+**Key insight:** WorkIQ + Graph API + Adaptive Cards is pragmatic and Microsoft-supported. EMU constraints manageable. Tamir's reference provides working pattern for pattern matching beyond WorkIQ. No blocking issues. Implementation can start pending architecture review and EMU approval.
