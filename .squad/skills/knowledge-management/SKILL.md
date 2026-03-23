@@ -35,6 +35,9 @@ docs/
 ├── investigations/                  # ICM & livesite investigation reports
 │   └── icm-{incident-id}.md
 │
+├── reviews/                         # Code review reports, PR analyses
+│   └── {descriptive-slug}.md
+│
 ├── research/                        # Research reports, deep dives, analyses
 │   └── {descriptive-slug}.md
 │
@@ -62,6 +65,7 @@ docs/
 | Category | Folder | What Goes Here | Examples |
 |----------|--------|---------------|----------|
 | **Investigation** | `investigations/` | ICM incident reports, livesite event analyses, outage post-mortems | `icm-766712513.md`, `icm-764634026.md` |
+| **Review** | `reviews/` | Code review reports, PR analyses, technical evaluations | `pr-squad-skills-review.md`, `architecture-review.md` |
 | **Research** | `research/` | Deep-dive analyses, technology evaluations, comparative studies | `worktree-parallelism-research.md`, `worktree-article-analysis.md` |
 | **Decision** | `decisions/` | Architecture decisions, technology choices, process changes (ADR-style) | `knowledge-graph-db-evaluation.md`, `state-management-approach.md` |
 | **Audit** | `audits/` | Systematic assessments of existing systems, gap analyses, compliance reviews | `squad-infra-audit.md` |
@@ -89,7 +93,7 @@ Every document gets tags in its YAML frontmatter. Tags enable cross-referencing 
 ### Tag Categories
 
 #### Type Tags (one required — matches the folder)
-`investigation` · `research` · `decision` · `audit` · `guide` · `catalog` · `feedback` · `tool-doc`
+`investigation` · `review` · `research` · `decision` · `audit` · `guide` · `catalog` · `feedback` · `tool-doc`
 
 #### Domain Tags (one or more required)
 | Tag | Covers |
@@ -182,7 +186,7 @@ The primary entry point. Groups all documents by category with one-line summarie
 ```
 
 **Rules:**
-- Categories appear in this fixed order: Investigations, Research, Decisions, Audits, Guides, Catalogs, Feedback, Tools
+- Categories appear in this fixed order: Investigations, Reviews, Research, Decisions, Audits, Guides, Catalogs, Feedback, Tools
 - Within each category, documents are sorted by date (newest first)
 - Empty categories still show the header (with "No documents yet")
 - Summary is ≤15 words
@@ -451,6 +455,7 @@ This log tracks changes to the Knowledge Management system design over time. It 
 
 | Date | Change | Rationale | Confidence |
 |------|--------|-----------|------------|
+| 2026-03-24 | Added "reviews" category (9th category) | Separate code review reports and PR analyses from ICM investigations. Reviews are critiques of work in progress or completed PRs; investigations are analyses of livesite incidents. Two distinct knowledge types require separate folders for clarity. Applied to docs/reviews/ folder structure and tagging taxonomy. Updates type tag list to include `review`. | High |
 | 2026-03-23 | Hierarchical subfolder grouping for related documents | When 2+ documents share a topic and form a conceptual cluster, create a subfolder to group them. Preserves git history by using `git mv` instead of delete/recreate. Update `related_docs` cross-references when paths change. Applied successfully to `research/worktrees/` (3 related worktree research documents). Improves findability and signals conceptual relationships. | High |
 | 2026-03-22 | Initial system design | Separation of charter (identity) from skill (design) allows evolution without freezing architecture. See decision: gandalf-bilbo-charter-skill-separation | Low |
 

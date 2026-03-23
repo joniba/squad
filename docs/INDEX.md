@@ -6,7 +6,7 @@ status: system
 
 # Documentation Index — By Category
 
-Master index organized by the 8-category knowledge management system. Documents listed newest-first within each category.
+Master index organized by the 9-category knowledge management system. Documents listed newest-first within each category.
 
 ## Investigations
 
@@ -22,6 +22,10 @@ Master index organized by the 8-category knowledge management system. Documents 
 | [ICM 766712513 — Investigation Summary](investigations/icm-766712513-summary.md) | 2026-03-22 | investigation-method, icm, livesite, arm, sentinel | final |
 | [Aragorn ICM Investigation — Capability Upgrade Analysis](investigations/aragorn-icm-capability-upgrade.md) | 2026-03-22 | investigation-method, icm, architecture, aragorn, agent-capability | final |
 | [ICM 764634026 — MSPKI G1→G2 Root CA Migration Resolution Walkthrough](icm-764634026-resolution.md) | 2026-03-22 | investigation-method, icm, security, livesite, operational | final |
+
+## Reviews
+
+*No documents yet.*
 
 ## Research
 
@@ -69,4 +73,4 @@ Master index organized by the 8-category knowledge management system. Documents 
 
 **Last Updated:** 2026-03-24  
 **Total Documents:** 18  
-**Categories Populated:** 4 / 8
+**Categories Populated:** 5 / 9

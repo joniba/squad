@@ -146,6 +146,10 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 - [Tamir Dresher's Git Worktrees Article: Comprehensive Analysis](research/worktrees/worktree-article-analysis.md) — research
 - [Teams Channel Notifications for Squad: Research & Recommendations](research/teams-notification-research.md) — research
 
+## review
+
+*No documents yet. This type tag will be applied to code review reports and PR analyses when the first review is documented.*
+
 ## s500
 
 - [ICM 51000000954460 — Revoked TI Indicators Still Triggering Alerts](investigations/icm-51000000954460-investigation.md) — investigations
@@ -243,5 +247,5 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 ---
 
 **Last Updated:** 2026-03-24  
-**Unique Tags:** 36  
+**Unique Tags:** 37  
 **Total Tag Assignments:** 73
