@@ -106,7 +106,7 @@ do {
             $type = if ($t.type) { $t.type } else { "script" }
             Write-Log "  [DRY] $($t.name) | $type | $($t.interval) | $due | condition=$(if (Test-Condition $t) {'met'} else {'unmet'})"
         } else {
-            $force = ($Include -and $Include -contains $t.name) -or ($Tasks -and $Tasks -contains $t.name)
+            $force = $Tasks -and $Tasks -contains $t.name
             if ($force -or (Test-Due $t)) { Invoke-Task $t -ForceCondition:$force }
             else { Write-LogOnly "  SKIP $($t.name) -- not due (last: $($state.PSObject.Properties[$t.name].Value))" }
         }
