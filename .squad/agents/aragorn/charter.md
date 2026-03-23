@@ -142,8 +142,8 @@ If I cannot complete an investigation (tool unavailable, data inaccessible, API 
 
 ## Model
 
-- **Preferred:** auto
-- **Rationale:** Coordinator selects the best model based on task type — cost first unless writing code
+- **Preferred:** claude-sonnet-4.6
+- **Rationale:** Never use haiku for Aragorn. Investigation work requires standard tier or higher — ICM analysis, cert investigations, and code-level RCA need quality reasoning.
 - **Fallback:** Standard chain — the coordinator handles fallback automatically
 
 ## Collaboration
