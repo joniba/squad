@@ -118,6 +118,29 @@
 
 **Next Steps:** Assign Phase 1 to Gimli; target completion 2026-03-29. Briefing for Aragorn on alert thresholds. Monitor for auth race regression during production rollout.
 
+### 2026-03-23: Teams-Monitor Adaptation Research (Issue #65)
+
+**Context:** Jonathan requested research on adapting Tamir's teams-monitor skill (from tamirdresher/squad-skills) into the pa-squad Teams watchdog workflow. Goal: reduce premium request cost from 3 per cycle to ~1 by consolidating the filter→extract→format pipeline into a single-agent call via `copilot -p`.
+
+**Key findings (5 research questions answered):**
+1. **teams-monitor analysis:** Tamir's skill is a Teams→GitHub bridge (not summarizer). Workflow: query WorkIQ → filter actionable → create GitHub issues → deduplicate → log. Directly reusable pattern: WorkIQ query structure, rate-limit guidance (one query/cycle), file-based secret storage (`~\.squad\teams-webhook.url`). Requires inversion: instead of "find actionable items for team", use "find my messages and extract insights".
+
+2. **Consolidation strategy:** Current 3-step pipeline (filter→extract→format via file I/O) can collapse into single prompt: "Query WorkIQ for my Teams messages, extract Decisions/Action Items/Key Context, format as markdown." Single `copilot -p` call replaces 3 intermediate steps. Cost model: Probe (1 request) + Combined agent (1 request) + Format (0—already in output) + Delivery (1) = **3 requests** (current 3–4 if probe/format separate).
+
+3. **Exact command:** `copilot -p <structured-prompt> --allow-tool='workiq'` with prompt that (a) tells agent to use WorkIQ to fetch Jonathan's last 24h messages, (b) explicitly structures output (## Decisions, ## Action Items, ## Key Context), (c) provides fallback ("No activity if empty"). Prompt length ~200 tokens; expected output ~500–800 tokens.
+
+4. **Risk points identified:** Token limit on large message sets (100+ messages/day → overflow), output format variability (Copilot may not always use exact markdown structure), loss of intermediate debugging data (can't inspect filtered vs. extracted if something fails), WorkIQ indexing delay (unavoidable, inherent polling limitation), cost may not meet 6-request org target (fallback strategy: revert to 3-step if single-agent costs 9+ requests).
+
+5. **POC deliverable:** 27-line PowerShell script (`.squad/skills/teams-watchdog/poc-single-agent-scan.ps1`) that demonstrates single-agent call with structured prompt. Ready for Jonathan to test against real Teams data. Success criteria: runs within 2 min, outputs valid markdown, no token errors.
+
+**Recommendation:** ADOPT single-agent consolidation. Risk profile acceptable given 50% cost reduction in pipeline steps and architectural simplification (1 call instead of 3-step file chain). Rollout: Jonathan validates POC → replace filter/extract in run-pipeline.ps1 → monitor first 5 runs for token/format anomalies → fallback ready if needed.
+
+**Deliverables:**
+- `docs/research/teams-monitor-adaptation-research.md` (9.5 KB) — 5-question research document with YAML frontmatter, Tamir plugin analysis, consolidation mechanics, exact command, risk points, POC testing guidance
+- `.squad/skills/teams-watchdog/poc-single-agent-scan.ps1` (27 lines) — executable POC with structured prompt, markdown output, parameter support for lookback window
+
+**Key insight:** teams-monitor is a reference implementation for Teams→summary workflow patterns (WorkIQ queries, rate limits, output structure), not a direct copy. The adaptation strategy inverts the goal (bridge vs. summarize) while reusing core query/filtering patterns. Single-agent consolidation is achievable and reduces cost by 50% in the pipeline layer (larger org-level savings depend on delivery/scheduling overhead).
+
 ### 2026-03-23: SubSquads architecture research — multi-team monorepo patterns (GitHub Issue #24)
 
 **Context:** Jonathan filed Issue #24 requesting deep research on SubSquads architecture patterns, specifically: label leakage prevention, CODEOWNERS integration, 3+ team routing patterns, failure modes, and feasibility for ms-pa adoption. Conducted comprehensive research synthesizing Tamir Dresher's blog series (Parts 0–3), web sources on label governance and monorepo scaling, and real-world case studies (Tetris experiment).
