@@ -171,3 +171,43 @@
 - Created three index files (INDEX.md, TAGS.md, RECENT.md) to make guides discoverable per knowledge-management/SKILL.md specification
 - All guides verified to load without rendering errors, frontmatter properly formatted for system parsing
 - No blockers; all documentation complete and committed
+
+### Teams Knowledge Library — Initialize with 9 Watchdog Items (2026-03-23)
+
+**Deliverables:**
+- .squad/skills/teams-knowledge/SKILL.md (320+ lines) — Comprehensive skill documentation defining Teams Knowledge Library purpose, folder hierarchy (decisions/, action-items/, context/), naming conventions (YYYY-MM-DD-slug), tagging taxonomy (type, domain, project, agent, status tags), frontmatter template, index system requirements, document templates, maintenance workflow, quality standards
+- 	eams-knowledge/decisions/ (4 documents) — Decision documents for ARM watchlist priority, AI Squads endorsement, TI Analyzer spec hold, git worktree orchestration bug
+- 	eams-knowledge/action-items/ (4 documents) — Action items for syncing with Hila, fixing service tree ownership, reviewing TI Analyzer tasks, sharing one-pager and GAIA review
+- 	eams-knowledge/context/ (1 document) — Context document on orchestration gap (parallel agents blocked by git checkout fallback)
+- 	eams-knowledge/INDEX.md — Master hierarchical index by category (Decisions, Action Items, Context), sorted by date (newest first), with brief summaries
+- 	eams-knowledge/TAGS.md — Reverse tag index (11 tags) organized alphabetically, items sorted by date newest first
+- Updated .squad/agents/bilbo/charter.md — Added 	eams-knowledge/ to Ownership section
+
+**What was documented:**
+- **Skills Architecture:** Created comprehensive SKILL.md following existing knowledge-management patterns but adapted for watchdog-driven cadence
+- **9 Watchdog Items from 2026-03-23:** Parsed daily Teams watchdog summary into 4 decisions + 4 action items + 1 context item
+- **Cross-referencing:** All documents include elated_docs field creating discoverable web of related work
+- **Frontmatter Consistency:** All 9 documents include YAML frontmatter with required fields and tagging
+
+**Key patterns extracted:**
+1. **Watchdog to Knowledge:** Teams watchdog summaries are authoritative source; each distinct item becomes one markdown document
+2. **Tagging Taxonomy:** Domains (teams, azure, tooling, architecture, squad-infra, git, workflow, product), projects (arm-watchlist, ti-analyzer, orchestration, ai-squads)
+3. **Library Separation:** Teams library physically separated at repo root but follows identical organizational standards
+4. **Index System:** Two required master indexes — INDEX.md (hierarchical by category/date with summaries) and TAGS.md (reverse alphabetical by tag)
+
+**File references:**
+- **Skill:** .squad\skills\teams-knowledge\SKILL.md
+- **Decisions:** 	eams-knowledge\decisions\2026-03-23-*.md (4 files)
+- **Action Items:** 	eams-knowledge\action-items\2026-03-23-*.md (4 files)
+- **Context:** 	eams-knowledge\context\2026-03-23-orchestration-gap.md
+- **Indexes:** 	eams-knowledge\INDEX.md, 	eams-knowledge\TAGS.md
+- **Charter Update:** .squad\agents\bilbo\charter.md
+
+**Process notes:**
+- Established Teams Knowledge Library as Bilbo's new domain alongside existing docs/ ownership
+- Parsed watchdog summary into 9 distinct items with careful attention to category (folder) and tagging
+- Built cross-reference network: each document includes elated_docs field linking related items
+- Created INDEX.md with table format for readability; created TAGS.md as pure reverse index
+- Updated charter to formally claim ownership of 	eams-knowledge/ directory
+- No blockers; all 9 items processed, indexes complete, charter updated, ready for commit.
+
