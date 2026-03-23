@@ -58,6 +58,7 @@ function Invoke-Task($task, [switch]$ForceCondition) {
     if ($task.type -eq "agent") {
         if (-not $ForceCondition -and -not (Test-Condition $task)) { Write-Log "  SKIP $($task.name) -- condition not met"; return }
         Write-Log "  AGENT $($task.name) --> $($task.agent)"
+        # Signal line: coordinator reads this from stdout and spawns the named agent with the given prompt
         Write-Host "AGENT_TASK|$($task.agent)|$($task.prompt)"
         $state | Add-Member -NotePropertyName $task.name -NotePropertyValue (Get-Date -Format "o") -Force
         return
@@ -77,14 +78,23 @@ function Invoke-Task($task, [switch]$ForceCondition) {
 function Start-SpinnerSleep([int]$totalSeconds, $taskList) {
     $spinChars = '|', '/', '-', '\'
     $spinIdx = 0
+    $esc = [char]27
+    $initialized = $false
     for ($i = $totalSeconds; $i -gt 0; $i--) {
         $spin = $spinChars[$spinIdx % 4]; $spinIdx++
         $parts = @(foreach ($t in $taskList) { "$($t.name) in $(Format-Remaining (Get-Remaining $t))" })
-        $line = "⏳ $spin  Next check in ${i}s | $($parts -join ' | ')"
-        Write-Host -NoNewline "`r$($line.PadRight(120))"
+        $summary = "Next check in ${i}s | $($parts -join ' | ')"
+        if (-not $initialized) {
+            Write-Host -NoNewline "$($summary.PadRight(120))`n⏳ $spin  "
+            $initialized = $true
+        } else {
+            # Move up one line, rewrite summary, move down, rewrite spinner
+            Write-Host -NoNewline "${esc}[1A`r$($summary.PadRight(120))`n`r⏳ $spin  "
+        }
         Start-Sleep -Seconds 1
     }
-    Write-Host -NoNewline "`r$(' ' * 120)`r"
+    Write-Host -NoNewline "${esc}[1A`r$(' ' * 120)`n`r$(' ' * 30)`r"
+    Write-Host ""
 }
 
 do {

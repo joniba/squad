@@ -142,6 +142,29 @@ The coordinator, which invokes the scheduler as a skill (`-Once`), reads this si
 
 **Rule:** If a task needs MCP tools → `type: "agent"`. If it's a pure script → `type: "script"` (or omit `type`).
 
+### Coordinator Handoff: AGENT_TASK → Agent Spawn
+
+When the coordinator runs the scheduler (e.g., via `-Once`), it must watch stdout for `AGENT_TASK` lines. **This is a required handoff — not optional.**
+
+**Protocol:**
+
+1. Coordinator runs: `.\scripts\squad-scheduler.ps1 -Once` (or with `-Tasks`/`-Include`)
+2. Scheduler prints to stdout: `AGENT_TASK|{agent}|{prompt}`
+3. **Coordinator MUST spawn the named agent** with the given prompt as a subagent
+
+**Example:**
+```
+AGENT_TASK|aragorn|Scan IcM team 116041 for active incidents...
+```
+→ Coordinator spawns Aragorn as a subagent with that exact prompt.
+
+**Rules for the coordinator:**
+- Parse each stdout line for the `AGENT_TASK|` prefix
+- Split on `|` — field 1 is the agent name, field 2 is the full prompt
+- Spawn immediately — do not defer or queue
+- One `AGENT_TASK` line = one agent spawn
+- The spawned agent runs independently; the coordinator does not wait for it
+
 ## Logs
 
 All output is logged to `.squad/scheduler.log` with timestamps.
