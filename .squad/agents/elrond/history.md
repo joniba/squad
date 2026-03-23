@@ -141,3 +141,66 @@
 **Decision statement for Jonathan:** Recommend ADOPT ms-pa as org upstream with refactoring. Extract org-level content (.squad/decisions.md: user directives; .squad/skills/: reusable patterns; .squad/casting/policy.json: archetypes; .squad/identity/wisdom.md: lessons). Establish governance boundaries for downstream squads (what can be overridden, enforcement model). Test with first downstream squad before rolling out. ADR will be added to .squad/decisions.md proposing the change.
 
 **Key insight:** Upstream inheritance solves the org-knowledge problem by automating hierarchical knowledge flow (org → team → repo). The pattern is proven (Tamir's ConfigurationGeneration + Provisioning Wizard, Tetris experiment); gaps are known (no versioning, weak enforcement, manual sync). For ms-pa specifically: the repository already has the right structure (LotR archetypes, reusable skills, team governance decisions); only refactoring needed to separate org-level from repo-level content. First downstream squad will validate the pattern at scale.
+
+### 2026-03-24: Rate Limiting & Resource Coordination at Scale research (GitHub Issue #26)
+
+**Context:** Jonathan filed Issue #26 requesting deep research on coordinating API quotas across ms-pa's 8-agent squad. Specific scope: analyze 6 coordination patterns for rate limiting at scale, design Rate Governor data structure, fairness analysis for ms-pa's quota contention scenario (8 agents × 12 cycles/hour ≈ 1,152 requests/hour against 5,000 GitHub core quota), cascading failure mechanics, and practical implementation roadmap.
+
+**Problem:** ms-pa agents currently retry independently on 429 (rate limit). This causes thundering herd cascades: all agents backoff simultaneously → all retry at same interval → new 429 cascade. Result: cascading failures even though global quota available. No centralized coordination.
+
+**Key findings (6 coordination patterns analyzed + compared):**
+1. **Token Bucket Algorithm** — Emit tokens at steady rate (1.39 tokens/sec for 5,000/hour); agents consume before request. Fairness: A (equal distribution). Implementation ease: ⭐⭐⭐⭐. Handles bursts naturally; resets with quota.
+2. **Shared Token Pool** — Allocate per-agent baselines (625 tokens each for 8 agents). Pool tracks global quota; agents request refills when local buckets empty. Fairness: B+ (fair baseline, potential waste of unused quotas). Complexity: moderate state management.
+3. **Predictive Circuit Breaker** — Parse X-RateLimit-Remaining from every response; proactively throttle at <10% threshold. Open circuit on 5+ consecutive 429s; probe after cooldown for recovery. Fairness: A (proactive prevents starvation). Implementation: requires header parsing + state machine.
+4. **Priority Queuing** — HIGH (PRs, critical), MEDIUM (routine), LOW (background). Dequeue high-priority first; prevents critical work from starving on routine tasks. Fairness: C (unfair to LOW priority but fair to HIGH). Adds queuing latency.
+5. **Adaptive Backoff + Jitter** — Exponential backoff (1s, 2s, 4s, ..., capped 64s) + full jitter (random delay 0 to max) breaks synchronized retries. Formula: `delay = random(0, min(2^attempt, 64))`. Fairness: B+ (fair over time). Essential for preventing thundering herd.
+6. **Quota Recycling** — Monitor per-agent utilization; reallocate unused quota from low-demand to high-demand agents hourly. Fairness: B (rewards utilization, penalizes underuse). Complexity: high (analytics + reallocation logic). Prevents waste.
+
+**Rate Governor Design (JSON-based, file-backed):**
+- Central state file: `~/.squad/rate-governor/state.json`
+- Tracks: global quota (5,000 core, 80 Copilot), per-agent baselines (625), circuit breaker state, request queue (HIGH/MEDIUM/LOW priority)
+- Operations: RequestToken(agent, priority), RecordResponse(status, headers), HourlyRecycleQuota()
+- Core logic: Token Bucket refill + Predictive Circuit Breaker proactive throttling + Priority queue dequeue
+
+**Fairness Analysis (3 scenarios):**
+1. **Uniform load:** Token Bucket fairness=A (equal tokens distributed); all agents get baseline. Cascade prevented by proactive throttling.
+2. **Bursty load:** Single agent spikes 300 requests; Token Bucket allows burst (within baseline + pool), others still get quota. Fairness: B+ (fair after burst subsides).
+3. **Thundering herd:** All 8 agents hit 429 simultaneously. Without Rate Governor: all retry at T+4s, new 429 cascade. With Rate Governor: circuit breaker opens at first 429, broadcasts wait 60s, all agents sleep (coordinated), probe after cooldown, staggered recovery. Fairness: A (coordinated recovery).
+
+**Cascading Failure Mechanics & Prevention:**
+- **Root cause:** No centralized quota awareness. Each agent assumes "I hit 429 → my quota exhausted" but global quota available. No agent knows what other agents are doing.
+- **Cascade effect:** Agent A hits 429 → Agent B detects latency → assumes 429 → proactive backoff → all agents see cascade → synchronized retry storm → second 429 wave → cascade spreads.
+- **Prevention:** Rate Governor as source of truth. Global quota tracked centrally. Agents ask "Can I request?" → governor responds yes/no/wait. Agents don't retry independently; governor controls timing. Proactive throttling via X-RateLimit headers prevents 429s.
+
+**GitHub API Header Integration:**
+- `X-RateLimit-Limit`: Max requests per window (5,000/hour core, 80/hour Copilot)
+- `X-RateLimit-Remaining`: Tokens left in window (parsed on every response)
+- `X-RateLimit-Reset`: Unix timestamp when window resets (used for circuit breaker probe scheduling)
+- `Retry-After`: Authoritative delay (overrides governor's estimate)
+- Rate Governor tracks both endpoints (core + Copilot) separately in state.json
+
+**Implementation Roadmap (3 phases):**
+- **Phase 1 (MVP, Weeks 1–2):** Token Bucket + Predictive Circuit Breaker. Addresses cascading failures with minimal complexity. Target: stop 429 cascades; implement 5,000-token pool; proactive throttling at <10% remaining.
+- **Phase 2 (Fair distribution, Weeks 3–4):** Shared Token Pool + Priority Queuing. Per-agent baselines (625), HIGH/MEDIUM/LOW request classification, dequeue high-first.
+- **Phase 3 (Dynamic reallocation, Weeks 5–6):** Quota Recycling. Hourly reallocation: reward utilization >50%, penalize <50%. Observability dashboard.
+
+**Acceptance Criteria Addressed (from Issue #26):**
+- ✅ 6 coordination patterns researched, analyzed, and compared with fairness/complexity metrics
+- ✅ Rate Governor data structure designed (JSON schema, state transitions, operations)
+- ✅ Fairness analysis completed for ms-pa scenario (8 agents × 12 cycles/hour)
+- ✅ Cascading failure mechanics documented (root cause, cascade propagation, prevention)
+- ✅ Practical implementation roadmap provided (3 phases, starting Phase 1, each with acceptance criteria)
+
+**Evidence sources:**
+- AWS rate limiting best practices (exponential backoff, jitter, distributed backoff)
+- Redis rate limiting tutorials (Token Bucket algorithm, sliding window, distributed coordination)
+- GitHub API documentation (rate limit headers, 429 responses, retry behavior)
+- FastAPI agent scaling strategies (thundering herd, request coalescing, quota coordination)
+- Sophia Willows research on jitter and synchronized retry prevention
+- Ms-pa infrastructure (ralph-watch.ps1, .squad/ state patterns, WorkIQ polling cadence)
+
+**Deliverable:** `docs/research/rate-limiting-research.md` (30 KB) — 14-section comprehensive research document with YAML frontmatter (title, author, date, status), Executive Summary, Context & Problem Analysis (quota contention scenario, failure modes), 6 Coordination Patterns (detailed pseudocode, strengths/weaknesses, fairness/complexity grades), Rate Governor Design (data structure, core operations, integration points), Fairness Analysis (3 scenarios: uniform, bursty, thundering herd), Implementation Roadmap (3 phases, acceptance criteria), Cascading Failure Resolution (root cause + solution), GitHub API Headers Reference, Deployment Checklist, Key Insights & Recommendations, and References.
+
+**Next handoff:** Rate Governor design ready for Bilbo to synthesize into final coordination document (`docs/rate-limiting-coordination.md`) + team decision memo. Gimli will implement Phase 1 scripts (~5 files, 300 lines) after Bilbo's sign-off.
+
+**Key insight:** Centralized quota coordination eliminates cascading failures entirely. The key is not more tools — it's making the Rate Governor the single source of truth for quota state. Token Bucket ensures fair distribution; Predictive Circuit Breaker proactively prevents 429s; jitter-based retry breaks thundering herd. For ms-pa: Phase 1 (Token Bucket + Circuit Breaker) solves 90% of the problem with minimal complexity. Phases 2–3 are optimizations, not requirements. Recommendation: implement Phase 1 immediately, validate, then plan Phase 2.

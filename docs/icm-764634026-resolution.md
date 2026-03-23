@@ -1,3 +1,18 @@
+---
+title: "ICM 764634026 — MSPKI G1→G2 Root CA Migration Resolution Walkthrough"
+date: 2026-03-22
+author: Aragorn
+documentarian: bilbo
+category: investigation
+tags:
+  - investigation-method
+  - icm
+  - security
+  - livesite
+  - operational
+status: final
+---
+
 # ICM 764634026 — MSPKI G1→G2 Root CA Migration Resolution Walkthrough
 
 > **OceanView SR17 — Full Resolution Guide for Jonathan's Team**

@@ -6,6 +6,7 @@ documentarian: bilbo
 category: catalogs
 tags:
   - catalog
+  - skills
   - squad-infra
   - tooling
 status: final

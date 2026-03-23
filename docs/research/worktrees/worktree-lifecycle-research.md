@@ -12,8 +12,8 @@ tags:
   - squad-infra
 status: final
 related_docs:
-  - research/worktree-article-analysis.md
-  - research/worktree-parallelism-research.md
+  - research/worktrees/worktree-article-analysis.md
+  - research/worktrees/worktree-parallelism-research.md
 ---
 
 # Worktree Lifecycle for Parallel Agent Execution — Comprehensive Research

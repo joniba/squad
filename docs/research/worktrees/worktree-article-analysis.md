@@ -8,10 +8,11 @@ tags:
   - research-method
   - git
   - workflow
+  - worktree
   - agent-coordination
 status: final
 related_docs:
-  - research/worktree-parallelism-research.md
+  - research/worktrees/worktree-parallelism-research.md
 ---
 
 # Tamir Dresher's Git Worktrees Article: Comprehensive Analysis

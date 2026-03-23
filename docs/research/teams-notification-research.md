@@ -1,8 +1,16 @@
 ---
 title: "Teams Channel Notifications for Squad: Research & Recommendations"
-author: Elrond (Researcher)
 date: 2025-01-16
-status: complete
+author: Elrond
+documentarian: bilbo
+category: research
+tags:
+  - research-method
+  - workflow
+  - teams
+  - squad-infra
+  - tooling
+status: final
 ---
 
 # Teams Channel Notifications for Squad: Research & Recommendations

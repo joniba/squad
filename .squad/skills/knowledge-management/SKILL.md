@@ -451,6 +451,7 @@ This log tracks changes to the Knowledge Management system design over time. It 
 
 | Date | Change | Rationale | Confidence |
 |------|--------|-----------|------------|
+| 2026-03-23 | Hierarchical subfolder grouping for related documents | When 2+ documents share a topic and form a conceptual cluster, create a subfolder to group them. Preserves git history by using `git mv` instead of delete/recreate. Update `related_docs` cross-references when paths change. Applied successfully to `research/worktrees/` (3 related worktree research documents). Improves findability and signals conceptual relationships. | High |
 | 2026-03-22 | Initial system design | Separation of charter (identity) from skill (design) allows evolution without freezing architecture. See decision: gandalf-bilbo-charter-skill-separation | Low |
 
 ### Future Changes to Track

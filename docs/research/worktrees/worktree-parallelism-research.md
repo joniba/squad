@@ -8,11 +8,12 @@ tags:
   - research-method
   - workflow
   - git
+  - worktree
   - agent-coordination
   - squad-infra
 status: final
 related_docs:
-  - research/worktree-article-analysis.md
+  - research/worktrees/worktree-article-analysis.md
 ---
 
 # Research Report: Tamir's Worktree/Parallelism Insights & Squad's Gap
