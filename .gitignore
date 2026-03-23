@@ -7,3 +7,5 @@
 .squad-workstream
 .vscode/
 node_modules/
+# Git worktrees (created dynamically for parallel agent isolation)
+worktrees/
