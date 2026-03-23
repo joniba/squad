@@ -211,3 +211,37 @@
 - Updated charter to formally claim ownership of 	eams-knowledge/ directory
 - No blockers; all 9 items processed, indexes complete, charter updated, ready for commit.
 
+### Investigations Folder Reorganization — Prioritized Task Index & Master Index Synchronization (2026-03-24)
+
+**Deliverables:**
+- docs/investigations/TASK-INDEX.md (created in prior session) — Prioritized action dashboard for all investigations
+- docs/INDEX.md (updated) — Added TASK-INDEX.md to Investigations section at top, reordered all investigations by date (newest first), added 4 missing ICM files with full tags and status
+- docs/TAGS.md (updated) — Added 10 new investigation-specific tags, consolidated duplicate squad-infra and workflow sections, updated sentinel section to include all 4 new investigations
+- docs/RECENT.md (updated) — Added TASK-INDEX.md as entry #1 (2026-03-24), shifted existing 10 entries, removed oldest entry to maintain 10-entry limit
+
+**What was reorganized:**
+- INDEX.md: Added TASK-INDEX.md as primary investigation entry; reordered 8 investigation files by date; added comprehensive tags for each; updated footer: doc count 11→15
+- TAGS.md: Created investigation-centric tag sections; added 10+ new tags; consolidated duplicate sections; updated footer: 26→38 unique tags, 46→64 total tag assignments
+- RECENT.md: Added TASK-INDEX.md as most recent (2026-03-24); reordered prior entries; doc count 11→12
+
+**Investigation Files Covered:**
+- Existing: ICM 766712513 (3 variants: full report, v2 report, summary), ICM 764634026 (MSPKI migration), Aragorn capability upgrade
+- Newly Indexed: ICM 21000000917983 (watchlist stale-data), ICM 21000000951041 (Azure Government Sentinel TAXII), ICM 51000000943039 (TI Upload STIX/HTTPS), ICM 51000000954460 (revoked TI indicators)
+
+**Key design choices:**
+1. Multi-index strategy: TASK-INDEX.md as actionable priority dashboard; INDEX/TAGS/RECENT as complementary discovery paths
+2. Tag consolidation: Removed historical duplicate sections to maintain clean tag structure
+3. Geographic tags: Added azure-government and s500 to surface regional/customer-specific investigations
+4. Severity-driven urgency: Sev2 and Sev3 CRI investigations indexed by date (newest first)
+5. Status fields: All investigations include status field (final/ACTIVE) for priority interpretation
+
+**File references:**
+- Task Index: docs/investigations/TASK-INDEX.md (created prior session, now indexed in all three master files)
+- Updated Indexes: docs/INDEX.md, docs/TAGS.md, docs/RECENT.md
+- Commit: d9a44cc
+
+**Process notes:**
+- Updated all three master index files to reflect complete investigation folder reorganization
+- Consolidated duplicate tag sections and added new investigation-specific tags
+- Verified TASK-INDEX.md discoverable via category (INDEX), tag (TAGS), and recency (RECENT)
+- Committed with Co-authored-by trailer; all work complete and verified

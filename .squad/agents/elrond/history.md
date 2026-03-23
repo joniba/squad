@@ -455,3 +455,84 @@ Teams and Outlook bidirectional integration for Squad agents — how to read Tea
 - [ ] Commit Phase 1 implementation to main
 - [ ] Share findings with Ralph/Picard (context-setting for state architecture)
 - [ ] Plan Phase 2 migration decision (orphan branch vs. stay with bare repo)
+
+## Email Watchdog: Outlook Action Item Scanning (Issue #81 POC + Production)
+
+**Objective:** Build automated email watchdog to scan Outlook for action items, extract decisions/urgent requests, and integrate into squad's unified scheduler (Issue #75).
+
+**Status:** ✅ POC and production scripts created, validated, committed to main
+
+**Validation & Architecture Decisions:**
+
+1. **WorkIQ Email Access Confirmed** (3 queries tested):
+   - Query 1: "What emails did I receive in the last 24 hours that need my action?" → SUCCESS (47 emails, detailed categorization)
+   - Query 2: "What are my unread emails from today?" → PARTIAL (transient search delay, suggests retry mechanism)
+   - Query 3: "Show me emails where I was asked to do something in the last 24 hours" → SUCCESS (2 explicit action items, rich summary)
+   - Verdict: WorkIQ email access robust; poll-based indexing suitable for daily batch execution
+
+2. **Single-Agent Consolidation Pattern** (vs multi-step filter→extract→format):
+   - **Cost reduction:** 3 premium requests → 1 premium request per execution (67% savings)
+   - **Pattern:** Single copilot -p query consolidates all email parsing logic into WorkIQ agent response
+   - **Efficiency:** 6 total premium requests across POC tests (1 per execution)
+   - **Rate limit:** Enforced via scheduler (24h interval = 1 query per agent cycle, ~5/week, ~20/month)
+   - **File-based I/O:** Output captured to temp file, parsed for Teams webhook delivery
+
+3. **Scripts Architecture** (follows Teams Watchdog pattern):
+   - **POC** (27 lines, .squad/skills/email-watchdog/poc-email-scan.ps1):
+     - Hardcoded 24h lookback window
+     - Single copilot -p call with WorkIQ tool
+     - Returns structured markdown with priorities (🔴 high, 🟠 medium, 🟡 low)
+     - Validates email scan capability before production deployment
+   
+   - **Production** (54 lines, .squad/skills/email-watchdog/email-scan.ps1):
+     - Parameterized Hours (default 24) and optional TeamWebhook
+     - Conditionally delivers results to Teams if webhook URL provided
+     - Error handling and status indicators
+     - Scheduler-integration ready
+
+4. **Output Structure** (Validated):
+   - 📧 Action Items Assigned to Me (sender, subject, context, Outlook link)
+   - 🎯 Decisions Requiring My Input (deadline if noted)
+   - 🔴 Urgent Requests (time-sensitive, production issues, on-call alerts)
+   - 📋 Meeting Follow-ups (post-meeting actions)
+   - 📌 Summary (1-2 sentences on priorities for next 24h)
+
+**Implementation Details:**
+
+- **Constraint compliance:** Uses copilot -p ONLY (not gh copilot) with --allow-tool='workiq' per .squad/decisions.md
+- **Scheduler integration:** Added to .squad/scheduler.json (24h interval, enabled, optional TeamWebhook parameter)
+- **Production test result:** Email scan of last 24h returned 3 action items (CMK validation, Sev 4 incident ack, Squad GHA failures) + 2 decisions + 2 urgent requests + 2 follow-ups + summary
+- **Cost model:** Estimated 1 premium request per daily execution; negligible impact on monthly budget
+
+**Files Created/Modified:**
+- ✅ .squad/skills/email-watchdog/poc-email-scan.ps1 (27 lines, POC validation)
+- ✅ .squad/skills/email-watchdog/email-scan.ps1 (54 lines, production + Teams delivery)
+- ✅ .squad/skills/email-watchdog/SKILL.md (6.6 KB, comprehensive documentation)
+- ✅ .squad/scheduler.json (added email-watchdog task, 24h interval)
+- ✅ **Commit:** d4a47ea (feat(email-watchdog): add Email Watchdog skill for Outlook action item scanning)
+
+**Key Findings:**
+
+1. **WorkIQ Poll-Based Pattern:** Emails indexed with slight delay (10-15 min); suitable for daily batch execution, not real-time. Aligns with squad's daily standup cadence.
+2. **Natural Language Strength:** WorkIQ excels at semantic filtering ("emails where I was asked to do something") vs rule-based approaches; reduces false negatives.
+3. **Single-Query Consolidation:** Dramatically reduces cost and latency vs orchestrating multiple agents; validates pattern for future email/chat integrations.
+4. **Scheduler Integration Ready:** Task registered in scheduler.json; awaits scheduler daemon execution (Issue #75 completion prerequisite).
+
+**Open Questions / Assumptions:**
+- ⚠️ **Assumption:** scheduler.json supports environment variable substitution ("env:EMAIL_WATCHDOG_WEBHOOK"). If not, Teams delivery requires manual webhook parameter on execution.
+- ⚠️ **Testing Gap:** Production script Teams delivery untested end-to-end (POC + scheduler validation only). Recommend live webhook test before enterprise rollout.
+- ⚠️ **Dependency:** Email-watchdog task scheduled but inactive until scheduler daemon fully operational (Issue #75).
+
+**Next Steps (Post-POC):**
+- [ ] End-to-end Teams delivery test (provide real webhook URL, verify message formatting)
+- [ ] Integrate with Issue #75 unified scheduler execution
+- [ ] Monitor cost impact (verify 1 request/execution estimate)
+- [ ] Optional: Add customizable action filters (e.g., exclude low-priority emails)
+- [ ] Optional: Email deduplication if indexing lag causes re-scans
+
+**Research Sources:**
+- GitHub Issue #81: "Email watchdog for squad scheduler"
+- GitHub Issue #75: "Unified scheduler implementation"
+- .squad/decisions.md: copilot -p ONLY constraint
+- docs/research/teams-outlook-integration-research.md: WorkIQ capabilities, rate-limiting guidance
+
