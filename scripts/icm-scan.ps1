@@ -1,10 +1,14 @@
 <#
 .SYNOPSIS
-    Scans IcM for active incidents matching configurable filters.
+    Config transparency for IcM scans. Actual scanning is agent-driven.
 .DESCRIPTION
-    Queries IcM for active incidents owned by the team. Default filter matches:
-    Sev2, Sev2.5 (Sev3 recommended for bump), and CRIs (any severity).
-    Filter is transparent — printed on every scan.
+    Prints the scan parameters (team, filter, since) for transparency.
+    The actual IcM scan is performed by Aragorn (agent) using IcM MCP tools directly.
+    
+    This script serves as config documentation only. To run the actual scan:
+      coordinator, spawn aragorn for icm-scan
+    Or via scheduler:
+      .\scripts\squad-scheduler.ps1 -Tasks icm-scan -Once
 .PARAMETER TeamId
     IcM team ID (default: 116041 = DAKOTA\ThreatIntelligence)
 .PARAMETER SinceHours
@@ -26,8 +30,8 @@ $ErrorActionPreference = "Stop"
 $since = (Get-Date).AddHours(-$SinceHours)
 $filters = $Filter -split ',' | ForEach-Object { $_.Trim().ToLower() }
 
-# Print the query transparently
-Write-Host "ICM Scan — $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')" -ForegroundColor Cyan
+# Print the query transparently (config only)
+Write-Host "ICM Scan Configuration — $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')" -ForegroundColor Cyan
 Write-Host "  Team:    $TeamId"
 Write-Host "  Since:   $($since.ToString('yyyy-MM-dd HH:mm')) ($SinceHours h)"
 Write-Host "  Filter:  $Filter"
@@ -42,29 +46,6 @@ Write-Host "  Matching: $(if ($filters -contains 'all') { 'ALL active incidents'
     $parts -join ' + '
 })"
 Write-Host ""
-
-# Build the prompt with explicit filter criteria
-$filterDesc = @()
-if ($filters -contains 'all') { $filterDesc += "all active incidents" }
-else {
-    if ($filters -contains 'sev0' -or $filters -contains 'sev1' -or $filters -contains 'sev2') {
-        $sevs = @(); @('sev0','sev1','sev2') | ForEach-Object { if ($filters -contains $_) { $sevs += $_.Replace('sev','') } }
-        $filterDesc += "severity $($sevs -join ' or ')"
-    }
-    if ($filters -contains 'sev2.5') { $filterDesc += "severity 3 that should be bumped to sev2 (recommended severity increase)" }
-    if ($filters -contains 'sev3') { $filterDesc += "severity 3" }
-    if ($filters -contains 'cri') { $filterDesc += "ANY severity where incident type is 'System/Customer Reported' (CRI)" }
-}
-
-$prompt = @"
-Search IcM for active incidents owned by team ID $TeamId.
-Filter criteria (apply ALL of these as OR conditions):
-$($filterDesc | ForEach-Object { "- $_" } | Out-String)
-Only include incidents created after $($since.ToString('o')).
-For each match: ID, severity, title, type, created date.
-If none found, say 'No matching incidents'.
-"@
-
-$result = copilot -p $prompt --allow-tool='icm' 2>$null
-$matchCount = ([regex]::Matches($result, '^\s*\d+\.|\|\s*\d{5,}', 'Multiline')).Count
-Write-Host "ICM scan: $matchCount incidents matched [$Filter] in last ${SinceHours}h"
+Write-Host "To execute the scan: coordinator, spawn aragorn for icm-scan" -ForegroundColor Yellow
+Write-Host "Or via scheduler: .\scripts\squad-scheduler.ps1 -Tasks icm-scan -Once" -ForegroundColor Yellow
+Write-Host ""

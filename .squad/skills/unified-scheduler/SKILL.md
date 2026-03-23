@@ -70,6 +70,25 @@ Set `enabled: true` when Jonathan is on-call. Tasks with `"condition": "oncall"`
    ```
 3. Test: `.\scripts\squad-scheduler.ps1 -Tasks my-task -Once`
 
+## Task Types
+
+### Script-Only Tasks
+Simple scripts that run directly (e.g., teams-watchdog). No agent context needed.
+
+### Agent-Driven Tasks
+Tasks that require MCP tool access or complex decision-making. The scheduler spawns an agent to execute.
+
+**Example: `icm-scan`**
+- **Why an agent?** IcM querying requires MCP tools (`icm-search_incidents_by_owning_team_id`, `icm-get_incident_details_by_id`, etc.) which are only available in agent context.
+- **How it works:**
+  1. Scheduler detects the `icm-scan` task is due
+  2. Coordinator spawns **Aragorn** with task context: team ID, filter, since-time
+  3. Aragorn calls IcM MCP tools directly (no copilot -p needed, no permission issues)
+  4. Results logged back to `.squad/scheduler.log`
+- **Config script:** `scripts/icm-scan.ps1` exists only to print configuration parameters (team, filter, since) for transparency. The actual work is done by Aragorn.
+
+**Rule:** If a task needs MCP tools → use an agent, not `copilot -p`. Agents have direct MCP context; scripts do not.
+
 ## Logs
 
 All output is logged to `.squad/scheduler.log` with timestamps.
