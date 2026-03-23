@@ -37,7 +37,6 @@ status: active
 |--------|----------|--------|-------|------|-------|---------------|---------|
 | ⬜ | **P1** | 766937015 | MDTI Premium Connector Enablement Delays | CRI | [Report](icm-766937015-investigation.md) · [Portal](https://portal.microsofticm.com/imp/v5/incidents/details/766937015/home) | **Get customer tenant IDs** → add to `premiumSkuAllowListWorkspaces` app setting or `SkuVerifier.cs` allowlist → deploy. Same fix as ICM 692529114 (Oct 2025) | Post Holdings + Metropolitan Police blocked; ~200 hardcoded tenant GUIDs in source; repeat incident; 30-min config fix available; needs migration to dynamic config |
 | ⬜ | **P1** | 51000000943039 | TI Upload API: pattern_type Override Bug | CRI | [Report](icm-51000000943039-investigation.md) · [Portal](https://portal.microsofticm.com/imp/v5/incidents/details/51000000943039/home) | **Verify exact API request payload** from customer; execute Kusto to count affected indicators in workspace; confirm pattern_type being overridden | V2 Preview API ingesting `stix` pattern_type as `https`; blocks detection analytics; S500 tag; 1 SR linked |
-| ⬜ | **P2** | 51000000954460 | Revoked TI Indicators Still Triggering Alerts | CRI | [Report](icm-51000000954460-investigation.md) · [Portal](https://portal.microsofticm.com/imp/v5/incidents/details/51000000954460/home) | **Inspect EmailUrlInfo TI rule KQL template** for missing `Revoked` filter; execute diagnostic queries to confirm revoked indicators matching; file engineering bug | Built-in TI rules don't filter `Revoked = true`; causes false-positive SOC alerts; affects all TI matching workflows; 1 SR linked |
 | ⬜ | **P2** | 21000000951041 | Azure Government TAXII Ingestion Shortfall | CRI | [Report](icm-21000000951041-investigation.md) · [Portal](https://portal.microsofticm.com/imp/v5/incidents/details/21000000951041/home) | **Identify ThreatConnect TAXII server encoding** (GZIP vs plain-text); configure for plain-text response if needed; run TI ingestion baseline queries | Root cause: TAXII connector doesn't support GZIP encoding; indicators silently dropped; Azure Government cloud; 1 SR linked |
 | ⬜ | **P3** | 21000000917983 | Deleted Watchlist Items Persist in _GetWatchlist | CRI | [Report](icm-21000000917983-investigation.md) · [Portal](https://portal.microsofticm.com/imp/v5/incidents/details/21000000917983/home) | **Run Kusto diagnostic queries** to verify deletion propagation timing; confirm Scuba health; determine if issue was transient or ongoing | Customer-reported stale data; resolved via TSG; eventual consistency by design (5-min SLA); non-S500; no recurrence |
 
@@ -47,6 +46,7 @@ status: active
 
 | Status | Title | Type | Note |
 |--------|-------|------|------|
+| 🔄 TRANSFERRED | ICM 51000000954460 | Revoked TI Indicators Still Triggering Alerts | Transferred to different team (2026-03-27). Investigation complete. No longer owned by this team. |
 | ℹ️ | [Aragorn ICM Investigation Capability Upgrade](aragorn-icm-capability-upgrade.md) | Analysis | Architectural analysis of Aragorn's investigation capabilities vs ICM Investigator skill; not an actionable incident |
 
 ---

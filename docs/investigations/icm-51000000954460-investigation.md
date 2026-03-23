@@ -4,7 +4,7 @@ incident_id: 51000000954460
 severity: 3
 classification: True Positive
 confidence: MEDIUM
-status: Active
+status: Transferred
 customer_impacting: true
 created: 2026-03-19T12:42:40Z
 investigated: 2026-03-22
@@ -21,9 +21,13 @@ tags:
   - revoked-indicators
   - false-positive-alerts
   - CRI
+transferred_date: 2026-03-27
+transfer_note: "Incident transferred to different team. No longer owned by this team."
 ---
 
 # ICM 51000000954460 — Investigation Report
+
+> ⚠️ **STATUS: TRANSFERRED** — This incident was transferred to a different team on 2026-03-27 and is no longer owned by this team. Documentation is retained for historical reference.
 
 **IcM Portal:** [IcM#51000000954460](https://portal.microsofticm.com/imp/v5/incidents/details/51000000954460/home)
 
