@@ -372,7 +372,17 @@ These are not tools but context and reference sources used for research, pattern
 | **Key areas** | Agent charters, routing rules, AGENTS.md pattern, preset architecture templates |
 | **Documented in** | `docs/catalogs/reference-codebases.md` |
 
-### 5.5 Other GitHub References
+### 5.5 DevOps AI (kpiteira/devops-ai)
+
+| Property | Value |
+|----------|-------|
+| **URL** | `https://github.com/kpiteira/devops-ai` |
+| **Content** | Development workflow skills library + kinfra CLI (worktrees, Docker sandbox slots, shared observability) |
+| **Purpose** | Reference for AI-driven development workflow patterns, sandbox port isolation strategy, shared observability stack |
+| **Key areas** | Skills design (markdown prompts), kinfra CLI (`src/devops_ai/`), worktree conventions, Docker port allocation |
+| **Documented in** | `docs/catalogs/reference-codebases.md` |
+
+### 5.6 Other GitHub References
 
 | Repository | Purpose |
 |-----------|---------|

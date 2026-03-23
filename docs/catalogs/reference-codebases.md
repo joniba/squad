@@ -183,6 +183,105 @@ snap-squad/
 
 ---
 
+## 3. DevOps AI (kpiteira/devops-ai)
+
+| Field | Value |
+|-------|-------|
+| **Repository** | [kpiteira/devops-ai](https://github.com/kpiteira/devops-ai) |
+| **What** | Development workflow skills library + kinfra CLI for isolated development environments (git worktrees, Docker sandbox slots with port isolation, shared observability stack) |
+| **Why it matters** | Reference architecture for AI-driven development workflows with design-to-implementation pipeline. Skills-based prompt system demonstrates portable AI-tool integration patterns. |
+| **Language** | Python (kinfra CLI) + Markdown (skills) |
+| **Key author** | Kpiteira |
+| **Last reviewed** | 2026-03-24 |
+
+### Purpose & Capability
+
+DevOps AI provides a complete workflow for AI-assisted software engineering, split into two components:
+
+1. **Skills** — Markdown prompts that guide AI tools (Claude Code, Codex CLI, GitHub Copilot CLI) through proven development workflows
+2. **kinfra** — Python CLI managing git worktrees, Docker sandbox slots with port isolation, and shared observability (Jaeger/Grafana/Prometheus)
+
+The typical workflow is: **Design** → **Plan** → **Build**, with each phase producing artifacts consumed by the next.
+
+### Relevance to Our Work
+
+**Why this matters for pa-squad:**
+- Demonstrates AI skills design patterns (portable across Claude/Codex/Copilot via Agent Skills standard)
+- Sandbox slot management with port isolation solves multi-project Docker coordination (squad could adopt this)
+- Shared observability stack pattern for multi-agent systems
+- Worktree conventions (`spec/<feature>`, `impl/<feature>-<milestone>`) applicable to our task workflow
+- Skills-as-markdown approach is compatible with how we structure Copilot skills
+
+### Key Features
+
+| Feature | Location | Status |
+|---------|----------|--------|
+| **Design-to-implementation pipeline** | `skills/kdesign/`, `skills/kplan/`, `skills/kbuild/` | ✅ Working |
+| **Git worktree lifecycle** | `kinfra impl/done/worktrees` commands | ✅ Working |
+| **Docker sandbox slots** | `kinfra impl` with port isolation (slot-based formula) | ✅ Working |
+| **Port allocation registry** | `~/.devops-ai/registry.json` (global, per-machine) | ✅ Working |
+| **Shared observability** | Jaeger/Grafana/Prometheus on `4xxxx` ports | ✅ Working |
+| **Issue workflow** | `/kissue 42` → fetch, branch, TDD, PR | ✅ Working |
+| **PR review workflow** | `/kreview` → assess comments, implement fixes | ✅ Working |
+| **Quality infrastructure** | Justfile, Makefile, `.githooks/pre-commit`, GitHub CI/CD | ✅ Working |
+
+### Directory Structure
+
+```
+devops-ai/
+├── src/devops_ai/           # kinfra CLI (Python)
+│   ├── cli/                 # Typer command modules (init, spec, impl, done, status)
+│   ├── worktree.py          # Git worktree lifecycle
+│   ├── sandbox.py           # Docker sandbox file generation
+│   ├── ports.py             # Port allocation with conflict detection
+│   ├── registry.py          # Global slot registry
+│   ├── observability.py     # Jaeger/Grafana/Prometheus management
+│   └── agent_deck.py        # Optional agent-deck integration
+├── skills/                  # AI tool skills (symlinked on install)
+│   ├── kdesign/             # Design + validation workflow
+│   ├── kplan/               # Task expansion and architecture alignment
+│   ├── kbuild/              # TDD task execution and milestone orchestration
+│   ├── kissue/              # GitHub issue → branch → TDD → PR
+│   ├── kreview/             # PR review comment assessment and implementation
+│   ├── kworktree/           # Worktree/sandbox management
+│   └── kinfra-onboard/      # Project onboarding (analyze → propose → execute → verify)
+├── rules/                   # Shared principles (auto-loaded to ~/.claude/rules/)
+├── templates/               # Project config and observability templates
+└── tests/                   # Unit and E2E tests
+```
+
+### How to Use This Reference
+
+**For Elrond (research):**
+- Study how skills are structured (`skills/*/SKILL.md`) — they're pure markdown prompts with conditional sections
+- Examine `kinfra` command patterns to understand worktree and sandbox lifecycle
+- Review `src/devops_ai/` for Python CLI best practices (Typer, structured state management)
+- The port allocation strategy (`base_port + slot_id`) could solve our own multi-project Docker conflicts
+
+**For Gimli (implementation):**
+- Reference the kinfra CLI structure if we want to build similar sandbox/worktree tooling
+- Study how skills parameterize project-specific values (via `.devops-ai/project.md`)
+- The Docker Compose parameterization patterns in `compose.py` are directly reusable
+
+**For Bilbo (documentation):**
+- The skills-as-markdown pattern shows how to make AI instructions portable across tools
+- Installation script pattern (`install.sh` → symlinks to `~/.claude/skills/`) is clean and upgradeable
+- Onboarding skill design (analyze → propose → execute → verify) is a good UX template
+
+### What's Solved Here (Patterns We Can Borrow)
+
+| Pattern | Location | Status | Relevance |
+|---------|----------|--------|-----------|
+| **Workflo w orchestration via skills** | `skills/k{design,plan,build,issue,review}/` | ✅ Proven | Direct reference for AI skill design |
+| **Git worktree conventions** | `kinfra impl/done` + `spec/`/`impl/` naming | ✅ Working | Applicable to our task workflow |
+| **Docker sandbox port isolation** | `src/devops_ai/ports.py` + registry | ✅ Working | Could solve squad multi-project Docker conflicts |
+| **Shared observability stack** | `kinfra observability up/down/status` | ✅ Working | Useful for squad observability scaling |
+| **Skill portability (Agent Skills standard)** | Cross-tool via `agentskills.io` spec | ✅ Pattern | Ensures our skills work in Claude/Codex/Copilot CLI |
+| **Quality infrastructure generation** | `kinfra init` produces Justfile/Makefile/CI/CD | ✅ Working | Template reference for new projects |
+| **Project config as prompt** | `.devops-ai/project.md` read by skills (not parsed) | ✅ Pattern | Clean approach to parameterization |
+
+---
+
 ## Research Workflow
 
 When tackling a problem:
