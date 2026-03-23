@@ -96,3 +96,28 @@
 4. Connector-layer CRIs (MDTI, TAXII pull) are not covered by pipeline validation scripts — this gap should inform future tooling requests.
 
 **Delivered:** `.squad/decisions/inbox/aragorn-ti-tools-assessment.md`
+
+### 2026-03-27: CRI Priority Assessment — Sev3 Ranking
+
+**Context:** Jonathan directed that multiple equal-priority Sev3 CRIs in TASK-INDEX.md need investigation-driven ranking, not just severity-based ordering. Five active CRIs were assessed.
+
+**Final ranking (P1 → P3):**
+1. **P1 — ICM 766937015** (MDTI Premium Connector): Named commercial customers blocked (Post Holdings contract renewal, Metropolitan Police SOC capability). REPEAT incident — exact recurrence of ICM 692529114 (Oct 2025) which Jonathan personally mitigated. Immediate fix is a 30-min config change (`premiumSkuAllowListWorkspaces` app setting). Highest business urgency.
+2. **P1 — ICM 51000000943039** (Upload API pattern_type): S500-tagged customer. URL-type TI indicators stored with wrong `pattern_type: "https"` instead of `"stix"`, causing detection analytics rules to miss them entirely — a security detection gap. Workaround exists (STIX Objects API) but requires customer behavior change. ~2-day fix once confirmed.
+3. **P2 — ICM 51000000954460** (Revoked TI Indicators): Systemic gap — ALL built-in TI analytic rule templates lack `Revoked == false` filter. Alert fatigue / false positives. Self-serviceable workaround (delete vs. revoke; or clone+modify rule). Fix requires touching all TI templates plus potential BBTI pipeline change — broader coordination.
+4. **P2 — ICM 21000000951041** (Azure Gov TAXII): Government cloud customer, silent data loss (indicators silently dropped due to GZIP mismatch). Customer-side workaround available (configure ThreatConnect to plain text). Engineering fix is 2-4 weeks (add GZIP support to TAXII connector). TSG already documents this scenario.
+5. **P3 — ICM 21000000917983** (Deleted Watchlist Items): Already resolved via TSG (`howFixed: "Fixed with TSG"`). Single non-S500 customer. No recurrence. Root cause is by-design eventual consistency (5-min SLA). Long-term fix is monitoring improvement, not urgent.
+
+**Priority framework applied:**
+- Commercial blocking → S500 tier → detection gap → workaround speed → recurrence → resolution status
+
+**Lasting lessons:**
+1. REPEAT incidents with fast available fixes should be P1 regardless of stated severity — the systemic failure has been accepted rather than remediated.
+2. S500 tag is a trump card for priority elevation even without CritSit or formal SRs — detection gaps for top-tier customers cannot wait.
+3. "Already resolved via TSG" is the most deprioritizing signal — active ICM status doesn't mean active customer impact.
+4. Systemic defects (all TI templates, all revocation users) don't automatically become P1 if a self-serviceable workaround exists and no named commercial consequence is present.
+
+**Delivered:**
+- `.squad/decisions/inbox/aragorn-cri-priority-assessment.md` (full priority reasoning)
+- `docs/investigations/TASK-INDEX.md` (added Priority column + P1/P2/P3 legend; reordered Sev3 rows by priority)
+
