@@ -65,6 +65,46 @@
 
 **Key insight:** Squad has all the infrastructure (merge drivers, drop-box pattern, Scribe integration) but lacks enforcement in the spawn template. A minimal 2-line change to `.squad/templates/squad.agent.md` (add pre-spawn worktree creation) fixes 4+ corrupted PR incidents and branch-drift problems completely.
 
+### 2026-03-22: WorkIQ chat message retrieval research — Teams watchdog architecture validation
+
+**Context:** HIGH PRIORITY research from Jonathan. Validate whether WorkIQ can reliably access individual Teams chat messages (especially meeting chat threads) to confirm feasibility of Teams watchdog 6-step pipeline (poll-based batch summary design).
+
+**Research execution (6 test queries):**
+1. ✅ Recent messages (2-hour window) → Found 2 messages in channels with full metadata
+2. ✅ Content filtering (action items) → Found 5 action-item messages across teams; keyword extraction works
+3. ✅ Meeting chat retrieval → Found 5 meeting chat messages from Squad, UTIP Sync, TI Analyzer meetings
+4. ✅ 1:1 private chat retrieval → Found 2 DM messages from named contacts (Lama Saba, Amir Skovronik)
+5. ✅ Specific message by context → Retrieved exact message text from PR 15101535 channel thread with full replies
+6. ✅ Historical retrieval (30 days) → Found ~30-day-old message from February 21 (org retention limit)
+
+**Key findings (6/6 queries passed):**
+- WorkIQ **successfully retrieves individual chat messages** from all message types (channel, 1:1 DM, group chat, meeting chat)
+- WorkIQ returns exact message text, sender info, timestamps, and message URLs
+- WorkIQ supports **time-based filtering** (hours, days) and **content filtering** (keywords, action items)
+- **Meeting chat thread messages are accessible** (primary research question answered affirmatively)
+- Historical retrieval window: ~30 days (matches Teams default retention policy)
+
+**Limitations identified (important for architecture):**
+- ⚠️ Meeting chat messages show indexing delay (asynchronous, not real-time); index lag time not quantified but same-day retrieval works
+- ⚠️ Message threading: WorkIQ returns full thread with replies (confirmed), but unclear if individual replies can be filtered separately
+- ⚠️ Private channel access: Not explicitly tested (test with confirmed private channel before production)
+- ⚠️ Direct message ID lookup: Unknown (WorkIQ uses context-based search, not ID-based)
+
+**Architecture validation result:** ✅ **APPROVED** — 6-step Teams watchdog pipeline is feasible. WorkIQ is suitable for message retrieval.
+
+**Recommendations for deployment:**
+1. Set polling interval to **5-10 minutes** (accounts for indexing delay; sub-minute polling not recommended)
+2. Pre-filter for action items in WorkIQ query: *"Show me new Teams messages from the last 10 minutes that mention action items, tasks, or reviews needed"*
+3. Store message URLs (`https://teams.microsoft.com/l/message/...`) as primary reference; enables deep linking back to Teams
+4. Test with private channels before production (to confirm WorkIQ access)
+5. Document 30-day retention window as operational limit in SLA
+
+**Deliverable:** `docs/research/workiq-chat-limitations.md` (356 lines, 17.7 KB) — comprehensive research document with all findings, limitations, workarounds, and Graph API context.
+
+**Committed to main:** ✅ `939d308` — *docs: Add comprehensive WorkIQ chat message retrieval research*
+
+**Key insight:** WorkIQ's indexing delay (minutes, not seconds) is perfectly suited for daily batch summary workflows. The poll-based design is not a limitation for this use case; it's an advantage for cost and complexity reduction vs. real-time webhook integration.
+
 ### 2025-01-16: Teams channel integration research — real-time squad notifications
 
 **Context:** Jonathan requested comprehensive research on enabling real-time squad notifications in Teams channels for blocked tasks, stale items, and significant events. Conducted 6-question deep investigation covering existing plugins, Graph API, webhooks, WorkIQ capabilities, Power Automate feasibility, and EMU-specific constraints.
