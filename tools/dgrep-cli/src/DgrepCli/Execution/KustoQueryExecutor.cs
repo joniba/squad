@@ -1,15 +1,25 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using DgrepCli.Auth;
 
 namespace DgrepCli.Execution
 {
     /// <summary>
-    /// Stub for real Kusto SDK integration. Replace the body of ExecuteAsync
-    /// with actual Microsoft.Azure.Kusto.Data calls when the SDK is available.
+    /// Stub for real Kusto SDK integration. Accepts an IAuthProvider for authentication.
+    /// Replace the body of ExecuteAsync with actual Microsoft.Azure.Kusto.Data calls.
     /// </summary>
     public class KustoQueryExecutor : IQueryExecutor
     {
+        private readonly IAuthProvider _authProvider;
+
+        public KustoQueryExecutor() : this(null) { }
+
+        public KustoQueryExecutor(IAuthProvider authProvider)
+        {
+            _authProvider = authProvider;
+        }
+
         public async Task<QueryResult> ExecuteAsync(string query, QueryOptions options, CancellationToken ct)
         {
             if (options == null) throw new ArgumentNullException(nameof(options));
@@ -20,13 +30,32 @@ namespace DgrepCli.Execution
             if (string.IsNullOrWhiteSpace(query))
                 throw new QuerySyntaxException(query ?? "", "Query cannot be empty.");
 
+            // Authenticate if a provider is available
+            AuthToken token = null;
+            if (_authProvider != null)
+            {
+                try
+                {
+                    token = await _authProvider.GetTokenAsync(options.Cluster, ct);
+                }
+                catch (AuthException ex)
+                {
+                    throw new QueryAuthException(ex.Message, ex);
+                }
+
+                if (token == null || token.IsExpired)
+                {
+                    throw new QueryAuthException(
+                        "Token is expired or null. Run 'dgrep auth status' to check your credentials.");
+                }
+            }
+
             // ---------------------------------------------------------------
             // TODO: Replace this stub with real Kusto SDK integration.
             //
-            // Example integration (requires Microsoft.Azure.Kusto.Data NuGet):
-            //
+            // With auth token available:
             //   var kcsb = new KustoConnectionStringBuilder(options.Cluster, options.Database)
-            //       .WithAadUserPromptAuthentication();
+            //       .WithAadApplicationTokenAuthentication(token.Token);
             //
             //   using (var client = KustoClientFactory.CreateCslQueryProvider(kcsb))
             //   {
@@ -50,7 +79,10 @@ namespace DgrepCli.Execution
             throw new NotImplementedException(
                 "KustoQueryExecutor is a stub. Install Microsoft.Azure.Kusto.Data " +
                 "and implement ExecuteAsync to connect to a real cluster. " +
-                "Use MockQueryExecutor for testing.");
+                (_authProvider != null
+                    ? $"Auth provider '{_authProvider.Name}' is configured and ready."
+                    : "No auth provider configured.") +
+                " Use MockQueryExecutor for testing.");
         }
     }
 }

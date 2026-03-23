@@ -60,6 +60,12 @@ namespace DgrepCli.Config
         /// </summary>
         [JsonProperty("defaultQueryType")]
         public string DefaultQueryType { get; set; }
+
+        /// <summary>
+        /// Authentication method: azcli (default), certificate, managedidentity.
+        /// </summary>
+        [JsonProperty("authMethod")]
+        public string AuthMethod { get; set; }
     }
 
     /// <summary>

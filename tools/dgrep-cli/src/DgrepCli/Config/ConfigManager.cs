@@ -113,6 +113,7 @@ namespace DgrepCli.Config
                 case "outputformat": return config.OutputFormat;
                 case "defaultendpoint": return config.DefaultEndpoint;
                 case "defaultquerytype": return config.DefaultQueryType;
+                case "authmethod": return config.AuthMethod;
                 default: return null;
             }
         }
@@ -135,8 +136,14 @@ namespace DgrepCli.Config
                 case "outputformat": config.OutputFormat = value; break;
                 case "defaultendpoint": config.DefaultEndpoint = value; break;
                 case "defaultquerytype": config.DefaultQueryType = value; break;
+                case "authmethod":
+                    var lower = value?.ToLowerInvariant()?.Trim();
+                    if (lower != "azcli" && lower != "certificate" && lower != "managedidentity")
+                        throw new ArgumentException($"Invalid auth method '{value}'. Valid values: azcli, certificate, managedidentity.");
+                    config.AuthMethod = lower;
+                    break;
                 default:
-                    throw new ArgumentException($"Unknown config key '{key}'. Valid keys: defaultNamespace, defaultCluster, defaultDatabase, defaultTimeRange, defaultMaxRows, certificatePath, outputFormat, defaultEndpoint, defaultQueryType.");
+                    throw new ArgumentException($"Unknown config key '{key}'. Valid keys: defaultNamespace, defaultCluster, defaultDatabase, defaultTimeRange, defaultMaxRows, certificatePath, outputFormat, defaultEndpoint, defaultQueryType, authMethod.");
             }
         }
 
@@ -159,6 +166,7 @@ namespace DgrepCli.Config
             Add("outputFormat", config.OutputFormat);
             Add("defaultEndpoint", config.DefaultEndpoint);
             Add("defaultQueryType", config.DefaultQueryType);
+            Add("authMethod", config.AuthMethod);
 
             if (config.SavedQueries != null && config.SavedQueries.Count > 0)
                 Add("savedQueries", $"({config.SavedQueries.Count} saved)");
