@@ -665,3 +665,21 @@ Deep-dived into WorkIQ's Teams chat message retrieval to determine whether it ca
 **Deliverable:** `docs/research/icm-scan-end-to-end-research.md` — committed to main.
 
 **Sources:** 8 implementation files in MDC-AI-Shared/personal-ai (client.ts, poller.ts, config.ts, service.ts, etc.)
+
+### 2026-03-23: LLM Scheduled Execution Research (P0-CRITICAL)
+
+**Context:** Jonathan rejected the "deterministic PowerShell script that queries Kusto directly" approach for ICM scanning. Requires LLM reasoning in the loop — the agent must execute Kusto queries, use MCP tools, reason about results, triage, and prioritize. Research needed: how to spawn an LLM agent from a standalone scheduled PowerShell process.
+
+**Key findings:**
+- **SOLVED: copilot -p with --yolo is the answer.** The GitHub Copilot CLI natively supports fully non-interactive, autonomous execution with all MCP tools available.
+- **Critical flags discovered:** --yolo (all permissions), --no-ask-user (fully autonomous), -s (silent/scriptable output), --share (session transcript export), --agent (custom agent invocation), --autopilot (multi-step continuation), --output-format json (structured output), --additional-mcp-config (per-session MCP tools), --deny-tool (safety controls).
+- **Tested and confirmed:** Output IS capturable in PowerShell variables (previous decision that "Cannot save result to a variable" is wrong when using -s flag). All 23 IcM MCP tools available and callable. Tool execution confirmed (not just listing). Session export via --share works. Custom agent invocation via --agent squad works.
+- **The exact pattern:** copilot -p "agent prompt" --yolo --no-ask-user --model claude-sonnet-4.6 --share="report.md" -s
+- **Also discovered:** ACP (Agent Client Protocol) server mode (copilot --acp) for advanced programmatic integration via JSON-RPC 2.0 over stdio/TCP. Available but overkill for our current needs.
+
+**Deliverables:**
+- docs/research/llm-scheduled-execution-research.md — 8 approaches evaluated, 5 tested, complete with exact commands, test results, fallback chain, and scheduler integration pattern. Committed to main.
+
+**Key insight:** The Copilot CLI IS the headless LLM execution engine we were looking for. It already has MCP tool integration, permission controls, output capture, and session management. We don't need to build anything — we need to invoke what already exists with the right flags.
+
+**Sources:** copilot --help output, copilot help permissions, copilot help config, copilot help environment, GitHub Docs (CLI command reference, programmatic reference, autopilot, ACP server, custom agents), local testing (5 tests all passing).
