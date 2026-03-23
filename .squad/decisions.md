@@ -2,6 +2,31 @@
 
 ## Active Decisions
 
+### 2026-03-23T14:35:00Z: ICM Scan Watermark Design (Approved)
+**Author:** Gandalf  
+**Status:** Approved  
+**Issue:** #92
+
+**Context:** ICM scan currently queries ALL active incidents every time, wasting LLM calls on already-processed incidents. Needs watermark-driven query window to track scans and avoid reprocessing.
+
+**Decision:**
+- **Location:** `.squad/icm-scan-watermark.json` (gitignored, machine-local state)
+- **Schema:** `{ lastScan (ISO 8601), seenIds (array, capped at 200), version: 1 }`
+- **seenIds rotation:** FIFO cap at 200 entries (simple, keeps file ~7 KB)
+- **Query window:** `now() - lastScan + 1h buffer`, capped at 7 days, 24h default on first run
+- **Known IDs → LLM:** Merge watermark seenIds + investigation report IDs + GitHub issue IDs, pass to prompt to skip them
+- **Corruption handling:** Log warning, delete corrupted file, start fresh (ephemeral state, safe to discard)
+- **-Reset flag:** Clears watermark, next scan reverts to 24h default
+
+**Rationale:**
+- Gitignore: Machine-local tracking state, not shared config
+- FIFO rotation: Simple, efficient, sufficient for deduplication window
+- 1h buffer: Handles race conditions between scan cycles
+- 7-day cap: Handles offline machines gracefully
+- LLM-level dedup: Single source of truth in prompt prevents reprocessing
+
+**Tracking:** Issue #92, assigned to Gimli (squad:gimli) for implementation, Galadriel for review.
+
 ### 2026-03-22T17:30:00Z: User directive — copilot CLI usage
 **By:** Jonathan (via Copilot)  
 **What:** `gh copilot` does not work. Must use vanilla `copilot -p` or `copilot -i` commands instead. Cannot save their result to a variable.  
