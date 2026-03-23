@@ -13,7 +13,7 @@
       "script": "scripts/icm-scan.ps1",
       "interval": "30m",
       "enabled": false,
-      "condition": "oncall"
+      "condition": null
     },
     {
       "name": "daily-summary",
