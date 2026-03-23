@@ -55,9 +55,11 @@ Be concise. Focus only on what I need to actively do. If no actionable emails fo
 
 Write-Host "📬 Scanning emails from last $Hours hours..." -ForegroundColor Cyan
 
-$output = copilot -p $prompt --allow-tool='workiq'
+$output = copilot -p $prompt --allow-tool='workiq' 2>$null
 
-Write-Host $output
+# Count items found
+$actionCount = ([regex]::Matches($output, '^\d+\.', 'Multiline')).Count
+Write-Host "Email scan: $actionCount items found in last ${Hours}h"
 
 if ($TeamWebhook) {
     Write-Host ""

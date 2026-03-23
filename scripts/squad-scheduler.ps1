@@ -35,10 +35,10 @@ function Test-Due($task) {
     if (-not $last) { return $true }
     return ((Get-Date) - [datetime]$last.Value).TotalSeconds -ge (ConvertTo-Seconds $task.interval)
 }
-function Invoke-Task($task) {
+function Invoke-Task($task, [switch]$ForceCondition) {
     $script = Join-Path $root $task.script
     if (-not (Test-Path $script)) { Write-Log "  SKIP $($task.name) -- script not found"; return }
-    if (-not (Test-Condition $task)) { Write-Log "  SKIP $($task.name) -- condition not met"; return }
+    if (-not $ForceCondition -and -not (Test-Condition $task)) { Write-Log "  SKIP $($task.name) -- condition not met"; return }
     $sw = [System.Diagnostics.Stopwatch]::StartNew()
     try {
         Write-Log "  RUN  $($task.name)"; & $script; $sw.Stop()
@@ -55,7 +55,10 @@ do {
         if ($DryRun) {
             $due = if (Test-Due $t) { "DUE" } else { "not due" }
             Write-Log "  [DRY] $($t.name) | $($t.interval) | $due | condition=$(if (Test-Condition $t) {'met'} else {'unmet'})"
-        } elseif (Test-Due $t) { Invoke-Task $t }
+        } elseif (Test-Due $t) {
+            $force = ($Include -and $Include -contains $t.name) -or ($Tasks -and $Tasks -contains $t.name)
+            Invoke-Task $t -ForceCondition:$force
+        }
     }
     if (-not $DryRun) { $state | ConvertTo-Json | Set-Content $statePath -Encoding UTF8 }
     if (-not $Once -and -not $DryRun) { Write-Log "sleeping 60s..."; Start-Sleep -Seconds 60 }
