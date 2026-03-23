@@ -99,6 +99,91 @@ personal-ai/
 
 ---
 
+## 2. Snap Squad (paulyuk/snap-squad)
+
+| Field | Value |
+|-------|-------|
+| **Repository** | [paulyuk/snap-squad](https://github.com/paulyuk/snap-squad) |
+| **What** | CLI tool to instantly scaffold AI agent squads with pre-configured presets, eliminating cold-start setup friction |
+| **Why it matters** | Demonstrates battle-tested preset architectures for multi-agent teams (default, fast, mentors, specialists). Reference for squad design patterns and team composition. |
+| **Language** | TypeScript/Node.js |
+| **Key author** | Paul Yuk |
+| **Last reviewed** | 2026-03-23 |
+
+### Purpose & Capability
+
+Snap Squad solves the friction of manually setting up AI agent teams. Instead of answering interview questions or manually configuring agents, one command generates a complete squad with:
+
+- Pre-written agent charters (Architect, Coder, Tester, DevRel, etc.)
+- Routing rules and decision templates
+- MCP tool configurations
+- GitHub Copilot hook chain (AGENTS.md + CLAUDE.md + copilot-instructions.md)
+
+### Relevance to Our Work
+
+**Why Jonathan tracks this:**
+- Our squad (`pa-squad`) is built on the same Squad runtime framework
+- Snap Squad's preset architecture patterns inform how we structure teams
+- It demonstrates successful multi-agent routing and charter design
+- Reference for how to bootstrap new squads quickly
+
+### Key Features
+
+- **4 Preset Templates:** Default (generalist), Fast (speed), Mentors (learning), Specialists (precision)
+- **One-command initialization:** `npx snap-squad init [preset]` with optional description
+- **Smart routing:** Pre-baked rules for delegating work to the right agent
+- **Safe regeneration:** `--force` preserves existing journals and decisions; `--reset-all` for clean slate
+- **AI-aware instructions:** Generated AGENTS.md teaches any AI tool how to use the squad
+
+### Directory Structure
+
+```
+snap-squad/
+├── README.md              ← Quick start guide
+├── SPEC.md                ← Design specification (warm-start architecture)
+├── AGENTS.md              ← Instructions for AI agents using the squad
+├── CLAUDE.md              ← Session memory for Claude/Copilot
+├── CONTRIBUTING.md        ← Contribution guidelines
+├── JOURNAL.md             ← Build journal (steering history)
+├── docs/
+│   └── presets/           ← Detailed preset architectures (default, fast, mentors, specialists)
+├── src/                   ← TypeScript implementation
+├── scripts/               ← Build and utility scripts
+├── test/                  ← Test suite (vitest)
+├── evals/                 ← Evaluation configurations
+└── .squad/                ← Snap Squad's own team definition
+```
+
+### How to Use This Reference
+
+**For Elrond (research):**
+- Study the preset definitions in `docs/presets/` to understand agent role design
+- Review `SPEC.md` for the "warm-start" architecture pattern
+- Examine `AGENTS.md` for how to teach AI agents about squad structure
+
+**For Gimli (implementation):**
+- Reference the TypeScript patterns in `src/` for CLI argument parsing and file generation
+- Study the template system for how charters are generated
+- Look at the router configuration patterns for multi-agent delegation
+
+**For Bilbo (documentation):**
+- The README structure provides a good template for explaining CLI-driven tools
+- The preset pages show how to document different agent roles and their responsibilities
+- AGENTS.md demonstrates the clearest way to write AI-aware instructions
+
+### What's Solved Here (Patterns We Can Borrow)
+
+| Pattern | Location | Status |
+|---------|----------|--------|
+| **Agent charter templates** | `docs/presets/{preset}.md` | ✅ Documented |
+| **Multi-agent routing** | SPEC.md + `src/` | ✅ Working |
+| **Preset architecture composition** | `docs/presets/` (4 presets) | ✅ Proven |
+| **AI-readable team instructions** | `AGENTS.md` | ✅ Pattern |
+| **Safe config regeneration** | Implementation in `src/` | ✅ Working |
+| **Squad CLI bootstrapping** | `package.json` + CLI command | ✅ Reference |
+
+---
+
 ## Research Workflow
 
 When tackling a problem:

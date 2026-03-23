@@ -363,7 +363,17 @@ These are not tools but context and reference sources used for research, pattern
 | **Purpose** | Plugin library for extending squad capabilities |
 | **Documented in** | `docs/catalogs/squad-skills-catalog.md` |
 
-### 5.4 Other GitHub References
+### 5.4 Snap Squad (paulyuk/snap-squad)
+
+| Property | Value |
+|----------|-------|
+| **URL** | `https://github.com/paulyuk/snap-squad` |
+| **Content** | CLI tool for instant squad scaffolding with 4 preset architectures (default, fast, mentors, specialists) |
+| **Purpose** | Reference for squad bootstrap patterns and multi-agent preset design |
+| **Key areas** | Agent charters, routing rules, AGENTS.md pattern, preset architecture templates |
+| **Documented in** | `docs/catalogs/reference-codebases.md` |
+
+### 5.5 Other GitHub References
 
 | Repository | Purpose |
 |-----------|---------|
