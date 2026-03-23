@@ -20,6 +20,12 @@
     },
     {
       "type": "agent",
+      "charter_path": ".squad/agents/frodo/charter.md",
+      "role": "TI Domain Backend Engineer",
+      "id": "agent:frodo"
+    },
+    {
+      "type": "agent",
       "charter_path": ".squad/agents/galadriel/charter.md",
       "role": "unknown",
       "id": "agent:galadriel"
@@ -41,6 +47,84 @@
       "charter_path": ".squad/agents/scribe/charter.md",
       "role": "Session Logger",
       "id": "agent:scribe"
+    },
+    {
+      "type": "decision",
+      "title": "2026-03-23T14:42:40Z: Exhaust existing tools before researching alternatives",
+      "author": "Jonathan (via Copilot)",
+      "id": "decision:2026-03-23t14-42-40z-exhaust-existing-tools-before-researching-alternatives"
+    },
+    {
+      "type": "decision",
+      "title": "2026-03-23T14:16:25Z: Process decision — Galadriel did not prompt on missing integration",
+      "author": "Jonathan (via Copilot)",
+      "id": "decision:2026-03-23t14-16-25z-process-decision-galadriel-did-not-prompt-on-missing-integration"
+    },
+    {
+      "type": "decision",
+      "title": "2026-03-23T14:09:34Z: User directive — Investigation-informed prioritization",
+      "author": "Jonathan (via Copilot)",
+      "id": "decision:2026-03-23t14-09-34z-user-directive-investigation-informed-prioritization"
+    },
+    {
+      "type": "decision",
+      "title": "2026-03-23T13:56:51Z: User directive — Research tasks always use claude-opus-4.6",
+      "author": "Jonathan (via Copilot)",
+      "id": "decision:2026-03-23t13-56-51z-user-directive-research-tasks-always-use-claude-opus-4-6"
+    },
+    {
+      "type": "decision",
+      "title": "2026-03-23T13:48:27Z: User directive — YOLO mode disabled",
+      "author": "Jonathan (via Copilot)",
+      "id": "decision:2026-03-23t13-48-27z-user-directive-yolo-mode-disabled"
+    },
+    {
+      "type": "decision",
+      "title": "2026-03-23T13:01:34Z: User directive — No empty Teams notifications",
+      "author": "Jonathan (via Copilot)",
+      "id": "decision:2026-03-23t13-01-34z-user-directive-no-empty-teams-notifications"
+    },
+    {
+      "type": "decision",
+      "title": "2026-03-23T12:59:38Z: Process decision — Bilbo auto-docs enforcement",
+      "author": "Coordinator (self-correction)",
+      "id": "decision:2026-03-23t12-59-38z-process-decision-bilbo-auto-docs-enforcement"
+    },
+    {
+      "type": "decision",
+      "title": "2026-03-23T02:49:15Z: User directive — No empty documentation folders",
+      "author": "Jonathan (via Copilot)",
+      "id": "decision:2026-03-23t02-49-15z-user-directive-no-empty-documentation-folders"
+    },
+    {
+      "type": "decision",
+      "title": "2026-03-23T02:40:55Z: User directive — Push after merge",
+      "author": "Jonathan (via Copilot)",
+      "id": "decision:2026-03-23t02-40-55z-user-directive-push-after-merge"
+    },
+    {
+      "type": "decision",
+      "title": "2026-03-23T02:22:11Z: User directive — Parallel Aragorn spawns for different ICMs",
+      "author": "Jonathan (via Copilot)",
+      "id": "decision:2026-03-23t02-22-11z-user-directive-parallel-aragorn-spawns-for-different-icms"
+    },
+    {
+      "type": "decision",
+      "title": "2026-03-23T02:18:56Z: User directive — Watchdog strategy shift",
+      "author": "Jonathan (via Copilot)",
+      "id": "decision:2026-03-23t02-18-56z-user-directive-watchdog-strategy-shift"
+    },
+    {
+      "type": "decision",
+      "title": "2026-03-23T02:18:56Z: User directive — Corrupted PRs: redo with full review cycle",
+      "author": "Jonathan (via Copilot)",
+      "id": "decision:2026-03-23t02-18-56z-user-directive-corrupted-prs-redo-with-full-review-cycle"
+    },
+    {
+      "type": "decision",
+      "title": "2026-03-23T14:35:00Z: ICM Scan Watermark Design (Approved)",
+      "author": "Gandalf",
+      "id": "decision:2026-03-23t14-35-00z-icm-scan-watermark-design-approved"
     },
     {
       "type": "decision",
@@ -85,6 +169,24 @@
       "id": "decision:2026-03-22t17-40-00z-coffee-ratings-squad-infra-audit-port-plan-proposed"
     },
     {
+      "type": "decision",
+      "title": "2026-03-22: ICM 764634026 Resolution Walkthrough — MSPKI G1→G2 Migration",
+      "author": "Aragorn (Operator)",
+      "id": "decision:2026-03-22-icm-764634026-resolution-walkthrough-mspki-g1-g2-migration"
+    },
+    {
+      "type": "decision",
+      "title": "2026-03-23T14:50:00Z: DGrep CLI Research — API Protocol & Auth Findings (Active)",
+      "author": "Elrond",
+      "id": "decision:2026-03-23t14-50-00z-dgrep-cli-research-api-protocol-auth-findings-active"
+    },
+    {
+      "type": "decision",
+      "title": "2026-03-23T15:00:00Z: DGrep CLI Project — 3-Phase Decomposition & Scaffolding (Active)",
+      "author": "Gandalf",
+      "id": "decision:2026-03-23t15-00-00z-dgrep-cli-project-3-phase-decomposition-scaffolding-active"
+    },
+    {
       "type": "skill",
       "path": ".squad/skills/agent-dashboard",
       "id": "skill:agent-dashboard"
@@ -108,6 +210,11 @@
       "type": "skill",
       "path": ".squad/skills/project-conventions",
       "id": "skill:project-conventions"
+    },
+    {
+      "type": "skill",
+      "path": ".squad/skills/reflect",
+      "id": "skill:reflect"
     },
     {
       "type": "skill",
@@ -136,15 +243,13 @@
     },
     {
       "type": "skill",
-      "path": ".squad/skills/worktree-lifecycle",
-      "id": "skill:worktree-lifecycle"
+      "path": ".squad/skills/workiq-patterns",
+      "id": "skill:workiq-patterns"
     },
     {
-      "status": "final",
-      "type": "doc",
-      "title": "ICM 764634026 — MSPKI G1→G2 Root CA Migration Resolution Walkthrough",
-      "tags": [],
-      "id": "doc:docs/icm-764634026-resolution.md"
+      "type": "skill",
+      "path": ".squad/skills/worktree-lifecycle",
+      "id": "skill:worktree-lifecycle"
     },
     {
       "status": "system",
@@ -177,9 +282,75 @@
     {
       "status": "final",
       "type": "doc",
+      "title": "Reference Codebases — Working Solutions Index",
+      "tags": [
+        "reference",
+        "codebase",
+        "personal-ai",
+        "event-triggers",
+        "icm",
+        "pr-review",
+        "skills",
+        "mcp",
+        "research-source"
+      ],
+      "id": "doc:docs/catalogs/reference-codebases.md"
+    },
+    {
+      "status": "final",
+      "type": "doc",
       "title": "Squad Skills Catalog — tamirdresher/squad-skills",
       "tags": [],
       "id": "doc:docs/catalogs/squad-skills-catalog.md"
+    },
+    {
+      "status": "unknown",
+      "type": "doc",
+      "title": "Tools & Integrations Catalog",
+      "tags": [
+        "catalog",
+        "tools",
+        "integrations",
+        "mcp",
+        "infrastructure",
+        "reference"
+      ],
+      "id": "doc:docs/catalogs/tools-and-integrations.md"
+    },
+    {
+      "status": "**",
+      "type": "doc",
+      "title": "dgrep-correction-plan",
+      "tags": [],
+      "id": "doc:docs/designs/dgrep-correction-plan.md"
+    },
+    {
+      "status": "**",
+      "type": "doc",
+      "title": "...",
+      "tags": [],
+      "id": "doc:docs/designs/notifications-mvp-plan.md"
+    },
+    {
+      "status": "Working.**",
+      "type": "doc",
+      "title": "notifications-status-assessment",
+      "tags": [],
+      "id": "doc:docs/designs/notifications-status-assessment.md"
+    },
+    {
+      "status": "\"final\"",
+      "type": "doc",
+      "title": "Cross-Reference Analysis: Proactive Notifications Design vs. Tamir Dresher's Implementation Patterns",
+      "tags": [],
+      "id": "doc:docs/designs/notifications-tamir-xref.md"
+    },
+    {
+      "status": "**",
+      "type": "doc",
+      "title": "🔵 Feature Complete: X",
+      "tags": [],
+      "id": "doc:docs/designs/proactive-notifications.md"
     },
     {
       "status": "final",
@@ -194,6 +365,13 @@
         "final"
       ],
       "id": "doc:docs/guides/agent-dashboard-setup.md"
+    },
+    {
+      "status": "final",
+      "type": "doc",
+      "title": "Email Watchdog Setup Guide",
+      "tags": [],
+      "id": "doc:docs/guides/email-watchdog-setup.md"
     },
     {
       "status": "final",
@@ -215,6 +393,20 @@
       "title": "INDEX",
       "tags": [],
       "id": "doc:docs/guides/INDEX.md"
+    },
+    {
+      "status": "\"pending\"`,",
+      "type": "doc",
+      "title": "Notifications System Guide",
+      "tags": [
+        "notifications",
+        "teams",
+        "guide",
+        "user-facing",
+        "setup",
+        "troubleshooting"
+      ],
+      "id": "doc:docs/guides/notifications-guide.md"
     },
     {
       "status": "unknown",
@@ -274,6 +466,13 @@
     {
       "status": "final",
       "type": "doc",
+      "title": "Teams Knowledge Library Guide",
+      "tags": [],
+      "id": "doc:docs/guides/teams-knowledge-library-guide.md"
+    },
+    {
+      "status": "final",
+      "type": "doc",
       "title": "Teams Notifications Webhook Setup & Usage",
       "tags": [
         "guide",
@@ -298,6 +497,20 @@
         "final"
       ],
       "id": "doc:docs/guides/teams-watchdog-setup.md"
+    },
+    {
+      "status": "active",
+      "type": "doc",
+      "title": "Threat Intelligence Pipeline Integration Guide",
+      "tags": [],
+      "id": "doc:docs/guides/ti-pipeline-integration-guide.md"
+    },
+    {
+      "status": "final",
+      "type": "doc",
+      "title": "Unified Scheduler Guide",
+      "tags": [],
+      "id": "doc:docs/guides/unified-scheduler-guide.md"
     },
     {
       "status": "final",
@@ -342,7 +555,7 @@
       "id": "doc:docs/investigations/icm-51000000943039-investigation.md"
     },
     {
-      "status": "Active",
+      "status": "Transferred",
       "type": "doc",
       "title": "ICM 51000000954460 — Revoked TI Indicators Still Triggering Alerts in EmailUrlInfo Rule",
       "tags": [],
@@ -377,11 +590,52 @@
       "id": "doc:docs/investigations/icm-766937015-investigation.md"
     },
     {
+      "status": "final",
+      "type": "doc",
+      "title": "Investigation Report: ICM 767184571 — ARM Watchlist API Error Rates (Recurrence)",
+      "tags": [],
+      "id": "doc:docs/investigations/icm-767184571-investigation.md"
+    },
+    {
+      "status": "Failed",
+      "type": "doc",
+      "title": "$($_.title)\\",
+      "tags": [],
+      "id": "doc:docs/investigations/icm-scan-20260323-150259.md"
+    },
+    {
       "status": "active",
       "type": "doc",
       "title": "Investigations Task Index",
       "tags": [],
       "id": "doc:docs/investigations/TASK-INDEX.md"
+    },
+    {
+      "status": "unknown",
+      "type": "doc",
+      "title": "icm-764634026-investigation",
+      "tags": [],
+      "id": "doc:docs/investigations/icm-764634026/icm-764634026-investigation.md"
+    },
+    {
+      "status": "final",
+      "type": "doc",
+      "title": "ICM 764634026 — MSPKI G1→G2 Root CA Migration Resolution Walkthrough",
+      "tags": [],
+      "id": "doc:docs/investigations/icm-764634026/icm-764634026-resolution.md"
+    },
+    {
+      "status": "complete",
+      "type": "doc",
+      "title": "ADO PR File Content Access — Deep Research",
+      "tags": [
+        "ado",
+        "pr-review",
+        "file-access",
+        "mcp",
+        "galadriel"
+      ],
+      "id": "doc:docs/research/ado-file-access-research.md"
     },
     {
       "status": "\"Research",
@@ -398,6 +652,13 @@
       "id": "doc:docs/research/aspire-integration-research.md"
     },
     {
+      "status": "**",
+      "type": "doc",
+      "title": "devops-ai-analysis",
+      "tags": [],
+      "id": "doc:docs/research/devops-ai-analysis.md"
+    },
+    {
       "status": "\"complete\"",
       "type": "doc",
       "title": "Enterprise State Architecture: When Git Is Your Database",
@@ -405,11 +666,46 @@
       "id": "doc:docs/research/enterprise-state-architecture-research.md"
     },
     {
+      "status": "**",
+      "type": "doc",
+      "title": "geneva-dgrep-research",
+      "tags": [],
+      "id": "doc:docs/research/geneva-dgrep-research.md"
+    },
+    {
+      "status": "complete",
+      "type": "doc",
+      "title": "IcM Scan End-to-End Research: Bypassing MCP via Direct Kusto REST",
+      "tags": [],
+      "id": "doc:docs/research/icm-scan-end-to-end-research.md"
+    },
+    {
+      "status": "\"complete\"",
+      "type": "doc",
+      "title": "LLM Scheduled Execution Research",
+      "tags": [
+        "research",
+        "scheduling",
+        "copilot-cli",
+        "mcp",
+        "automation",
+        "icm"
+      ],
+      "id": "doc:docs/research/llm-scheduled-execution-research.md"
+    },
+    {
       "status": "\"research\"",
       "type": "doc",
       "title": "Rate Limiting & Resource Coordination at Scale",
       "tags": [],
       "id": "doc:docs/research/rate-limiting-research.md"
+    },
+    {
+      "status": "**",
+      "type": "doc",
+      "title": "snap-squad-analysis",
+      "tags": [],
+      "id": "doc:docs/research/snap-squad-analysis.md"
     },
     {
       "status": "\"research\"",
@@ -452,11 +748,46 @@
       "id": "doc:docs/research/teams-outlook-integration-research.md"
     },
     {
+      "status": "unknown",
+      "type": "doc",
+      "title": "ti-domain-for-frodo-charter",
+      "tags": [],
+      "id": "doc:docs/research/ti-domain-for-frodo-charter.md"
+    },
+    {
       "status": "\"complete\"",
       "type": "doc",
       "title": "Upstream Inheritance & Org-Scale Knowledge Sharing",
       "tags": [],
       "id": "doc:docs/research/upstream-inheritance-research.md"
+    },
+    {
+      "status": "complete",
+      "type": "doc",
+      "title": "WorkIQ Chat Message Retrieval — Capabilities, Limitations & Workarounds",
+      "tags": [
+        "workiq",
+        "teams",
+        "chat",
+        "graph-api",
+        "mcp",
+        "limitations",
+        "workarounds"
+      ],
+      "id": "doc:docs/research/workiq-chat-limitations-research.md"
+    },
+    {
+      "status": "complete",
+      "type": "doc",
+      "title": "WorkIQ Chat Message Retrieval - Capabilities & Limitations Research",
+      "tags": [
+        "workiq",
+        "teams",
+        "chat-retrieval",
+        "microsoft-graph",
+        "architecture-validation"
+      ],
+      "id": "doc:docs/research/workiq-chat-limitations.md"
     },
     {
       "status": "final",
@@ -480,184 +811,203 @@
       "id": "doc:docs/research/worktrees/worktree-parallelism-research.md"
     },
     {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "squad: agent history updates (Bilbo + Elrond)",
-      "id": "commit:4e855d6"
+      "status": "unknown",
+      "type": "doc",
+      "title": "TiExpert - agent skills and scripts",
+      "tags": [],
+      "id": "doc:docs/reviews/pr-review-15064785-v2.md"
+    },
+    {
+      "status": "complete",
+      "type": "doc",
+      "title": "PR Review — Sentinel-TiPipeline #15064785",
+      "tags": [
+        "pr-review",
+        "sentinel",
+        "ti-pipeline",
+        "code-review"
+      ],
+      "id": "doc:docs/reviews/pr-review-15064785.md"
     },
     {
       "type": "commit",
       "author": "Elrond",
-      "message": "feat(email-watchdog): add Email Watchdog skill for Outlook action item scanning",
-      "id": "commit:d4a47ea"
+      "message": "Merge branch 'main' of https://github.com/jbenami_microsoft/ms-pa",
+      "id": "commit:4d354d6"
     },
     {
       "type": "commit",
       "author": "Elrond",
-      "message": "docs: add ICM 766937015 to investigations TASK-INDEX",
-      "id": "commit:c035c98"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "docs: ICM 766937015 investigation ΓÇö MDTI Premium connector allowlist CRI",
-      "id": "commit:80587e3"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "docs(investigations): add prioritized task-index for investigation tracking",
-      "id": "commit:d9a44cc"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "teams-knowledge: initialize library with 9 items from watchdog summary-2026-03-23",
-      "id": "commit:0645a78"
+      "message": "docs: DGrep correction plan ΓÇö wrong SDK, full reflection + action items",
+      "id": "commit:74f25fc"
     },
     {
       "type": "commit",
       "author": "Yoni Ben-Ami",
-      "message": "Merge pull request #82 from jbenami_microsoft/squad/75-unified-scheduler",
-      "id": "commit:8a16289"
+      "message": "[squad] Frodo charter v2 ΓÇö proper TI domain charter (#131)",
+      "id": "commit:35666e3"
     },
     {
       "type": "commit",
       "author": "Elrond",
-      "message": "feat: unified squad scheduler (Approach E hybrid dispatcher)",
-      "id": "commit:6ca3def"
+      "message": "docs: notification MVP plan ΓÇö feature complete + blocked on human",
+      "id": "commit:247b2b5"
+    },
+    {
+      "type": "commit",
+      "author": "Elrond",
+      "message": "docs: TI domain research for Frodo charter redesign",
+      "id": "commit:0dc45bc"
+    },
+    {
+      "type": "commit",
+      "author": "Elrond",
+      "message": "fix(dgrep): Windows process runner for az.cmd invocation (#110)",
+      "id": "commit:e333d9c"
+    },
+    {
+      "type": "commit",
+      "author": "Elrond",
+      "message": "docs: notifications status assessment ΓÇö honest gap analysis",
+      "id": "commit:78c049b"
+    },
+    {
+      "type": "commit",
+      "author": "Elrond",
+      "message": "Merge branch 'main' of https://github.com/jbenami_microsoft/ms-pa",
+      "id": "commit:5345926"
     },
     {
       "type": "commit",
       "author": "Yoni Ben-Ami",
-      "message": "Merge pull request #79 from jbenami_microsoft/squad/78-repo-context",
-      "id": "commit:c40a898"
+      "message": "[dgrep-cli] Phase 2.2: Saved queries (#105) (#130)",
+      "id": "commit:f01518a"
     },
     {
       "type": "commit",
       "author": "Elrond",
-      "message": "feat(icm): add service-repo context to ICM investigations (#78)",
-      "id": "commit:6553ec5"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "squad: update gitignore for watchdog runtime files + Bilbo history",
-      "id": "commit:85853d7"
+      "message": "Merge branch 'main' of https://github.com/jbenami_microsoft/ms-pa",
+      "id": "commit:2d1c369"
     },
     {
       "type": "commit",
       "author": "Yoni Ben-Ami",
-      "message": "Merge pull request #77 from jbenami_microsoft/squad/76-model-upgrade",
-      "id": "commit:7fd6716"
+      "message": "[dgrep-cli] Phase 2.1: Authentication integration (#104) (#129)",
+      "id": "commit:f28aebd"
     },
     {
       "type": "commit",
       "author": "Elrond",
-      "message": "chore: upgrade model references to Claude 4.6",
-      "id": "commit:049958d"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "docs: 4 CRI investigation reports (Aragorn parallel)",
-      "id": "commit:6277ce1"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "docs: Update ICM scanning guidance for Aragorn",
-      "id": "commit:acd42cc"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "docs(guides): add feature documentation for teams-watchdog, dashboard, notifications, semantic-model, worktree, icm",
-      "id": "commit:495e4eb"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "squad: directive ΓÇö Bilbo auto-documents completed features",
-      "id": "commit:fb5797b"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "squad: semantic model index output + template guides",
-      "id": "commit:e8bf686"
+      "message": "Merge branch 'main' of https://github.com/jbenami_microsoft/ms-pa",
+      "id": "commit:72c4cca"
     },
     {
       "type": "commit",
       "author": "Yoni Ben-Ami",
-      "message": "Merge pull request #70 from jbenami_microsoft/squad/36-semantic-model",
-      "id": "commit:e422924"
+      "message": "[dgrep-cli] Phase 1.3: Query execution engine (#103) (#128)",
+      "id": "commit:7646597"
     },
     {
       "type": "commit",
       "author": "Elrond",
-      "message": "fix(#36): add all 8 node types and 8 edge types to semantic indexer",
-      "id": "commit:862298b"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "feat(#36): semantic model ΓÇö SKILL.md, indexer, and query scripts",
-      "id": "commit:968f2b4"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "docs(guides): add squad template patterns and role mapping guides",
-      "id": "commit:38ecf03"
+      "message": "docs: notifications system guide (#120)",
+      "id": "commit:dbe50ee"
     },
     {
       "type": "commit",
       "author": "Yoni Ben-Ami",
-      "message": "Merge pull request #69 from jbenami_microsoft/squad/64-watchdog-pivot",
-      "id": "commit:2e8f5b1"
+      "message": "[notifications] Phase 1.3: Scheduler integration (#117) (#127)",
+      "id": "commit:50f22c1"
     },
     {
       "type": "commit",
       "author": "Elrond",
-      "message": "feat(watchdog): pivot to single-agent scan (#64)",
-      "id": "commit:c88673f"
+      "message": "Merge branch 'main' of https://github.com/jbenami_microsoft/ms-pa",
+      "id": "commit:2c74e5e"
     },
     {
       "type": "commit",
       "author": "Yoni Ben-Ami",
-      "message": "Merge pull request #68 from jbenami_microsoft/squad/18-squad-template",
-      "id": "commit:f0c59d7"
+      "message": "[squad] Clean up Frodo's charter ΓÇö TI Domain Backend Engineer (#126)",
+      "id": "commit:31f5e5b"
     },
     {
       "type": "commit",
       "author": "Elrond",
-      "message": "feat: reusable squad template project with generic roles",
-      "id": "commit:0dbb64f"
+      "message": "Merge branch 'main' of https://github.com/jbenami_microsoft/ms-pa",
+      "id": "commit:d0f34d0"
     },
     {
       "type": "commit",
       "author": "Yoni Ben-Ami",
-      "message": "Merge pull request #67 from jbenami_microsoft/squad/56-teams-notify",
-      "id": "commit:11b5582"
+      "message": "[dgrep-cli] Phase 1.2: Config file management (#102) (#124)",
+      "id": "commit:fbe279d"
     },
     {
       "type": "commit",
       "author": "Elrond",
-      "message": "docs(elrond): Append teams-monitor adaptation research findings to history",
-      "id": "commit:15a7812"
+      "message": "Merge branch 'main' of https://github.com/jbenami_microsoft/ms-pa",
+      "id": "commit:b1a01aa"
+    },
+    {
+      "type": "commit",
+      "author": "Yoni Ben-Ami",
+      "message": "feat(notifications): failure recovery integration (#116) (#125)",
+      "id": "commit:9349576"
     },
     {
       "type": "commit",
       "author": "Elrond",
-      "message": "feat: add Teams notification channel integration (#56)",
-      "id": "commit:297a498"
+      "message": "fix: purge all lockout rules from source files (Decision #48)",
+      "id": "commit:7e86502"
     },
     {
       "type": "commit",
       "author": "Elrond",
-      "message": "research(teams-monitor): Adaptation analysis + POC script for single-agent consolidation",
-      "id": "commit:c536ecf"
+      "message": "feat(squad): hire Frodo ΓÇö TI Domain Backend Engineer",
+      "id": "commit:940c958"
+    },
+    {
+      "type": "commit",
+      "author": "Yoni Ben-Ami",
+      "message": "[teams-notifications] Phase 1.1: Webhook & message templates (#115) (#122)",
+      "id": "commit:9fdeb0b"
+    },
+    {
+      "type": "commit",
+      "author": "Yoni Ben-Ami",
+      "message": "feat(dgrep-cli): implement CLI argument parsing with CommandLineParser (#101) (#121)",
+      "id": "commit:436825a"
+    },
+    {
+      "type": "commit",
+      "author": "Elrond",
+      "message": "fix(investigation): correct customer impact assessment + add subscription throttling walkthrough",
+      "id": "commit:6bef85c"
+    },
+    {
+      "type": "commit",
+      "author": "Elrond",
+      "message": "docs: add comprehensive devops-ai repository analysis",
+      "id": "commit:110d4e6"
+    },
+    {
+      "type": "commit",
+      "author": "Elrond",
+      "message": "docs: add DevOps AI as reference codebase",
+      "id": "commit:41ec84b"
+    },
+    {
+      "type": "commit",
+      "author": "Elrond",
+      "message": "docs: ICM 767184571 investigation ΓÇö confirmed recurrence of 766712513",
+      "id": "commit:9d795bf"
+    },
+    {
+      "type": "commit",
+      "author": "Elrond",
+      "message": "docs(designs): notifications cross-reference with Tamir's patterns",
+      "id": "commit:dea7cf7"
     },
     {
       "type": "session",
@@ -771,6 +1121,11 @@
     },
     {
       "type": "session",
+      "path": ".squad/orchestration-log/2026-03-23_155924-scribe.md",
+      "id": "session:2026-03-23_155924-scribe"
+    },
+    {
+      "type": "session",
       "path": ".squad/orchestration-log/2026-03-23T00-00-00Z-ralph.md",
       "id": "session:2026-03-23T00-00-00Z-ralph"
     },
@@ -791,11 +1146,16 @@
     }
   ],
   "metadata": {
-    "edge_count": 365,
-    "updated": "2026-03-23T12:58:57.9258501+02:00",
-    "node_count": 120
+    "edge_count": 488,
+    "updated": "2026-03-24T00:59:14.0847316+02:00",
+    "node_count": 166
   },
   "edges": [
+    {
+      "source": "agent:gandalf",
+      "target": "decision:2026-03-23t14-35-00z-icm-scan-watermark-design-approved",
+      "type": "authored"
+    },
     {
       "source": "agent:gandalf",
       "target": "decision:2026-03-22t17-30-00z-teams-watchdog-architecture-proposed",
@@ -813,7 +1173,17 @@
     },
     {
       "source": "agent:aragorn",
-      "target": "doc:docs/icm-764634026-resolution.md",
+      "target": "decision:2026-03-22-icm-764634026-resolution-walkthrough-mspki-g1-g2-migration",
+      "type": "authored"
+    },
+    {
+      "source": "agent:elrond",
+      "target": "decision:2026-03-23t14-50-00z-dgrep-cli-research-api-protocol-auth-findings-active",
+      "type": "authored"
+    },
+    {
+      "source": "agent:gandalf",
+      "target": "decision:2026-03-23t15-00-00z-dgrep-cli-project-3-phase-decomposition-scaffolding-active",
       "type": "authored"
     },
     {
@@ -893,7 +1263,42 @@
     },
     {
       "source": "doc:docs/INDEX.md",
+      "target": "doc:catalogs/tools-and-integrations.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/INDEX.md",
+      "target": "doc:catalogs/reference-codebases.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/INDEX.md",
       "target": "doc:catalogs/squad-skills-catalog.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/INDEX.md",
+      "target": "doc:guides/notifications-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/INDEX.md",
+      "target": "doc:guides/ti-pipeline-integration-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/INDEX.md",
+      "target": "doc:guides/unified-scheduler-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/INDEX.md",
+      "target": "doc:guides/email-watchdog-setup.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/INDEX.md",
+      "target": "doc:guides/teams-knowledge-library-guide.md",
       "type": "references"
     },
     {
@@ -908,6 +1313,26 @@
     },
     {
       "source": "doc:docs/RECENT.md",
+      "target": "doc:guides/ti-pipeline-integration-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/RECENT.md",
+      "target": "doc:guides/unified-scheduler-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/RECENT.md",
+      "target": "doc:guides/email-watchdog-setup.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/RECENT.md",
+      "target": "doc:guides/teams-knowledge-library-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/RECENT.md",
       "target": "doc:investigations/TASK-INDEX.md",
       "type": "references"
     },
@@ -934,26 +1359,6 @@
     {
       "source": "doc:docs/RECENT.md",
       "target": "doc:icm-764634026-resolution.md",
-      "type": "references"
-    },
-    {
-      "source": "doc:docs/RECENT.md",
-      "target": "doc:investigations/icm-766712513-full-report.md",
-      "type": "references"
-    },
-    {
-      "source": "doc:docs/RECENT.md",
-      "target": "doc:investigations/icm-766712513-summary.md",
-      "type": "references"
-    },
-    {
-      "source": "doc:docs/RECENT.md",
-      "target": "doc:investigations/aragorn-icm-capability-upgrade.md",
-      "type": "references"
-    },
-    {
-      "source": "doc:docs/RECENT.md",
-      "target": "doc:research/worktrees/worktree-lifecycle-research.md",
       "type": "references"
     },
     {
@@ -1088,6 +1493,26 @@
     },
     {
       "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/notifications-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/unified-scheduler-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/email-watchdog-setup.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/teams-knowledge-library-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
       "target": "doc:guides/squad-template-role-mapping.md",
       "type": "references"
     },
@@ -1119,6 +1544,26 @@
     {
       "source": "doc:docs/TAGS.md",
       "target": "doc:investigations/icm-21000000917983-investigation.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/notifications-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/unified-scheduler-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/email-watchdog-setup.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/teams-knowledge-library-guide.md",
       "type": "references"
     },
     {
@@ -1188,6 +1633,26 @@
     },
     {
       "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/notifications-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/unified-scheduler-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/email-watchdog-setup.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/teams-knowledge-library-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
       "target": "doc:guides/squad-template-role-mapping.md",
       "type": "references"
     },
@@ -1393,6 +1858,21 @@
     },
     {
       "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/notifications-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/unified-scheduler-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/teams-knowledge-library-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
       "target": "doc:research/sub-squad-architecture-research.md",
       "type": "references"
     },
@@ -1438,6 +1918,21 @@
     },
     {
       "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/notifications-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/email-watchdog-setup.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/teams-knowledge-library-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
       "target": "doc:research/teams-notification-research.md",
       "type": "references"
     },
@@ -1458,6 +1953,16 @@
     },
     {
       "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/unified-scheduler-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/email-watchdog-setup.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
       "target": "doc:catalogs/squad-skills-catalog.md",
       "type": "references"
     },
@@ -1474,6 +1979,16 @@
     {
       "source": "doc:docs/TAGS.md",
       "target": "doc:investigations/icm-21000000917983-investigation.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/unified-scheduler-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/TAGS.md",
+      "target": "doc:guides/email-watchdog-setup.md",
       "type": "references"
     },
     {
@@ -1520,10 +2035,95 @@
       "source": "doc:docs/TAGS.md",
       "target": "doc:research/worktrees/worktree-article-analysis.md",
       "type": "references"
+    },
+    {
+      "source": "doc:docs/catalogs/reference-codebases.md",
+      "target": "tag:reference",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/catalogs/reference-codebases.md",
+      "target": "tag:codebase",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/catalogs/reference-codebases.md",
+      "target": "tag:personal-ai",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/catalogs/reference-codebases.md",
+      "target": "tag:event-triggers",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/catalogs/reference-codebases.md",
+      "target": "tag:icm",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/catalogs/reference-codebases.md",
+      "target": "tag:pr-review",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/catalogs/reference-codebases.md",
+      "target": "tag:skills",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/catalogs/reference-codebases.md",
+      "target": "tag:mcp",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/catalogs/reference-codebases.md",
+      "target": "tag:research-source",
+      "type": "tagged_with"
+    },
+    {
+      "source": "agent:bilbo",
+      "target": "doc:docs/catalogs/reference-codebases.md",
+      "type": "authored"
     },
     {
       "source": "agent:jonathan",
       "target": "doc:docs/catalogs/squad-skills-catalog.md",
+      "type": "authored"
+    },
+    {
+      "source": "doc:docs/catalogs/tools-and-integrations.md",
+      "target": "tag:catalog",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/catalogs/tools-and-integrations.md",
+      "target": "tag:tools",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/catalogs/tools-and-integrations.md",
+      "target": "tag:integrations",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/catalogs/tools-and-integrations.md",
+      "target": "tag:mcp",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/catalogs/tools-and-integrations.md",
+      "target": "tag:infrastructure",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/catalogs/tools-and-integrations.md",
+      "target": "tag:reference",
+      "type": "tagged_with"
+    },
+    {
+      "source": "agent:bilbo",
+      "target": "doc:docs/catalogs/tools-and-integrations.md",
       "type": "authored"
     },
     {
@@ -1559,6 +2159,11 @@
     {
       "source": "agent:gimli",
       "target": "doc:docs/guides/agent-dashboard-setup.md",
+      "type": "authored"
+    },
+    {
+      "source": "agent:gimli",
+      "target": "doc:docs/guides/email-watchdog-setup.md",
       "type": "authored"
     },
     {
@@ -1635,6 +2240,41 @@
       "source": "doc:docs/guides/INDEX.md",
       "target": "doc:squad-template-role-mapping.md",
       "type": "references"
+    },
+    {
+      "source": "doc:docs/guides/notifications-guide.md",
+      "target": "tag:notifications",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/guides/notifications-guide.md",
+      "target": "tag:teams",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/guides/notifications-guide.md",
+      "target": "tag:guide",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/guides/notifications-guide.md",
+      "target": "tag:user-facing",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/guides/notifications-guide.md",
+      "target": "tag:setup",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/guides/notifications-guide.md",
+      "target": "tag:troubleshooting",
+      "type": "tagged_with"
+    },
+    {
+      "source": "agent:bilbo",
+      "target": "doc:docs/guides/notifications-guide.md",
+      "type": "authored"
     },
     {
       "source": "doc:docs/guides/RECENT.md",
@@ -1977,6 +2617,26 @@
       "type": "references"
     },
     {
+      "source": "agent:bilbo",
+      "target": "doc:docs/guides/teams-knowledge-library-guide.md",
+      "type": "authored"
+    },
+    {
+      "source": "doc:docs/guides/teams-knowledge-library-guide.md",
+      "target": "doc:decisions/2026-03-23-arm-watchlist-priority.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/guides/teams-knowledge-library-guide.md",
+      "target": "doc:action-items/2026-03-23-fix-service-tree-ownership.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/guides/teams-knowledge-library-guide.md",
+      "target": "doc:context/2026-03-23-orchestration-gap.md",
+      "type": "references"
+    },
+    {
       "source": "doc:docs/guides/teams-notifications-setup.md",
       "target": "tag:guide",
       "type": "tagged_with"
@@ -2047,6 +2707,31 @@
       "type": "authored"
     },
     {
+      "source": "agent:bilbo",
+      "target": "doc:docs/guides/ti-pipeline-integration-guide.md",
+      "type": "authored"
+    },
+    {
+      "source": "doc:docs/guides/ti-pipeline-integration-guide.md",
+      "target": "doc:../reviews/pr-review-15064785-v2.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/guides/ti-pipeline-integration-guide.md",
+      "target": "doc:.squad/decisions/inbox/elrond-ti-pipeline-integration.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/guides/ti-pipeline-integration-guide.md",
+      "target": "doc:.squad/decisions/inbox/aragorn-ti-tools-assessment.md",
+      "type": "references"
+    },
+    {
+      "source": "agent:gimli",
+      "target": "doc:docs/guides/unified-scheduler-guide.md",
+      "type": "authored"
+    },
+    {
       "source": "doc:docs/guides/worktree-usage.md",
       "target": "tag:guide",
       "type": "tagged_with"
@@ -2102,44 +2787,94 @@
       "type": "authored"
     },
     {
+      "source": "agent:aragorn",
+      "target": "doc:docs/investigations/icm-767184571-investigation.md",
+      "type": "authored"
+    },
+    {
       "source": "agent:bilbo",
       "target": "doc:docs/investigations/TASK-INDEX.md",
       "type": "authored"
     },
     {
       "source": "doc:docs/investigations/TASK-INDEX.md",
-      "target": "doc:investigations/icm-766712513-summary.md",
+      "target": "doc:icm-764634026/icm-764634026-investigation.md",
       "type": "references"
     },
     {
       "source": "doc:docs/investigations/TASK-INDEX.md",
-      "target": "doc:investigations/icm-21000000917983-investigation.md",
+      "target": "doc:icm-766712513-summary.md",
       "type": "references"
     },
     {
       "source": "doc:docs/investigations/TASK-INDEX.md",
-      "target": "doc:investigations/icm-21000000951041-investigation.md",
+      "target": "doc:icm-767184571-investigation.md",
       "type": "references"
     },
     {
       "source": "doc:docs/investigations/TASK-INDEX.md",
-      "target": "doc:investigations/icm-51000000943039-investigation.md",
+      "target": "doc:../.squad/decisions/inbox/aragorn-cri-priority-assessment.md",
       "type": "references"
     },
     {
       "source": "doc:docs/investigations/TASK-INDEX.md",
-      "target": "doc:investigations/icm-51000000954460-investigation.md",
+      "target": "doc:icm-766937015-investigation.md",
       "type": "references"
     },
     {
       "source": "doc:docs/investigations/TASK-INDEX.md",
-      "target": "doc:investigations/icm-766937015-investigation.md",
+      "target": "doc:icm-51000000943039-investigation.md",
       "type": "references"
     },
     {
       "source": "doc:docs/investigations/TASK-INDEX.md",
-      "target": "doc:investigations/aragorn-icm-capability-upgrade.md",
+      "target": "doc:icm-21000000951041-investigation.md",
       "type": "references"
+    },
+    {
+      "source": "doc:docs/investigations/TASK-INDEX.md",
+      "target": "doc:icm-21000000917983-investigation.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/investigations/TASK-INDEX.md",
+      "target": "doc:aragorn-icm-capability-upgrade.md",
+      "type": "references"
+    },
+    {
+      "source": "agent:aragorn",
+      "target": "doc:docs/investigations/icm-764634026/icm-764634026-resolution.md",
+      "type": "authored"
+    },
+    {
+      "source": "doc:docs/research/ado-file-access-research.md",
+      "target": "tag:ado",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/research/ado-file-access-research.md",
+      "target": "tag:pr-review",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/research/ado-file-access-research.md",
+      "target": "tag:file-access",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/research/ado-file-access-research.md",
+      "target": "tag:mcp",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/research/ado-file-access-research.md",
+      "target": "tag:galadriel",
+      "type": "tagged_with"
+    },
+    {
+      "source": "agent:elrond",
+      "target": "doc:docs/research/ado-file-access-research.md",
+      "type": "authored"
     },
     {
       "source": "doc:docs/research/aspire-integration-research.md",
@@ -2169,6 +2904,36 @@
     {
       "source": "doc:docs/research/aspire-integration-research.md",
       "target": "tag:port-isolation",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/research/llm-scheduled-execution-research.md",
+      "target": "tag:research",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/research/llm-scheduled-execution-research.md",
+      "target": "tag:scheduling",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/research/llm-scheduled-execution-research.md",
+      "target": "tag:copilot-cli",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/research/llm-scheduled-execution-research.md",
+      "target": "tag:mcp",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/research/llm-scheduled-execution-research.md",
+      "target": "tag:automation",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/research/llm-scheduled-execution-research.md",
+      "target": "tag:icm",
       "type": "tagged_with"
     },
     {
@@ -2217,6 +2982,76 @@
       "type": "authored"
     },
     {
+      "source": "doc:docs/research/workiq-chat-limitations-research.md",
+      "target": "tag:workiq",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/research/workiq-chat-limitations-research.md",
+      "target": "tag:teams",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/research/workiq-chat-limitations-research.md",
+      "target": "tag:chat",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/research/workiq-chat-limitations-research.md",
+      "target": "tag:graph-api",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/research/workiq-chat-limitations-research.md",
+      "target": "tag:mcp",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/research/workiq-chat-limitations-research.md",
+      "target": "tag:limitations",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/research/workiq-chat-limitations-research.md",
+      "target": "tag:workarounds",
+      "type": "tagged_with"
+    },
+    {
+      "source": "agent:elrond",
+      "target": "doc:docs/research/workiq-chat-limitations-research.md",
+      "type": "authored"
+    },
+    {
+      "source": "doc:docs/research/workiq-chat-limitations.md",
+      "target": "tag:workiq",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/research/workiq-chat-limitations.md",
+      "target": "tag:teams",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/research/workiq-chat-limitations.md",
+      "target": "tag:chat-retrieval",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/research/workiq-chat-limitations.md",
+      "target": "tag:microsoft-graph",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/research/workiq-chat-limitations.md",
+      "target": "tag:architecture-validation",
+      "type": "tagged_with"
+    },
+    {
+      "source": "agent:elrond",
+      "target": "doc:docs/research/workiq-chat-limitations.md",
+      "type": "authored"
+    },
+    {
       "source": "agent:elrond",
       "target": "doc:docs/research/worktrees/worktree-article-analysis.md",
       "type": "authored"
@@ -2232,393 +3067,528 @@
       "type": "authored"
     },
     {
-      "source": "commit:4e855d6",
-      "target": "file:.squad/agents/bilbo/history.md",
+      "source": "agent:sagi",
+      "target": "doc:docs/reviews/pr-review-15064785-v2.md",
+      "type": "authored"
+    },
+    {
+      "source": "doc:docs/reviews/pr-review-15064785.md",
+      "target": "tag:pr-review",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/reviews/pr-review-15064785.md",
+      "target": "tag:sentinel",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/reviews/pr-review-15064785.md",
+      "target": "tag:ti-pipeline",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/reviews/pr-review-15064785.md",
+      "target": "tag:code-review",
+      "type": "tagged_with"
+    },
+    {
+      "source": "agent:galadriel",
+      "target": "doc:docs/reviews/pr-review-15064785.md",
+      "type": "authored"
+    },
+    {
+      "source": "commit:74f25fc",
+      "target": "file:.squad/decisions/inbox/gandalf-dgrep-reflection.md",
       "type": "modifies"
     },
     {
-      "source": "commit:4e855d6",
-      "target": "file:.squad/agents/elrond/history.md",
+      "source": "commit:74f25fc",
+      "target": "file:docs/designs/dgrep-correction-plan.md",
       "type": "modifies"
     },
     {
-      "source": "commit:d4a47ea",
-      "target": "file:.squad/scheduler.json",
+      "source": "commit:35666e3",
+      "target": "file:.squad/agents/frodo/charter.md",
       "type": "modifies"
     },
     {
-      "source": "commit:d4a47ea",
-      "target": "file:.squad/skills/email-watchdog/SKILL.md",
+      "source": "commit:35666e3",
+      "target": "file:docs/designs/notifications-status-assessment.md",
       "type": "modifies"
     },
     {
-      "source": "commit:d4a47ea",
-      "target": "file:.squad/skills/email-watchdog/email-scan.ps1",
+      "source": "commit:35666e3",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Auth/IProcessRunner.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:d4a47ea",
-      "target": "file:.squad/skills/email-watchdog/poc-email-scan.ps1",
+      "source": "commit:35666e3",
+      "target": "file:tools/dgrep-cli/tests/DgrepCli.Tests/Auth/DefaultProcessRunnerTests.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:c035c98",
-      "target": "file:docs/investigations/TASK-INDEX.md",
+      "source": "commit:247b2b5",
+      "target": "file:docs/designs/notifications-mvp-plan.md",
       "type": "modifies"
     },
     {
-      "source": "commit:80587e3",
-      "target": "file:docs/investigations/icm-766937015-investigation.md",
+      "source": "commit:0dc45bc",
+      "target": "file:docs/research/ti-domain-for-frodo-charter.md",
       "type": "modifies"
     },
     {
-      "source": "commit:d9a44cc",
+      "source": "commit:e333d9c",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Auth/IProcessRunner.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:e333d9c",
+      "target": "file:tools/dgrep-cli/tests/DgrepCli.Tests/Auth/DefaultProcessRunnerTests.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:78c049b",
+      "target": "file:docs/designs/notifications-status-assessment.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:f01518a",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Commands/BuiltInQueries.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:f01518a",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Commands/OptionValidator.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:f01518a",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Commands/SavedCommand.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:f01518a",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Commands/SavedOptions.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:f01518a",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Config/DgrepConfig.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:f01518a",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Program.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:f01518a",
+      "target": "file:tools/dgrep-cli/tests/DgrepCli.Tests/Commands/OptionValidatorTests.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:f01518a",
+      "target": "file:tools/dgrep-cli/tests/DgrepCli.Tests/Commands/SavedCommandTests.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:f01518a",
+      "target": "file:tools/dgrep-cli/tests/DgrepCli.Tests/Commands/SavedOptionsTests.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:f28aebd",
       "target": "file:docs/INDEX.md",
       "type": "modifies"
     },
     {
-      "source": "commit:d9a44cc",
-      "target": "file:docs/RECENT.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:d9a44cc",
+      "source": "commit:f28aebd",
       "target": "file:docs/TAGS.md",
       "type": "modifies"
     },
     {
-      "source": "commit:0645a78",
-      "target": "file:.squad/agents/bilbo/charter.md",
+      "source": "commit:f28aebd",
+      "target": "file:docs/guides/notifications-guide.md",
       "type": "modifies"
     },
     {
-      "source": "commit:0645a78",
-      "target": "file:.squad/agents/bilbo/history.md",
+      "source": "commit:f28aebd",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Auth/AuthException.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:0645a78",
-      "target": "file:.squad/skills/teams-knowledge/SKILL.md",
+      "source": "commit:f28aebd",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Auth/AuthProviderFactory.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:0645a78",
-      "target": "file:teams-knowledge/INDEX.md",
+      "source": "commit:f28aebd",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Auth/AzCliAuthProvider.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:0645a78",
-      "target": "file:teams-knowledge/TAGS.md",
+      "source": "commit:f28aebd",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Auth/CertificateAuthProvider.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:0645a78",
-      "target": "file:teams-knowledge/action-items/2026-03-23-fix-service-tree-ownership.md",
+      "source": "commit:f28aebd",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Auth/IAuthProvider.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:0645a78",
-      "target": "file:teams-knowledge/action-items/2026-03-23-review-ti-analyzer-tasks.md",
+      "source": "commit:f28aebd",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Auth/IProcessRunner.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:0645a78",
-      "target": "file:teams-knowledge/action-items/2026-03-23-share-ti-analyzer-review.md",
+      "source": "commit:f28aebd",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Auth/ManagedIdentityAuthProvider.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:0645a78",
-      "target": "file:teams-knowledge/action-items/2026-03-23-sync-hila-ti-analyzer.md",
+      "source": "commit:7646597",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Commands/QueryCommand.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:0645a78",
-      "target": "file:teams-knowledge/context/2026-03-23-orchestration-gap.md",
+      "source": "commit:7646597",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Commands/QueryVerbOptions.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:6ca3def",
-      "target": "file:.gitignore",
+      "source": "commit:7646597",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Execution/IQueryExecutor.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:6ca3def",
-      "target": "file:.squad/scheduler.json",
+      "source": "commit:7646597",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Execution/KustoQueryExecutor.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:6ca3def",
-      "target": "file:.squad/skills/unified-scheduler/SKILL.md",
+      "source": "commit:7646597",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Execution/MockQueryExecutor.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:6ca3def",
-      "target": "file:scripts/icm-scan.ps1",
+      "source": "commit:7646597",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Execution/QueryException.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:6ca3def",
-      "target": "file:scripts/squad-scheduler.ps1",
+      "source": "commit:7646597",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Execution/QueryOptions.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:6553ec5",
-      "target": "file:.squad/agents/aragorn/charter.md",
+      "source": "commit:7646597",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Execution/QueryResult.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:6553ec5",
-      "target": "file:.squad/skills/icm-investigator/SKILL.md",
+      "source": "commit:7646597",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Formatters/CsvFormatter.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:6553ec5",
-      "target": "file:.squad/skills/icm-investigator/repo-map.json",
+      "source": "commit:7646597",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Formatters/FormatterFactory.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:85853d7",
-      "target": "file:.gitignore",
+      "source": "commit:dbe50ee",
+      "target": "file:docs/INDEX.md",
       "type": "modifies"
     },
     {
-      "source": "commit:85853d7",
-      "target": "file:.squad/agents/bilbo/history.md",
+      "source": "commit:dbe50ee",
+      "target": "file:docs/TAGS.md",
       "type": "modifies"
     },
     {
-      "source": "commit:049958d",
+      "source": "commit:dbe50ee",
+      "target": "file:docs/guides/notifications-guide.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:50f22c1",
+      "target": "file:.squad/agents/frodo/history.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:50f22c1",
+      "target": "file:scripts/notification-scheduler.ps1",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:50f22c1",
+      "target": "file:tests/notification-scheduler.Tests.ps1",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:31f5e5b",
+      "target": "file:.github/agents/squad.agent.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:31f5e5b",
+      "target": "file:.squad/agents/frodo/charter.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:31f5e5b",
+      "target": "file:.squad/agents/frodo/history.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:31f5e5b",
+      "target": "file:.squad/agents/gandalf/charter.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:31f5e5b",
+      "target": "file:.squad/templates/charter.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:31f5e5b",
+      "target": "file:.squad/templates/run-output.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:31f5e5b",
       "target": "file:.squad/templates/squad.agent.md",
       "type": "modifies"
     },
     {
-      "source": "commit:6277ce1",
-      "target": "file:docs/investigations/icm-21000000917983-investigation.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:6277ce1",
-      "target": "file:docs/investigations/icm-21000000951041-investigation.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:6277ce1",
-      "target": "file:docs/investigations/icm-51000000943039-investigation.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:6277ce1",
-      "target": "file:docs/investigations/icm-51000000954460-investigation.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:acd42cc",
-      "target": "file:.squad/agents/aragorn/charter.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:acd42cc",
-      "target": "file:.squad/skills/icm-investigator/SKILL.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:495e4eb",
-      "target": "file:docs/guides/INDEX.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:495e4eb",
-      "target": "file:docs/guides/RECENT.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:495e4eb",
-      "target": "file:docs/guides/TAGS.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:495e4eb",
-      "target": "file:docs/guides/agent-dashboard-setup.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:495e4eb",
-      "target": "file:docs/guides/icm-investigation-guide.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:495e4eb",
-      "target": "file:docs/guides/semantic-model-usage.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:495e4eb",
-      "target": "file:docs/guides/teams-notifications-setup.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:495e4eb",
-      "target": "file:docs/guides/teams-watchdog-setup.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:495e4eb",
-      "target": "file:docs/guides/worktree-usage.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:fb5797b",
-      "target": "file:.squad/decisions/inbox/copilot-directive-bilbo-auto-docs.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:e8bf686",
-      "target": "file:.squad/semantic-model.json",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:e8bf686",
-      "target": "file:docs/guides/squad-template-patterns.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:e8bf686",
-      "target": "file:docs/guides/squad-template-role-mapping.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:862298b",
-      "target": "file:.squad/skills/semantic-model/SKILL.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:862298b",
-      "target": "file:scripts/semantic-index.ps1",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:968f2b4",
-      "target": "file:.squad/skills/semantic-model/SKILL.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:968f2b4",
-      "target": "file:scripts/semantic-index.ps1",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:968f2b4",
-      "target": "file:scripts/semantic-query.ps1",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:38ecf03",
-      "target": "file:.squad/agents/bilbo/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:38ecf03",
-      "target": "file:docs/INDEX.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:38ecf03",
-      "target": "file:docs/RECENT.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:38ecf03",
-      "target": "file:docs/TAGS.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:c88673f",
-      "target": "file:.squad/skills/teams-watchdog/SKILL.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:c88673f",
-      "target": "file:.squad/skills/teams-watchdog/run-pipeline.ps1",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:c88673f",
-      "target": "file:.squad/skills/teams-watchdog/single-agent-scan.ps1",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:0dbb64f",
-      "target": "file:templates/squad-starter/README.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:0dbb64f",
-      "target": "file:templates/squad-starter/ceremonies.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:0dbb64f",
-      "target": "file:templates/squad-starter/charter-templates/developer.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:0dbb64f",
-      "target": "file:templates/squad-starter/charter-templates/documentarian.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:0dbb64f",
+      "source": "commit:31f5e5b",
       "target": "file:templates/squad-starter/charter-templates/lead.md",
       "type": "modifies"
     },
     {
-      "source": "commit:0dbb64f",
-      "target": "file:templates/squad-starter/charter-templates/reviewer.md",
+      "source": "commit:fbe279d",
+      "target": "file:.squad/agents/frodo/charter.md",
       "type": "modifies"
     },
     {
-      "source": "commit:0dbb64f",
-      "target": "file:templates/squad-starter/charter-templates/tester.md",
+      "source": "commit:fbe279d",
+      "target": "file:.squad/agents/frodo/history.md",
       "type": "modifies"
     },
     {
-      "source": "commit:0dbb64f",
-      "target": "file:templates/squad-starter/routing.md",
+      "source": "commit:fbe279d",
+      "target": "file:.squad/casting/registry.json",
       "type": "modifies"
     },
     {
-      "source": "commit:0dbb64f",
-      "target": "file:templates/squad-starter/team.md",
+      "source": "commit:fbe279d",
+      "target": "file:.squad/routing.md",
       "type": "modifies"
     },
     {
-      "source": "commit:15a7812",
-      "target": "file:.squad/agents/elrond/history.md",
+      "source": "commit:fbe279d",
+      "target": "file:.squad/team.md",
       "type": "modifies"
     },
     {
-      "source": "commit:297a498",
-      "target": "file:.squad/skills/squad-notifications/SKILL.md",
+      "source": "commit:fbe279d",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Config/ConfigCommand.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:297a498",
-      "target": "file:scripts/send-teams-notification.ps1",
+      "source": "commit:fbe279d",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Config/ConfigManager.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:297a498",
-      "target": "file:scripts/squad-daily-summary.ps1",
+      "source": "commit:fbe279d",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Config/DgrepConfig.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:c536ecf",
-      "target": "file:.squad/skills/teams-watchdog/poc-single-agent-scan.ps1",
+      "source": "commit:fbe279d",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Config/OptionResolver.cs",
       "type": "modifies"
     },
     {
-      "source": "commit:c536ecf",
-      "target": "file:docs/research/teams-monitor-adaptation-research.md",
+      "source": "commit:fbe279d",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Program.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:9349576",
+      "target": "file:scripts/notification-recovery.ps1",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:9349576",
+      "target": "file:scripts/notify.ps1",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:9349576",
+      "target": "file:tests/notification-recovery.Tests.ps1",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:7e86502",
+      "target": "file:.github/agents/squad.agent.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:7e86502",
+      "target": "file:.squad/agents/gandalf/charter.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:7e86502",
+      "target": "file:.squad/templates/charter.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:7e86502",
+      "target": "file:.squad/templates/run-output.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:7e86502",
+      "target": "file:.squad/templates/squad.agent.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:7e86502",
+      "target": "file:templates/squad-starter/charter-templates/lead.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:940c958",
+      "target": "file:.squad/agents/frodo/charter.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:940c958",
+      "target": "file:.squad/agents/frodo/history.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:940c958",
+      "target": "file:.squad/casting/registry.json",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:940c958",
+      "target": "file:.squad/routing.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:940c958",
+      "target": "file:.squad/team.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:9fdeb0b",
+      "target": "file:.gitignore",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:9fdeb0b",
+      "target": "file:scripts/notify.ps1",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:9fdeb0b",
+      "target": "file:tests/notify.Tests.ps1",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:436825a",
+      "target": "file:tools/dgrep-cli/.gitignore",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:436825a",
+      "target": "file:tools/dgrep-cli/DgrepCli.sln",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:436825a",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Commands/ConfigOptions.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:436825a",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Commands/OptionValidator.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:436825a",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Commands/SavedOptions.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:436825a",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Commands/SearchOptions.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:436825a",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Commands/TailOptions.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:436825a",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/DgrepCli.csproj",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:436825a",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Program.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:436825a",
+      "target": "file:tools/dgrep-cli/tests/DgrepCli.Tests/Commands/ConfigOptionsTests.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:6bef85c",
+      "target": "file:docs/investigations/icm-767184571-investigation.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:110d4e6",
+      "target": "file:docs/research/devops-ai-analysis.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:41ec84b",
+      "target": "file:docs/catalogs/reference-codebases.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:41ec84b",
+      "target": "file:docs/catalogs/tools-and-integrations.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:9d795bf",
+      "target": "file:docs/investigations/TASK-INDEX.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:9d795bf",
+      "target": "file:docs/investigations/icm-767184571-investigation.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:dea7cf7",
+      "target": "file:NOTIFICATIONS_ANALYSIS_SUMMARY.txt",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:dea7cf7",
+      "target": "file:docs/designs/notifications-tamir-xref.md",
       "type": "modifies"
     }
   ]

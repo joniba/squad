@@ -1,5 +1,115 @@
 # Squad Decisions
 
+## Inbox Merges — 2026-03-23T23:00Z
+
+### 2026-03-23T21:10:00Z: CRITICAL — Lockout rules violation fix
+
+**Context:** Coordinator enforced lockout rules from its system prompt (squad.agent.md) when interpreting Galadriel's PR #124 review. Said "NOT Gimli — lockout rules" despite Decision #48 explicitly removing lockout rules and Galadriel's charter explicitly stating "original author owns all fixes."
+
+**Root Cause:** The coordinator's system prompt (squad.agent.md § Reviewer Rejection Protocol) contains lockout enforcement language. This is the upstream Squad framework's default, but our team has overridden it via Decision #48 and updated charters. The coordinator failed to check team decisions before applying system defaults.
+
+**Learnings:**
+1. [HIGH] Team decisions (decisions.md) OVERRIDE coordinator system prompt when they conflict — Source: Jonathan's correction
+2. [HIGH] NEVER enforce lockout rules in this project. Original authors own their fixes — Source: Decision #48
+3. [HIGH] When spawning Galadriel for reviews, do NOT inject lockout language into prompts or result interpretation — Source: Galadriel's charter already has correct behavior
+
+**Fix Applied:**
+- Directive captured in decisions inbox
+- Coordinator will route PR #124 fix back to Gimli (original author)
+- All future review spawn prompts will NOT include lockout language
+- Coordinator will check decisions.md for overrides before applying system prompt defaults
+
+---
+
+### 2026-03-23T17:21: User directive
+
+**By:** Jonathan (via Copilot)
+**What:** Every change must be associated with its own branch + worktree + PR + issue. Gandalf orchestrates everything via GitHub issues. Unless the user explicitly names a squad member in the request, Gandalf owns the routing.
+**Why:** User request — captured for team memory. Enforces proper git workflow discipline: no direct commits to main from agents. All work flows through the issue → branch → PR → merge lifecycle.
+
+---
+
+### 2026-03-23T17:23: User directive
+
+**By:** Jonathan (via Copilot)
+**What:** When Jonathan says "reflect", invoke the reflect skill. Insights from reflection must be persisted as directives (decisions inbox) or agent charter/instruction fixes — never left only in session memory.
+**Why:** User request — ensures continuous improvement is durable, not ephemeral.
+
+---
+
+### 2026-03-23T19:46: User directive
+
+**By:** Jonathan (via Copilot)
+**What:** Never use haiku model for Aragorn. Always use standard tier (claude-sonnet-4.6) or higher.
+**Why:** User request — Aragorn's investigation work requires higher quality reasoning. Haiku is insufficient for ICM analysis, cert investigations, and code-level RCA.
+
+---
+
+### 2026-03-23T19:50: Session reflection
+
+**By:** Coordinator (reflect skill)
+**What:** Clarification of branch-per-change directive based on session evidence:
+- **Code changes** → branch + PR (mandatory)
+- **Docs, designs, investigations, catalogs** → commit directly to main (practical)
+- **When asking Jonathan to review** → merge to main first, don't ask him to switch branches
+- **Don't duplicate work Jonathan already did** — check before spawning (e.g., "no triage needed, there's already a report", "just added it to the task-index")
+**Why:** Multiple corrections during session. Jonathan merged PR #113 immediately when told to review on a branch ("not practical"). Investigation reports committed to main throughout without issue. Bilbo ran redundantly on TASK-INDEX work Jonathan had already done.
+
+---
+
+### 2026-03-23T20:32: User directives (super-duper yolo protocol)
+
+**By:** Jonathan (via Copilot)
+**What:**
+1. ONLY Galadriel is authorized to close PRs. No one else except the coordinator (and only where human intervention is required).
+2. Do NOT cut corners, do NOT be efficient. Be thorough. If stuck or have doubts, handoff to Elrond for research and Gandalf to orchestrate.
+3. Super-duper yolo protocol: whenever human intervention is needed, the coordinator steps in autonomously.
+**Why:** User request — Jonathan wants two major features (DGrep CLI + Teams notifications) built end-to-end with full quality gates.
+
+---
+
+### DGrep CLI Reflection — Wrong SDK Built
+
+**Author:** Gandalf
+**Date:** 2026-03-28
+
+We built a DGrep CLI tool with a `KustoQueryExecutor` that references `Microsoft.Azure.Kusto.Data` patterns. DGrep is not Kusto. It has its own SDK (`Microsoft.Azure.Monitoring.DGrep.SDK`), its own auth model (dSTS, not AAD tokens), and its own connection model (MDS endpoint + namespace + event, not cluster + database). 6 PRs merged, 274 tests written, all against the wrong product's concepts.
+
+**Root Cause:** Gandalf (me) introduced Kusto terminology when creating the C# pivot issues (#101–#109). Elrond's research was correct — it clearly distinguished DGrep from Kusto. The POC was correct — it used the DGrep SDK. But when I pivoted from TypeScript to C#, I wrote issue descriptions using Kusto mental models instead of re-reading the research. Gimli built exactly what I specified.
+
+**Learnings:**
+1. [HIGH] POC results must gate feature work, not run in parallel. The POC confirmed the correct SDK works, but its findings were never integrated. By the time POC results were available, 3 PRs had already merged against the wrong model. **Fix:** Add to Gandalf's charter — "When a POC exists, its findings must be reviewed and merged before feature work begins."
+2. [HIGH] Tech stack pivots require design re-review. Pivoting from TypeScript to C# was the right call, but I created new issues without validating them against Elrond's research. The pivot created a translation gap where DGrep concepts got replaced with Kusto concepts. **Fix:** Add to team decisions — "After a tech stack pivot, all new issues must be reviewed against the original research document before implementation begins."
+3. [HIGH] Domain terminology is a design signal. If a tool called "dgrep" has issues that say "Kusto cluster" and "Kusto database," that's a red flag. Nobody — Gandalf, Galadriel, or Gimli — caught the terminology mismatch. **Fix:** Add to Galadriel's charter — "Flag domain terminology mismatches between issue title/description and code naming."
+4. [MED] Reviewers need domain context. Galadriel reviewed the PRs and found no issues because the code matched the issue descriptions. She had no way to know the issue descriptions were wrong. **Fix:** Before a multi-PR track, provide Galadriel a one-paragraph domain brief (e.g., "DGrep uses MDS endpoints, not Kusto clusters. Auth is dSTS via SDK, not AAD tokens via az-login.").
+5. [MED] This is the same pattern as the notification track. We built library code without verifying end-to-end delivery. In the notification case, we built `notify.ps1` without wiring callers. In the DGrep case, we built a query executor without validating it against the real API. The common failure: building features without an integration proof point.
+
+**Impact:**
+- **Work invested:** 6 PRs, 274 tests, ~2000 LOC
+- **Work wasted:** ~35% (KustoQueryExecutor, query verb, auth validation, built-in queries)
+- **Work reusable:** ~65% (CLI scaffolding, formatters, config, saved queries, 200+ tests)
+- **Recovery cost:** ~3 developer-days
+
+---
+
+### Reflection: Notification Track — Built the Plumbing, Never Connected It
+
+**Date:** 2026-03-25  
+**By:** Gandalf (Lead)  
+**Trigger:** Jonathan expected a notification that the notification track was complete. He didn't get one. He pointed out the webhook IS configured and notifications already work — so what broke?  
+**Severity:** HIGH — this is a process failure, not a tooling failure.
+
+We delivered 3 PRs (#122, #125, #127) building a sophisticated notification pipeline (`notify.ps1`, `notification-recovery.ps1`, `notification-scheduler.ps1`). The code is merged, tested, documented. But nobody — no agent, no script, no coordinator — ever *calls* `notify.ps1`. The plumbing is connected to nothing.
+
+Meanwhile, the **existing** notification system (`send-teams-notification.ps1`) has been working this whole time. `icm-scan.ps1` calls it (line 286). `squad-daily-summary.ps1` calls it (line 56). Jonathan already gets Teams notifications through this system.
+
+**Key Learning:** [HIGH] Integration points are first-class deliverables, not afterthoughts. When a design doc specifies integration points, each integration point MUST be tracked as a separate issue. The track is not "complete" until callers are wired, not just when the library ships.
+
+**Process Fixes (Proposed Team Decisions):**
+1. **Integration-first delivery:** When a design specifies integration points (callers that must invoke new code), each integration point is a separate deliverable. The track is not complete until at least one production caller is wired. PR reviewers must verify: "Who calls this code outside tests?"
+
+---
+
 ## User Directives
 
 ### 2026-03-23T14:42:40Z: Exhaust existing tools before researching alternatives

@@ -66,3 +66,15 @@
 - **Scaffold replaced:** Deleted TypeScript files (package.json, tsconfig, vitest, src/, tests/). Created C# solution: DgrepCli.sln, src/DgrepCli/ (net472 console app with CommandLineParser + Newtonsoft.Json), tests/DgrepCli.Tests/ (xUnit). Solution builds clean, 1 placeholder test passes.
 - **Tech stack:** C# targeting net472, CommandLineParser for CLI, Newtonsoft.Json for serialization, xUnit for testing. SDK reference commented out until Phase 2.
 - **Key remaining unknown:** Whether `DefaultAzureCredential` / `az login` tokens can bridge to the SDK's dSTS auth. Interactive auth (`DGrepUserAuthClient`) works out of the box; this is a nice-to-have for Phase 2.
+
+### 2026-03-25 — Notification Track Reflection (Post-Mortem)
+
+- **Trigger:** Jonathan expected a notification when the notification track completed. He got nothing. He confirmed the webhook IS configured and he already DOES get notifications — through the old system.
+- **Root cause:** We built `notify.ps1` + `notification-recovery.ps1` + `notification-scheduler.ps1` (3 PRs: #122, #125, #127) but never wired any callers. Zero production invocations. The design doc's Phase 1 (scheduler wiring) and Phase 2 (agent wiring) were never started.
+- **Existing system overlooked:** `send-teams-notification.ps1` was already delivering notifications — `icm-scan.ps1` (line 286) and `squad-daily-summary.ps1` (line 56) call it. Two parallel systems now coexist: old one works, new one is orphaned.
+- **Learnings:**
+  1. [HIGH] Integration points are deliverables, not afterthoughts — if the design says "wire X to call Y", that's a tracked issue, not implied work.
+  2. [HIGH] "Feature complete" means user-observable effect, not code-merged. Jonathan seeing a Teams card = complete. Three merged PRs with no callers ≠ complete.
+  3. [HIGH] When replacing an existing system, migrate at least one caller in the same PR. Otherwise the old system keeps running and the new one is dead code.
+  4. [MED] PR reviewers (Galadriel) should flag library code with zero production callers — ask "who calls this?"
+  5. [MED] I (Gandalf) approved the design and declared the track complete without verifying end-to-end delivery. I own this gap.
