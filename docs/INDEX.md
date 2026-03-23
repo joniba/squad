@@ -51,6 +51,9 @@ Master index organized by the 8-category knowledge management system. Documents 
 
 | Document | Date | Tags | Status |
 |----------|------|------|--------|
+| [Unified Scheduler Guide](guides/unified-scheduler-guide.md) | 2026-03-24 | guide, tooling, workflow, squad-infra, bilbo, final |
+| [Email Watchdog Setup Guide](guides/email-watchdog-setup.md) | 2026-03-24 | guide, tooling, workflow, teams, bilbo, final |
+| [Teams Knowledge Library Guide](guides/teams-knowledge-library-guide.md) | 2026-03-24 | guide, squad-infra, teams, bilbo, final |
 | [Squad Template Role Mapping & Customization Guide](guides/squad-template-role-mapping.md) | 2026-03-23 | guide, squad-infra, roles, workflow, bilbo, final |
 | [Squad Template Patterns & Design Principles](guides/squad-template-patterns.md) | 2026-03-23 | guide, squad-infra, patterns, workflow, bilbo, final |
 
@@ -64,6 +67,6 @@ Master index organized by the 8-category knowledge management system. Documents 
 
 ---
 
-**Last Updated:** 2026-03-23  
-**Total Documents:** 15  
+**Last Updated:** 2026-03-24  
+**Total Documents:** 18  
 **Categories Populated:** 4 / 8

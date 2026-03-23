@@ -48,6 +48,9 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 
 ## bilbo
 
+- [Unified Scheduler Guide](guides/unified-scheduler-guide.md) — guides
+- [Email Watchdog Setup Guide](guides/email-watchdog-setup.md) — guides
+- [Teams Knowledge Library Guide](guides/teams-knowledge-library-guide.md) — guides
 - [Squad Template Role Mapping & Customization Guide](guides/squad-template-role-mapping.md) — guides
 - [Squad Template Patterns & Design Principles](guides/squad-template-patterns.md) — guides
 
@@ -64,6 +67,9 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 
 ## final
 
+- [Unified Scheduler Guide](guides/unified-scheduler-guide.md) — guides
+- [Email Watchdog Setup Guide](guides/email-watchdog-setup.md) — guides
+- [Teams Knowledge Library Guide](guides/teams-knowledge-library-guide.md) — guides
 - [Squad Template Role Mapping & Customization Guide](guides/squad-template-role-mapping.md) — guides
 - [Squad Template Patterns & Design Principles](guides/squad-template-patterns.md) — guides
 - [SubSquads Architecture at Scale: Multi-Team Monorepo Patterns](research/sub-squad-architecture-research.md) — research
@@ -80,6 +86,9 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 
 ## guide
 
+- [Unified Scheduler Guide](guides/unified-scheduler-guide.md) — guides
+- [Email Watchdog Setup Guide](guides/email-watchdog-setup.md) — guides
+- [Teams Knowledge Library Guide](guides/teams-knowledge-library-guide.md) — guides
 - [Squad Template Role Mapping & Customization Guide](guides/squad-template-role-mapping.md) — guides
 - [Squad Template Patterns & Design Principles](guides/squad-template-patterns.md) — guides
 
@@ -169,6 +178,8 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 
 ## squad-infra
 
+- [Unified Scheduler Guide](guides/unified-scheduler-guide.md) — guides
+- [Teams Knowledge Library Guide](guides/teams-knowledge-library-guide.md) — guides
 - [SubSquads Architecture at Scale: Multi-Team Monorepo Patterns](research/sub-squad-architecture-research.md) — research
 - [Research Report: Tamir's Worktree/Parallelism Insights & Squad's Gap](research/worktrees/worktree-parallelism-research.md) — research
 - [Worktree Lifecycle for Parallel Agent Execution — Comprehensive Research](research/worktrees/worktree-lifecycle-research.md) — research
@@ -187,6 +198,8 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 
 ## teams
 
+- [Email Watchdog Setup Guide](guides/email-watchdog-setup.md) — guides
+- [Teams Knowledge Library Guide](guides/teams-knowledge-library-guide.md) — guides
 - [Teams Channel Notifications for Squad: Research & Recommendations](research/teams-notification-research.md) — research
 
 ## threat-intelligence
@@ -197,6 +210,8 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 
 ## tooling
 
+- [Unified Scheduler Guide](guides/unified-scheduler-guide.md) — guides
+- [Email Watchdog Setup Guide](guides/email-watchdog-setup.md) — guides
 - [Squad Skills Catalog — tamirdresher/squad-skills](catalogs/squad-skills-catalog.md) — catalogs
 - [Teams Channel Notifications for Squad: Research & Recommendations](research/teams-notification-research.md) — research
 
@@ -210,6 +225,8 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 
 ## workflow
 
+- [Unified Scheduler Guide](guides/unified-scheduler-guide.md) — guides
+- [Email Watchdog Setup Guide](guides/email-watchdog-setup.md) — guides
 - [SubSquads Architecture at Scale: Multi-Team Monorepo Patterns](research/sub-squad-architecture-research.md) — research
 - [Research Report: Tamir's Worktree/Parallelism Insights & Squad's Gap](research/worktrees/worktree-parallelism-research.md) — research
 - [Tamir Dresher's Git Worktrees Article: Comprehensive Analysis](research/worktrees/worktree-article-analysis.md) — research
@@ -225,6 +242,6 @@ Reverse index showing all documents associated with each tag. Tags are alphabeti
 
 ---
 
-**Last Updated:** 2026-03-23  
+**Last Updated:** 2026-03-24  
 **Unique Tags:** 36  
-**Total Tag Assignments:** 64
+**Total Tag Assignments:** 73
