@@ -1,4 +1,6 @@
-ICM 51000000954460 investigation transfer update
+.squad: Merge decisions inbox, commit state
 
-Bilbo marked ICM 51000000954460 as transferred in investigation report
-and updated TASK-INDEX.
+- Merged decisions/inbox/ → decisions.md (no inbox entries)
+- Deleted inbox directory (empty)
+- Removed orphaned commit-msg.txt
+- Session: Scribe orchestration update
