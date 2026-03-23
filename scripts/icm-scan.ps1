@@ -2,29 +2,109 @@
 .SYNOPSIS
     Invokes Aragorn via copilot -p to scan IcM for active incidents.
 .DESCRIPTION
-    Uses copilot -p --yolo --no-ask-user for LLM-in-the-loop IcM scanning with full
-    MCP tool access. Aragorn scans, prints a concise inline summary, and creates
-    GitHub issues for each incident needing investigation. NO report files are created
-    — scans trigger tasks, not documents.
+    Watermark-driven IcM scan. Tracks last scan time and seen incident IDs to narrow
+    query windows and skip already-processed incidents. Aragorn scans, prints a concise
+    inline summary, and creates GitHub issues for each new incident. NO report files
+    are created — scans trigger tasks, not documents.
 .PARAMETER TeamId
     IcM team ID (default: 116041 = DAKOTA\ThreatIntelligence)
 .PARAMETER Model
     LLM model to use (default: claude-sonnet-4.6)
 .PARAMETER DryRun
-    Print the prompt and exit without invoking the LLM.
+    Print watermark state + prompt, then exit without invoking the LLM.
+.PARAMETER Reset
+    Delete the watermark file. Next run uses the 24h default window.
 .EXAMPLE
     .\scripts\icm-scan.ps1
     .\scripts\icm-scan.ps1 -DryRun
+    .\scripts\icm-scan.ps1 -Reset
 #>
 param(
     [string]$TeamId = "116041",
     [string]$Model = "claude-sonnet-4.6",
-    [switch]$DryRun
+    [switch]$DryRun,
+    [switch]$Reset
 )
 
 $ErrorActionPreference = "Stop"
 $root = Split-Path $PSScriptRoot -Parent
+$watermarkPath = Join-Path $root ".squad\icm-scan-watermark.json"
 
+# --- Handle -Reset ---
+if ($Reset) {
+    if (Test-Path $watermarkPath) {
+        Remove-Item $watermarkPath -Force
+        Write-Host "🔄 Watermark reset — next scan uses 24h default window" -ForegroundColor Yellow
+    } else {
+        Write-Host "ℹ️  No watermark file to reset" -ForegroundColor DarkGray
+    }
+    exit 0
+}
+
+# --- Load watermark ---
+$watermark = $null
+$defaultHours = 24
+$maxHours = 168  # 7 days cap
+
+if (Test-Path $watermarkPath) {
+    try {
+        $watermark = Get-Content $watermarkPath -Raw | ConvertFrom-Json
+        if (-not $watermark.version -or -not $watermark.lastScan) { throw "Invalid schema" }
+    } catch {
+        Write-Warning "⚠️  Watermark corrupt — deleting and starting fresh"
+        Remove-Item $watermarkPath -Force
+        $watermark = $null
+    }
+}
+
+# --- Calculate lookback window ---
+$now = [datetime]::UtcNow
+$lookbackHours = $defaultHours
+$lastScanDisplay = "never (first run)"
+
+if ($watermark -and $watermark.lastScan) {
+    # ConvertFrom-Json auto-parses ISO 8601 strings to DateTime objects
+    $lastScan = [datetime]$watermark.lastScan
+    $hoursSince = ($now - $lastScan).TotalHours + 1  # +1h buffer handles race conditions
+    $lookbackHours = [Math]::Min([Math]::Ceiling($hoursSince), $maxHours)
+    $lastScanDisplay = $lastScan.ToString("yyyy-MM-ddTHH:mm:ssZ")
+}
+
+$watermarkSeenIds = @()
+if ($watermark -and $watermark.seenIds) { $watermarkSeenIds = @($watermark.seenIds) }
+
+# --- Build known IDs list (3 sources merged) ---
+$knownIds = [System.Collections.Generic.HashSet[string]]::new()
+
+# Source 1: Watermark seenIds
+foreach ($id in $watermarkSeenIds) { $knownIds.Add($id) | Out-Null }
+
+# Source 2: docs/investigations/icm-* filenames
+$investigationsDir = Join-Path $root "docs\investigations"
+$existingReports = @()
+if (Test-Path $investigationsDir) {
+    $existingReports = @(Get-ChildItem -Path $investigationsDir -Filter "icm-*" -Name | ForEach-Object {
+        if ($_ -match "icm-(\d+)") { $Matches[1] }
+    })
+    foreach ($id in $existingReports) { $knownIds.Add($id) | Out-Null }
+}
+
+# Source 3: GitHub issues with squad:aragorn label (titles like "ICM 12345: ...")
+$existingIssues = gh issue list --label "squad,squad:aragorn" --state all --json title --limit 100 --repo jbenami_microsoft/ms-pa 2>$null | ConvertFrom-Json
+$existingTitles = @()
+if ($existingIssues) {
+    $existingTitles = @($existingIssues | ForEach-Object { $_.title })
+    $existingIssues | ForEach-Object {
+        if ($_.title -match "ICM\s+(\d+)") { $knownIds.Add($Matches[1]) | Out-Null }
+    }
+}
+
+$knownIdsList = @($knownIds)
+$skipInstruction = if ($knownIdsList.Count -gt 0) {
+    "Skip these IcM IDs (already processed — do NOT report them): $($knownIdsList -join ', ')"
+} else { "" }
+
+# --- Build prompt ---
 $prompt = @"
 You are Aragorn, the Livesite Responder for the pa-squad team.
 
@@ -32,6 +112,9 @@ You are Aragorn, the Livesite Responder for the pa-squad team.
 
 Use icm-search_incidents_by_owning_team_id with teamId $TeamId to retrieve all active
 incidents. Filter client-side using the criteria below.
+
+**Time window:** Only report incidents created or updated in the last $lookbackHours hours.
+$skipInstruction
 
 ## Include
 
@@ -69,18 +152,21 @@ INCIDENT|21000000951041|Sev3|CRI|Azure Gov TAXII Ingestion Shortfall|mjones|2026
 HIGHLIGHT|Sev2 766712513 is recurring (5th time in March) — needs root cause
 "@
 
+# --- Transparency output (shown for both normal and DryRun) ---
+$sinceLine = if ($watermark) { "(since $lastScanDisplay)" } else { "(first run — 24h default)" }
+Write-Host "🔍 IcM scan — team $TeamId" -ForegroundColor Cyan
+Write-Host "   Window: last $($lookbackHours)h $sinceLine" -ForegroundColor DarkGray
+Write-Host "   Known: $($knownIdsList.Count) IcM IDs already processed (skipped)" -ForegroundColor DarkGray
+Write-Host "   Filter: Sev0-2 (any type) + CRIs (System/Customer Reported, any sev) + Sev2.5 candidates" -ForegroundColor DarkGray
+Write-Host "   Exclude: bare Sev3, Sev4-5, Mitigated/Resolved/False Positive" -ForegroundColor DarkGray
+Write-Host ""
+
 if ($DryRun) {
     Write-Host "DRY RUN — would invoke: copilot -p with model $Model" -ForegroundColor Yellow
     Write-Host ""
     Write-Host $prompt
     exit 0
 }
-
-Write-Host "🔍 IcM scan — team $TeamId" -ForegroundColor Cyan
-Write-Host "   Query: icm-search_incidents_by_owning_team_id (teamId=$TeamId)" -ForegroundColor DarkGray
-Write-Host "   Filter: Sev0-2 (any type) + CRIs (System/Customer Reported, any sev) + Sev2.5 candidates" -ForegroundColor DarkGray
-Write-Host "   Exclude: bare Sev3, Sev4-5, Mitigated/Resolved/False Positive" -ForegroundColor DarkGray
-Write-Host ""
 
 $output = copilot -p $prompt `
     --yolo `
@@ -96,8 +182,24 @@ if ($LASTEXITCODE -ne 0) {
 # Parse structured output
 $lines = $output -split "`n" | ForEach-Object { $_.Trim() } | Where-Object { $_ }
 $scanResult = $lines | Where-Object { $_ -match "^SCAN_RESULT\|" } | Select-Object -First 1
-$incidents = $lines | Where-Object { $_ -match "^INCIDENT\|" }
-$highlight = $lines | Where-Object { $_ -match "^HIGHLIGHT\|" } | Select-Object -First 1
+$incidents  = $lines | Where-Object { $_ -match "^INCIDENT\|" }
+$highlight  = $lines | Where-Object { $_ -match "^HIGHLIGHT\|" } | Select-Object -First 1
+
+# --- Update watermark (always, even on clear result) ---
+$newScanIds = @($incidents | ForEach-Object {
+    $parts = $_ -split "\|"
+    if ($parts.Count -ge 2 -and $parts[1]) { $parts[1] }
+})
+
+$mergedIds = [System.Collections.Generic.List[string]]::new()
+foreach ($id in $watermarkSeenIds) { $mergedIds.Add($id) | Out-Null }
+foreach ($id in $newScanIds) { if (-not $mergedIds.Contains($id)) { $mergedIds.Add($id) } }
+while ($mergedIds.Count -gt 200) { $mergedIds.RemoveAt(0) }  # FIFO rotation
+
+$newWatermark = [ordered]@{ version = 1; lastScan = $now.ToString("yyyy-MM-ddTHH:mm:ssZ"); seenIds = @($mergedIds) }
+$newWatermark | ConvertTo-Json -Depth 5 | Set-Content $watermarkPath -Encoding UTF8
+Write-Host "   💾 Watermark saved: lastScan=$($newWatermark.lastScan), seenIds=$($mergedIds.Count)" -ForegroundColor DarkGray
+Write-Host ""
 
 if (-not $scanResult -or $scanResult -match "\|clear\|") {
     Write-Host "✅ No active incidents matching scan criteria" -ForegroundColor Green
@@ -113,10 +215,10 @@ $issuesCreated = @()
 foreach ($inc in $incidents) {
     $parts = $inc -split "\|"
     if ($parts.Count -ge 6) {
-        $icmId = $parts[1]
-        $sev = $parts[2]
-        $type = $parts[3]
-        $title = $parts[4]
+        $icmId   = $parts[1]
+        $sev     = $parts[2]
+        $type    = $parts[3]
+        $title   = $parts[4]
         $contact = $parts[5]
         Write-Host "  • $sev [$type] IcM#$icmId — $title ($contact)" -ForegroundColor White
         $issuesCreated += @{ IcmId=$icmId; Sev=$sev; Type=$type; Title=$title }
@@ -131,37 +233,21 @@ if ($highlight) {
 
 Write-Host ""
 
-# Create GitHub issues for new incidents (dedup against existing issues + investigation reports)
-$existingIssues = gh issue list --label "squad,squad:aragorn" --state all --json title --limit 100 --repo jbenami_microsoft/ms-pa 2>$null | ConvertFrom-Json
-$existingTitles = $existingIssues | ForEach-Object { $_.title }
-
-# Also check for existing investigation reports in docs/investigations/
-$investigationsDir = Join-Path $root "docs\investigations"
-$existingReports = @()
-if (Test-Path $investigationsDir) {
-    $existingReports = Get-ChildItem -Path $investigationsDir -Filter "icm-*" -Name | ForEach-Object {
-        if ($_ -match "icm-(\d+)") { $Matches[1] }
-    }
-}
-
+# Create GitHub issues for new incidents (dedup: existingTitles + existingReports already loaded above)
 $created = 0
 $notifyLines = @()
 foreach ($inc in $issuesCreated) {
     $issueTitle = "ICM $($inc.IcmId): $($inc.Title)"
-    $icmLink = "https://portal.microsofticm.com/imp/v5/incidents/details/$($inc.IcmId)/home"
-    
-    # Check 1: existing GitHub issue (any state — open or closed)
-    $hasIssue = $existingTitles | Where-Object { $_ -match $inc.IcmId }
-    
-    # Check 2: existing investigation report
+    $icmLink    = "https://portal.microsofticm.com/imp/v5/incidents/details/$($inc.IcmId)/home"
+
+    $hasIssue  = $existingTitles | Where-Object { $_ -match $inc.IcmId }
     $hasReport = $existingReports -contains $inc.IcmId
-    
+
     if ($hasIssue) {
         Write-Host "  ⏭️  IcM#$($inc.IcmId) (issue exists on board)" -ForegroundColor DarkGray
         $notifyLines += "• **$($inc.Sev)** [$($inc.Type)] [IcM#$($inc.IcmId)]($icmLink) — $($inc.Title) _(tracked)_"
         continue
     }
-    
     if ($hasReport) {
         Write-Host "  ⏭️  IcM#$($inc.IcmId) (investigation report exists)" -ForegroundColor DarkGray
         $notifyLines += "• **$($inc.Sev)** [$($inc.Type)] [IcM#$($inc.IcmId)]($icmLink) — $($inc.Title) _(investigated)_"

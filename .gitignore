@@ -17,3 +17,5 @@ worktrees/
 # Scheduler runtime state
 .squad/scheduler-state.json
 .squad/scheduler.log
+# IcM scan watermark (machine-local state, not shared)
+.squad/icm-scan-watermark.json
