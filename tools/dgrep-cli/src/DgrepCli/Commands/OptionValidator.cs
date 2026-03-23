@@ -19,7 +19,7 @@ namespace DgrepCli.Commands
             new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "set", "get", "list" };
 
         private static readonly HashSet<string> ValidSavedActions =
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "save", "run", "list", "delete" };
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "list", "add", "remove", "show", "run" };
 
         public static List<string> ValidateSearchOptions(SearchOptions opts)
         {
@@ -72,30 +72,19 @@ namespace DgrepCli.Commands
         {
             var errors = new List<string>();
             if (!ValidSavedActions.Contains(opts.Action))
-                errors.Add($"Unknown saved-query action '{opts.Action}'. Valid actions: save, run, list, delete.");
+                errors.Add($"Unknown saved-query action '{opts.Action}'. Valid actions: list, add, remove, show, run.");
 
             if (opts.Action != null)
             {
                 var action = opts.Action.ToLowerInvariant();
-                if ((action == "save" || action == "run" || action == "delete") && string.IsNullOrWhiteSpace(opts.Name))
+                if ((action == "add" || action == "remove" || action == "show" || action == "run") && string.IsNullOrWhiteSpace(opts.Name))
                     errors.Add($"'saved {action}' requires a query name.");
-                if (action == "save")
-                {
-                    if (string.IsNullOrWhiteSpace(opts.Endpoint))
-                        errors.Add("'saved save' requires --endpoint.");
-                    if (string.IsNullOrWhiteSpace(opts.Namespace))
-                        errors.Add("'saved save' requires --namespace.");
-                    if (string.IsNullOrWhiteSpace(opts.Event))
-                        errors.Add("'saved save' requires --event.");
-                    if (string.IsNullOrWhiteSpace(opts.Query))
-                        errors.Add("'saved save' requires --query.");
-                }
+                if (action == "add" && string.IsNullOrWhiteSpace(opts.Query))
+                    errors.Add("'saved add' requires --query.");
             }
 
             if (opts.Output != null)
                 ValidateOutputFormat(opts.Output, errors);
-            if (opts.QueryType != null)
-                ValidateQueryType(opts.QueryType, errors);
             if (opts.MaxRows.HasValue)
                 ValidateMaxRows(opts.MaxRows.Value, errors);
 

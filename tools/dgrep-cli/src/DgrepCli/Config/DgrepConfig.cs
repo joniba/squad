@@ -69,12 +69,21 @@ namespace DgrepCli.Config
     }
 
     /// <summary>
-    /// A saved query template.
+    /// A saved query template. Supports {{param_name}} placeholders for parameter substitution.
     /// </summary>
     public class SavedQuery
     {
         [JsonProperty("query")]
         public string Query { get; set; }
+
+        [JsonProperty("description")]
+        public string Description { get; set; }
+
+        [JsonProperty("defaultDatabase")]
+        public string DefaultDatabase { get; set; }
+
+        [JsonProperty("defaultCluster")]
+        public string DefaultCluster { get; set; }
 
         [JsonProperty("endpoint")]
         public string Endpoint { get; set; }
@@ -87,8 +96,5 @@ namespace DgrepCli.Config
 
         [JsonProperty("queryType")]
         public string QueryType { get; set; }
-
-        [JsonProperty("description")]
-        public string Description { get; set; }
     }
 }
