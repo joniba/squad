@@ -78,23 +78,18 @@ function Invoke-Task($task, [switch]$ForceCondition) {
 function Start-SpinnerSleep([int]$totalSeconds, $taskList) {
     $spinChars = '|', '/', '-', '\'
     $spinIdx = 0
-    $esc = [char]27
-    $initialized = $false
+    # Build summary once (task timers don't change meaningfully within a 60s tick)
+    $parts = @(foreach ($t in $taskList) { "$($t.name) in $(Format-Remaining (Get-Remaining $t))" })
+    $summary = $parts -join ' | '
+    $width = [Math]::Min(([Console]::WindowWidth - 6), $summary.Length)
+    $display = $summary.Substring(0, [Math]::Min($width, $summary.Length))
+    Write-Host $display
     for ($i = $totalSeconds; $i -gt 0; $i--) {
         $spin = $spinChars[$spinIdx % 4]; $spinIdx++
-        $parts = @(foreach ($t in $taskList) { "$($t.name) in $(Format-Remaining (Get-Remaining $t))" })
-        $summary = $parts -join ' | '
-        if (-not $initialized) {
-            Write-Host -NoNewline "$($summary.PadRight(120))`n⏳ $spin  "
-            $initialized = $true
-        } else {
-            # Move up one line, rewrite summary, move down, rewrite spinner
-            Write-Host -NoNewline "${esc}[1A`r$($summary.PadRight(120))`n`r⏳ $spin  "
-        }
+        Write-Host -NoNewline "`r⏳ $spin  "
         Start-Sleep -Seconds 1
     }
-    Write-Host -NoNewline "${esc}[1A`r$(' ' * 120)`n`r$(' ' * 30)`r"
-    Write-Host ""
+    Write-Host -NoNewline "`r      `r"
 }
 
 do {
