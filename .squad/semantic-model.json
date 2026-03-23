@@ -1,0 +1,1126 @@
+{
+  "nodes": [
+    {
+      "role": "Operator",
+      "id": "agent:aragorn",
+      "charter_path": ".squad/agents/aragorn/charter.md",
+      "type": "agent"
+    },
+    {
+      "role": "unknown",
+      "id": "agent:bilbo",
+      "charter_path": ".squad/agents/bilbo/charter.md",
+      "type": "agent"
+    },
+    {
+      "role": "Researcher",
+      "id": "agent:elrond",
+      "charter_path": ".squad/agents/elrond/charter.md",
+      "type": "agent"
+    },
+    {
+      "role": "unknown",
+      "id": "agent:galadriel",
+      "charter_path": ".squad/agents/galadriel/charter.md",
+      "type": "agent"
+    },
+    {
+      "role": "Lead",
+      "id": "agent:gandalf",
+      "charter_path": ".squad/agents/gandalf/charter.md",
+      "type": "agent"
+    },
+    {
+      "role": "Tool Builder",
+      "id": "agent:gimli",
+      "charter_path": ".squad/agents/gimli/charter.md",
+      "type": "agent"
+    },
+    {
+      "role": "Session Logger",
+      "id": "agent:scribe",
+      "charter_path": ".squad/agents/scribe/charter.md",
+      "type": "agent"
+    },
+    {
+      "id": "decision:2026-03-22t17-30-00z-user-directive-copilot-cli-usage",
+      "type": "decision",
+      "author": "Jonathan (via Copilot)",
+      "title": "2026-03-22T17:30:00Z: User directive — copilot CLI usage"
+    },
+    {
+      "id": "decision:2026-03-22t17-29-59z-user-directive-scripting-philosophy",
+      "type": "decision",
+      "author": "Jonathan (via Copilot)",
+      "title": "2026-03-22T17:29:59Z: User directive — scripting philosophy"
+    },
+    {
+      "id": "decision:2026-03-22t17-30-00z-teams-watchdog-architecture-proposed",
+      "type": "decision",
+      "author": "Gandalf",
+      "title": "2026-03-22T17:30:00Z: Teams Watchdog Architecture (Proposed)"
+    },
+    {
+      "id": "decision:2026-03-22t17-35-00z-skills-scan-squad-skills-plugin-catalog-proposed",
+      "type": "decision",
+      "author": "Elrond (Researcher)",
+      "title": "2026-03-22T17:35:00Z: Skills Scan: squad-skills Plugin Catalog (Proposed)"
+    },
+    {
+      "id": "decision:2026-03-22t17-40-00z-user-directive-work-source-policy",
+      "type": "decision",
+      "author": "Jonathan (via Copilot)",
+      "title": "2026-03-22T17:40:00Z: User directive — work source policy"
+    },
+    {
+      "id": "decision:2026-03-22t17-45-00z-user-directive-clean-root-chat",
+      "type": "decision",
+      "author": "Jonathan (via Copilot)",
+      "title": "2026-03-22T17:45:00Z: User directive — clean root chat"
+    },
+    {
+      "id": "decision:2026-03-22t17-40-00z-coffee-ratings-squad-infra-audit-port-plan-proposed",
+      "type": "decision",
+      "author": "Gandalf",
+      "title": "2026-03-22T17:40:00Z: Coffee-Ratings Squad-Infra Audit & Port Plan (Proposed)"
+    },
+    {
+      "path": ".squad/skills/agent-dashboard",
+      "id": "skill:agent-dashboard",
+      "type": "skill"
+    },
+    {
+      "path": ".squad/skills/icm-investigator",
+      "id": "skill:icm-investigator",
+      "type": "skill"
+    },
+    {
+      "path": ".squad/skills/knowledge-management",
+      "id": "skill:knowledge-management",
+      "type": "skill"
+    },
+    {
+      "path": ".squad/skills/project-conventions",
+      "id": "skill:project-conventions",
+      "type": "skill"
+    },
+    {
+      "path": ".squad/skills/semantic-model",
+      "id": "skill:semantic-model",
+      "type": "skill"
+    },
+    {
+      "path": ".squad/skills/squad-notifications",
+      "id": "skill:squad-notifications",
+      "type": "skill"
+    },
+    {
+      "path": ".squad/skills/teams-watchdog",
+      "id": "skill:teams-watchdog",
+      "type": "skill"
+    },
+    {
+      "path": ".squad/skills/worktree-lifecycle",
+      "id": "skill:worktree-lifecycle",
+      "type": "skill"
+    },
+    {
+      "status": "final",
+      "tags": [
+        "investigation-method",
+        "icm",
+        "security",
+        "livesite",
+        "operational"
+      ],
+      "id": "doc:C:/dev/personal/pa-squad/docs/icm-764634026-resolution.md",
+      "type": "doc",
+      "title": "ICM 764634026 — MSPKI G1→G2 Root CA Migration Resolution Walkthrough"
+    },
+    {
+      "status": "system",
+      "tags": [],
+      "id": "doc:C:/dev/personal/pa-squad/docs/INDEX.md",
+      "type": "doc",
+      "title": "Documentation Index — By Category"
+    },
+    {
+      "status": "system",
+      "tags": [],
+      "id": "doc:C:/dev/personal/pa-squad/docs/RECENT.md",
+      "type": "doc",
+      "title": "Recent Documents"
+    },
+    {
+      "status": "unknown",
+      "tags": [],
+      "id": "doc:C:/dev/personal/pa-squad/docs/SYSTEM.md",
+      "type": "doc",
+      "title": "SYSTEM"
+    },
+    {
+      "status": "system",
+      "tags": [],
+      "id": "doc:C:/dev/personal/pa-squad/docs/TAGS.md",
+      "type": "doc",
+      "title": "Documentation Index — By Tag"
+    },
+    {
+      "status": "final",
+      "tags": [
+        "catalog",
+        "skills",
+        "squad-infra",
+        "tooling"
+      ],
+      "id": "doc:C:/dev/personal/pa-squad/docs/catalogs/squad-skills-catalog.md",
+      "type": "doc",
+      "title": "Squad Skills Catalog — tamirdresher/squad-skills"
+    },
+    {
+      "status": "final",
+      "tags": [
+        "guide",
+        "squad-infra",
+        "patterns",
+        "workflow",
+        "bilbo",
+        "final"
+      ],
+      "id": "doc:C:/dev/personal/pa-squad/docs/guides/squad-template-patterns.md",
+      "type": "doc",
+      "title": "Squad Template Patterns & Design Principles"
+    },
+    {
+      "status": "final",
+      "tags": [
+        "guide",
+        "squad-infra",
+        "roles",
+        "workflow",
+        "bilbo",
+        "final"
+      ],
+      "id": "doc:C:/dev/personal/pa-squad/docs/guides/squad-template-role-mapping.md",
+      "type": "doc",
+      "title": "Squad Template Role Mapping & Customization Guide"
+    },
+    {
+      "status": "final",
+      "tags": [
+        "investigation",
+        "icm",
+        "architecture",
+        "aragorn",
+        "agent-capability"
+      ],
+      "id": "doc:C:/dev/personal/pa-squad/docs/investigations/aragorn-icm-capability-upgrade.md",
+      "type": "doc",
+      "title": "Aragorn ICM Investigation — Capability Upgrade Analysis"
+    },
+    {
+      "status": "final",
+      "tags": [
+        "investigation",
+        "icm",
+        "livesite",
+        "arm",
+        "sentinel",
+        "auto-export"
+      ],
+      "id": "doc:C:/dev/personal/pa-squad/docs/investigations/icm-766712513-full-report.md",
+      "type": "doc",
+      "title": "Investigation Report — ICM #766712513 (Full Report)"
+    },
+    {
+      "status": "final",
+      "tags": [
+        "investigation",
+        "icm",
+        "livesite",
+        "arm",
+        "sentinel"
+      ],
+      "id": "doc:C:/dev/personal/pa-squad/docs/investigations/icm-766712513-summary.md",
+      "type": "doc",
+      "title": "ICM 766712513 — Investigation Summary"
+    },
+    {
+      "status": "final",
+      "tags": [
+        "investigation-method",
+        "icm",
+        "livesite",
+        "azure",
+        "operational"
+      ],
+      "id": "doc:C:/dev/personal/pa-squad/docs/investigations/icm-766712513-v2-report.md",
+      "type": "doc",
+      "title": "Investigation Report: ICM 766712513 (v2) — ARM Watchlist API Error Rate Analysis"
+    },
+    {
+      "status": "\"Research",
+      "tags": [
+        "aspire",
+        "mcp",
+        "observability",
+        "distributed-systems",
+        "squad",
+        "port-isolation"
+      ],
+      "id": "doc:C:/dev/personal/pa-squad/docs/research/aspire-integration-research.md",
+      "type": "doc",
+      "title": ".NET Aspire + MCP Integration for Squad Distributed System Observability"
+    },
+    {
+      "status": "\"complete\"",
+      "tags": [],
+      "id": "doc:C:/dev/personal/pa-squad/docs/research/enterprise-state-architecture-research.md",
+      "type": "doc",
+      "title": "Enterprise State Architecture: When Git Is Your Database"
+    },
+    {
+      "status": "\"research\"",
+      "tags": [
+        "rate-limiting",
+        "multi-agent",
+        "quota-coordination",
+        "GitHub-API",
+        "scaling",
+        "ms-pa"
+      ],
+      "id": "doc:C:/dev/personal/pa-squad/docs/research/rate-limiting-research.md",
+      "type": "doc",
+      "title": "Rate Limiting & Resource Coordination at Scale"
+    },
+    {
+      "status": "\"research\"",
+      "tags": [
+        "ralph-watch",
+        "monitoring",
+        "distributed-systems",
+        "lock-detection",
+        "rate-limiting",
+        "reliability",
+        "ms-pa"
+      ],
+      "id": "doc:C:/dev/personal/pa-squad/docs/research/squad-monitoring-reliability-research.md",
+      "type": "doc",
+      "title": "Squad Monitoring & Ralph Watch Reliability"
+    },
+    {
+      "status": "final",
+      "tags": [
+        "research",
+        "architecture",
+        "squad-infra",
+        "git",
+        "workflow",
+        "elrond"
+      ],
+      "id": "doc:C:/dev/personal/pa-squad/docs/research/sub-squad-architecture-research.md",
+      "type": "doc",
+      "title": "SubSquads Architecture at Scale: Multi-Team Monorepo Patterns"
+    },
+    {
+      "status": "\"draft\"",
+      "tags": [
+        "teams-watchdog",
+        "workiq",
+        "copilot-cli",
+        "adaptation"
+      ],
+      "id": "doc:C:/dev/personal/pa-squad/docs/research/teams-monitor-adaptation-research.md",
+      "type": "doc",
+      "title": "Teams-Monitor Adaptation Research"
+    },
+    {
+      "status": "final",
+      "tags": [
+        "research-method",
+        "workflow",
+        "teams",
+        "squad-infra",
+        "tooling"
+      ],
+      "id": "doc:C:/dev/personal/pa-squad/docs/research/teams-notification-research.md",
+      "type": "doc",
+      "title": "Teams Channel Notifications for Squad: Research & Recommendations"
+    },
+    {
+      "status": "draft",
+      "tags": [
+        "teams",
+        "outlook",
+        "integration",
+        "workiq",
+        "graph-api",
+        "mcp",
+        "squad-agents"
+      ],
+      "id": "doc:C:/dev/personal/pa-squad/docs/research/teams-outlook-integration-research.md",
+      "type": "doc",
+      "title": "Teams & Outlook Bidirectional Integration for Squad Agents"
+    },
+    {
+      "status": "\"complete\"",
+      "tags": [
+        "squad",
+        "upstream-inheritance",
+        "org-knowledge-sharing",
+        "scalability",
+        "collective"
+      ],
+      "id": "doc:C:/dev/personal/pa-squad/docs/research/upstream-inheritance-research.md",
+      "type": "doc",
+      "title": "Upstream Inheritance & Org-Scale Knowledge Sharing"
+    },
+    {
+      "status": "final",
+      "tags": [
+        "research-method",
+        "git",
+        "workflow",
+        "worktree",
+        "agent-coordination"
+      ],
+      "id": "doc:C:/dev/personal/pa-squad/docs/research/worktrees/worktree-article-analysis.md",
+      "type": "doc",
+      "title": "Tamir Dresher's Git Worktrees Article: Comprehensive Analysis"
+    },
+    {
+      "status": "final",
+      "tags": [
+        "git",
+        "worktree",
+        "parallel-execution",
+        "agent-coordination",
+        "squad-infra"
+      ],
+      "id": "doc:C:/dev/personal/pa-squad/docs/research/worktrees/worktree-lifecycle-research.md",
+      "type": "doc",
+      "title": "Worktree Lifecycle for Parallel Agent Execution — Comprehensive Research"
+    },
+    {
+      "status": "final",
+      "tags": [
+        "research-method",
+        "workflow",
+        "git",
+        "worktree",
+        "agent-coordination",
+        "squad-infra"
+      ],
+      "id": "doc:C:/dev/personal/pa-squad/docs/research/worktrees/worktree-parallelism-research.md",
+      "type": "doc",
+      "title": "Research Report: Tamir's Worktree/Parallelism Insights & Squad's Gap"
+    },
+    {
+      "message": "feat(#36): semantic model ΓÇö SKILL.md, indexer, and query scripts",
+      "id": "commit:968f2b4",
+      "type": "commit",
+      "author": "Elrond"
+    },
+    {
+      "message": "Merge pull request #68 from jbenami_microsoft/squad/18-squad-template",
+      "id": "commit:f0c59d7",
+      "type": "commit",
+      "author": "Yoni Ben-Ami"
+    },
+    {
+      "message": "feat: reusable squad template project with generic roles",
+      "id": "commit:0dbb64f",
+      "type": "commit",
+      "author": "Elrond"
+    },
+    {
+      "message": "Merge pull request #67 from jbenami_microsoft/squad/56-teams-notify",
+      "id": "commit:11b5582",
+      "type": "commit",
+      "author": "Yoni Ben-Ami"
+    },
+    {
+      "message": "docs(elrond): Append teams-monitor adaptation research findings to history",
+      "id": "commit:15a7812",
+      "type": "commit",
+      "author": "Elrond"
+    },
+    {
+      "message": "feat: add Teams notification channel integration (#56)",
+      "id": "commit:297a498",
+      "type": "commit",
+      "author": "Elrond"
+    },
+    {
+      "message": "research(teams-monitor): Adaptation analysis + POC script for single-agent consolidation",
+      "id": "commit:c536ecf",
+      "type": "commit",
+      "author": "Elrond"
+    },
+    {
+      "message": "docs: append Issue #30 squad-monitoring-reliability research to elrond history",
+      "id": "commit:2bda757",
+      "type": "commit",
+      "author": "Elrond"
+    },
+    {
+      "message": "Research: Squad Monitoring & Ralph Watch Reliability (GitHub Issue #30)",
+      "id": "commit:7b80019",
+      "type": "commit",
+      "author": "Elrond"
+    },
+    {
+      "message": "research: enterprise state architecture deep-dive (Issue #29)",
+      "id": "commit:cacc7c2",
+      "type": "commit",
+      "author": "Elrond"
+    },
+    {
+      "message": "chore: Append Issue #27 Teams/Outlook research findings to Elrond history",
+      "id": "commit:5a63513",
+      "type": "commit",
+      "author": "Elrond"
+    },
+    {
+      "message": "docs: Add Teams & Outlook bidirectional integration research for Squad agents",
+      "id": "commit:c3dec08",
+      "type": "commit",
+      "author": "Elrond"
+    },
+    {
+      "message": "Research: Aspire + MCP Integration for Squad Distributed Observability",
+      "id": "commit:4f53c62",
+      "type": "commit",
+      "author": "Elrond"
+    },
+    {
+      "message": "Merge pull request #66 from jbenami_microsoft/squad/61-worktree-lifecycle",
+      "id": "commit:3ca253d",
+      "type": "commit",
+      "author": "Yoni Ben-Ami"
+    },
+    {
+      "message": "Merge branch 'main' of https://github.com/jbenami_microsoft/ms-pa",
+      "id": "commit:fc7cb88",
+      "type": "commit",
+      "author": "Jonathan Ben Ami"
+    },
+    {
+      "message": "docs: rate limiting research (#26) + upstream inheritance (#25) + index updates",
+      "id": "commit:9d27757",
+      "type": "commit",
+      "author": "Jonathan Ben Ami"
+    },
+    {
+      "message": "fix: remove leaked YOLO directive (scope contamination)",
+      "id": "commit:8fc51ba",
+      "type": "commit",
+      "author": "Jonathan Ben Ami"
+    },
+    {
+      "message": "fix: remove leaked YOLO directive from worktree branch (scope contamination)",
+      "id": "commit:edd70dc",
+      "type": "commit",
+      "author": "Jonathan Ben Ami"
+    },
+    {
+      "message": "docs: rate-limiting research ΓÇö 6 coordination patterns, Rate Governor design, ms-pa recommendations",
+      "id": "commit:ffc67af",
+      "type": "commit",
+      "author": "Jonathan Ben Ami"
+    },
+    {
+      "message": "docs(elrond): Append upstream inheritance research to history",
+      "id": "commit:0256bca",
+      "type": "commit",
+      "author": "Jonathan Ben Ami"
+    },
+    {
+      "message": "research(upstream-inheritance): comprehensive org-scale knowledge sharing analysis",
+      "id": "commit:58ac06c",
+      "type": "commit",
+      "author": "Jonathan Ben Ami"
+    },
+    {
+      "message": "feat: worktree lifecycle scripts + skill (#61)",
+      "id": "commit:50e1d96",
+      "type": "commit",
+      "author": "Jonathan Ben Ami"
+    },
+    {
+      "message": "feat: worktree lifecycle scripts + skill (#61)",
+      "id": "commit:4de1f28",
+      "type": "commit",
+      "author": "Jonathan Ben Ami"
+    },
+    {
+      "message": "docs(research): add sub-squad architecture research + update knowledge indices",
+      "id": "commit:3f02f41",
+      "type": "commit",
+      "author": "Jonathan Ben Ami"
+    },
+    {
+      "message": "squad: directive ΓÇö YOLO mode, coordinator authorized for all approvals",
+      "id": "commit:b0c3f92",
+      "type": "commit",
+      "author": "Jonathan Ben Ami"
+    },
+    {
+      "message": "squad: directive ΓÇö YOLO mode, coordinator authorized for all approvals",
+      "id": "commit:2791c61",
+      "type": "commit",
+      "author": "Jonathan Ben Ami"
+    },
+    {
+      "message": "docs(research): reorganize worktree docs, fix frontmatter, rebuild indexes",
+      "id": "commit:cb32c4a",
+      "type": "commit",
+      "author": "Jonathan Ben Ami"
+    },
+    {
+      "message": "chore(elrond): Update history with Teams notification research findings",
+      "id": "commit:4f8380f",
+      "type": "commit",
+      "author": "Jonathan Ben Ami"
+    },
+    {
+      "message": "docs(research): Teams channel notifications for squad - comprehensive analysis and recommendations",
+      "id": "commit:b908cc5",
+      "type": "commit",
+      "author": "Jonathan Ben Ami"
+    },
+    {
+      "message": "squad: remove empty docs folders + directive (create on-demand only)",
+      "id": "commit:ae5470a",
+      "type": "commit",
+      "author": "Jonathan Ben Ami"
+    }
+  ],
+  "edges": [
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/icm-764634026-resolution.md",
+      "type": "tagged_with",
+      "target": "tag:investigation-method"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/icm-764634026-resolution.md",
+      "type": "tagged_with",
+      "target": "tag:icm"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/icm-764634026-resolution.md",
+      "type": "tagged_with",
+      "target": "tag:security"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/icm-764634026-resolution.md",
+      "type": "tagged_with",
+      "target": "tag:livesite"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/icm-764634026-resolution.md",
+      "type": "tagged_with",
+      "target": "tag:operational"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/catalogs/squad-skills-catalog.md",
+      "type": "tagged_with",
+      "target": "tag:catalog"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/catalogs/squad-skills-catalog.md",
+      "type": "tagged_with",
+      "target": "tag:skills"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/catalogs/squad-skills-catalog.md",
+      "type": "tagged_with",
+      "target": "tag:squad-infra"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/catalogs/squad-skills-catalog.md",
+      "type": "tagged_with",
+      "target": "tag:tooling"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/guides/squad-template-patterns.md",
+      "type": "tagged_with",
+      "target": "tag:guide"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/guides/squad-template-patterns.md",
+      "type": "tagged_with",
+      "target": "tag:squad-infra"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/guides/squad-template-patterns.md",
+      "type": "tagged_with",
+      "target": "tag:patterns"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/guides/squad-template-patterns.md",
+      "type": "tagged_with",
+      "target": "tag:workflow"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/guides/squad-template-patterns.md",
+      "type": "tagged_with",
+      "target": "tag:bilbo"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/guides/squad-template-patterns.md",
+      "type": "tagged_with",
+      "target": "tag:final"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/guides/squad-template-role-mapping.md",
+      "type": "tagged_with",
+      "target": "tag:guide"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/guides/squad-template-role-mapping.md",
+      "type": "tagged_with",
+      "target": "tag:squad-infra"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/guides/squad-template-role-mapping.md",
+      "type": "tagged_with",
+      "target": "tag:roles"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/guides/squad-template-role-mapping.md",
+      "type": "tagged_with",
+      "target": "tag:workflow"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/guides/squad-template-role-mapping.md",
+      "type": "tagged_with",
+      "target": "tag:bilbo"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/guides/squad-template-role-mapping.md",
+      "type": "tagged_with",
+      "target": "tag:final"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/investigations/aragorn-icm-capability-upgrade.md",
+      "type": "tagged_with",
+      "target": "tag:investigation"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/investigations/aragorn-icm-capability-upgrade.md",
+      "type": "tagged_with",
+      "target": "tag:icm"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/investigations/aragorn-icm-capability-upgrade.md",
+      "type": "tagged_with",
+      "target": "tag:architecture"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/investigations/aragorn-icm-capability-upgrade.md",
+      "type": "tagged_with",
+      "target": "tag:aragorn"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/investigations/aragorn-icm-capability-upgrade.md",
+      "type": "tagged_with",
+      "target": "tag:agent-capability"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/investigations/icm-766712513-full-report.md",
+      "type": "tagged_with",
+      "target": "tag:investigation"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/investigations/icm-766712513-full-report.md",
+      "type": "tagged_with",
+      "target": "tag:icm"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/investigations/icm-766712513-full-report.md",
+      "type": "tagged_with",
+      "target": "tag:livesite"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/investigations/icm-766712513-full-report.md",
+      "type": "tagged_with",
+      "target": "tag:arm"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/investigations/icm-766712513-full-report.md",
+      "type": "tagged_with",
+      "target": "tag:sentinel"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/investigations/icm-766712513-full-report.md",
+      "type": "tagged_with",
+      "target": "tag:auto-export"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/investigations/icm-766712513-summary.md",
+      "type": "tagged_with",
+      "target": "tag:investigation"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/investigations/icm-766712513-summary.md",
+      "type": "tagged_with",
+      "target": "tag:icm"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/investigations/icm-766712513-summary.md",
+      "type": "tagged_with",
+      "target": "tag:livesite"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/investigations/icm-766712513-summary.md",
+      "type": "tagged_with",
+      "target": "tag:arm"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/investigations/icm-766712513-summary.md",
+      "type": "tagged_with",
+      "target": "tag:sentinel"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/investigations/icm-766712513-v2-report.md",
+      "type": "tagged_with",
+      "target": "tag:investigation-method"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/investigations/icm-766712513-v2-report.md",
+      "type": "tagged_with",
+      "target": "tag:icm"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/investigations/icm-766712513-v2-report.md",
+      "type": "tagged_with",
+      "target": "tag:livesite"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/investigations/icm-766712513-v2-report.md",
+      "type": "tagged_with",
+      "target": "tag:azure"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/investigations/icm-766712513-v2-report.md",
+      "type": "tagged_with",
+      "target": "tag:operational"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/aspire-integration-research.md",
+      "type": "tagged_with",
+      "target": "tag:aspire"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/aspire-integration-research.md",
+      "type": "tagged_with",
+      "target": "tag:mcp"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/aspire-integration-research.md",
+      "type": "tagged_with",
+      "target": "tag:observability"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/aspire-integration-research.md",
+      "type": "tagged_with",
+      "target": "tag:distributed-systems"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/aspire-integration-research.md",
+      "type": "tagged_with",
+      "target": "tag:squad"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/aspire-integration-research.md",
+      "type": "tagged_with",
+      "target": "tag:port-isolation"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/rate-limiting-research.md",
+      "type": "tagged_with",
+      "target": "tag:rate-limiting"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/rate-limiting-research.md",
+      "type": "tagged_with",
+      "target": "tag:multi-agent"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/rate-limiting-research.md",
+      "type": "tagged_with",
+      "target": "tag:quota-coordination"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/rate-limiting-research.md",
+      "type": "tagged_with",
+      "target": "tag:GitHub-API"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/rate-limiting-research.md",
+      "type": "tagged_with",
+      "target": "tag:scaling"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/rate-limiting-research.md",
+      "type": "tagged_with",
+      "target": "tag:ms-pa"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/squad-monitoring-reliability-research.md",
+      "type": "tagged_with",
+      "target": "tag:ralph-watch"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/squad-monitoring-reliability-research.md",
+      "type": "tagged_with",
+      "target": "tag:monitoring"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/squad-monitoring-reliability-research.md",
+      "type": "tagged_with",
+      "target": "tag:distributed-systems"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/squad-monitoring-reliability-research.md",
+      "type": "tagged_with",
+      "target": "tag:lock-detection"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/squad-monitoring-reliability-research.md",
+      "type": "tagged_with",
+      "target": "tag:rate-limiting"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/squad-monitoring-reliability-research.md",
+      "type": "tagged_with",
+      "target": "tag:reliability"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/squad-monitoring-reliability-research.md",
+      "type": "tagged_with",
+      "target": "tag:ms-pa"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/sub-squad-architecture-research.md",
+      "type": "tagged_with",
+      "target": "tag:research"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/sub-squad-architecture-research.md",
+      "type": "tagged_with",
+      "target": "tag:architecture"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/sub-squad-architecture-research.md",
+      "type": "tagged_with",
+      "target": "tag:squad-infra"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/sub-squad-architecture-research.md",
+      "type": "tagged_with",
+      "target": "tag:git"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/sub-squad-architecture-research.md",
+      "type": "tagged_with",
+      "target": "tag:workflow"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/sub-squad-architecture-research.md",
+      "type": "tagged_with",
+      "target": "tag:elrond"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/teams-monitor-adaptation-research.md",
+      "type": "tagged_with",
+      "target": "tag:teams-watchdog"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/teams-monitor-adaptation-research.md",
+      "type": "tagged_with",
+      "target": "tag:workiq"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/teams-monitor-adaptation-research.md",
+      "type": "tagged_with",
+      "target": "tag:copilot-cli"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/teams-monitor-adaptation-research.md",
+      "type": "tagged_with",
+      "target": "tag:adaptation"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/teams-notification-research.md",
+      "type": "tagged_with",
+      "target": "tag:research-method"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/teams-notification-research.md",
+      "type": "tagged_with",
+      "target": "tag:workflow"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/teams-notification-research.md",
+      "type": "tagged_with",
+      "target": "tag:teams"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/teams-notification-research.md",
+      "type": "tagged_with",
+      "target": "tag:squad-infra"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/teams-notification-research.md",
+      "type": "tagged_with",
+      "target": "tag:tooling"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/teams-outlook-integration-research.md",
+      "type": "tagged_with",
+      "target": "tag:teams"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/teams-outlook-integration-research.md",
+      "type": "tagged_with",
+      "target": "tag:outlook"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/teams-outlook-integration-research.md",
+      "type": "tagged_with",
+      "target": "tag:integration"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/teams-outlook-integration-research.md",
+      "type": "tagged_with",
+      "target": "tag:workiq"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/teams-outlook-integration-research.md",
+      "type": "tagged_with",
+      "target": "tag:graph-api"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/teams-outlook-integration-research.md",
+      "type": "tagged_with",
+      "target": "tag:mcp"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/teams-outlook-integration-research.md",
+      "type": "tagged_with",
+      "target": "tag:squad-agents"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/upstream-inheritance-research.md",
+      "type": "tagged_with",
+      "target": "tag:squad"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/upstream-inheritance-research.md",
+      "type": "tagged_with",
+      "target": "tag:upstream-inheritance"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/upstream-inheritance-research.md",
+      "type": "tagged_with",
+      "target": "tag:org-knowledge-sharing"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/upstream-inheritance-research.md",
+      "type": "tagged_with",
+      "target": "tag:scalability"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/upstream-inheritance-research.md",
+      "type": "tagged_with",
+      "target": "tag:collective"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/worktrees/worktree-article-analysis.md",
+      "type": "tagged_with",
+      "target": "tag:research-method"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/worktrees/worktree-article-analysis.md",
+      "type": "tagged_with",
+      "target": "tag:git"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/worktrees/worktree-article-analysis.md",
+      "type": "tagged_with",
+      "target": "tag:workflow"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/worktrees/worktree-article-analysis.md",
+      "type": "tagged_with",
+      "target": "tag:worktree"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/worktrees/worktree-article-analysis.md",
+      "type": "tagged_with",
+      "target": "tag:agent-coordination"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/worktrees/worktree-lifecycle-research.md",
+      "type": "tagged_with",
+      "target": "tag:git"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/worktrees/worktree-lifecycle-research.md",
+      "type": "tagged_with",
+      "target": "tag:worktree"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/worktrees/worktree-lifecycle-research.md",
+      "type": "tagged_with",
+      "target": "tag:parallel-execution"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/worktrees/worktree-lifecycle-research.md",
+      "type": "tagged_with",
+      "target": "tag:agent-coordination"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/worktrees/worktree-lifecycle-research.md",
+      "type": "tagged_with",
+      "target": "tag:squad-infra"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/worktrees/worktree-parallelism-research.md",
+      "type": "tagged_with",
+      "target": "tag:research-method"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/worktrees/worktree-parallelism-research.md",
+      "type": "tagged_with",
+      "target": "tag:workflow"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/worktrees/worktree-parallelism-research.md",
+      "type": "tagged_with",
+      "target": "tag:git"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/worktrees/worktree-parallelism-research.md",
+      "type": "tagged_with",
+      "target": "tag:worktree"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/worktrees/worktree-parallelism-research.md",
+      "type": "tagged_with",
+      "target": "tag:agent-coordination"
+    },
+    {
+      "source": "doc:C:/dev/personal/pa-squad/docs/research/worktrees/worktree-parallelism-research.md",
+      "type": "tagged_with",
+      "target": "tag:squad-infra"
+    }
+  ],
+  "metadata": {
+    "edge_count": 104,
+    "node_count": 76,
+    "updated": "2026-03-23T03:50:08.1971778+02:00"
+  }
+}
