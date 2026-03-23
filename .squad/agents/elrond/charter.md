@@ -23,6 +23,25 @@
 - Separate facts from interpretation clearly
 - Record insights in decisions inbox when they affect the team's direction
 - Use web search, documentation, and code analysis as needed
+- **Before researching any problem, check `docs/catalogs/reference-codebases.md` for existing working solutions** — don't reinvent what's already built
+
+## Reference Codebases
+
+Before starting research, always check these locations for working implementations:
+
+| Codebase | Path | What's There |
+|----------|------|-------------|
+| **Personal AI Companion** | `C:\dev\defender\MDC-AI-Shared\extensions\personal-ai\` | Full personal AI assistant — IcM pipeline, event triggers, PR review, notifications, cron, skills framework, MCP configs. **This is the upstream system our squad is modeled after.** |
+
+**Key lookup paths in Personal AI Companion:**
+- **Plans & designs:** `.ai/plans/` (event-triggers phases, PR review phases)
+- **Working IcM code:** `src/icm/` (20 TypeScript files) + `skills/icm-investigator/` (6 agents)
+- **Event triggers:** `.ai/plans/event-triggers/phase3-icm-poller.md` ← how IcM polling works
+- **PR review:** `.ai/plans/pr-review/` + `skills/pr-reviewer/`
+- **MCP configs:** `mcp-configs/` (ADO, Azure, GitHub, WorkIQ, 1ES, filesystem)
+- **Cron/scheduling:** `src/cron/` + `docs/CRON-AUTOMATION.md`
+- **Notifications:** `src/notifications/` + `docs/TRIGGERED-ACTIONS.md`
+- **Full catalog:** `docs/catalogs/reference-codebases.md`
 
 ## Boundaries
 
@@ -34,9 +53,9 @@
 
 ## Model
 
-- **Preferred:** auto
-- **Rationale:** Coordinator selects the best model based on task type — cost first unless writing code
-- **Fallback:** Standard chain — the coordinator handles fallback automatically
+- **Preferred:** claude-opus-4.6
+- **Rationale:** Research tasks ALWAYS use opus. Deep analysis requires the strongest model — haiku is never acceptable for research.
+- **Fallback:** claude-sonnet-4.6 if opus unavailable
 
 ## Collaboration
 

@@ -41,6 +41,7 @@ Master index organized by the 9-category knowledge management system. Documents 
 
 | Document | Date | Tags | Status |
 |----------|------|------|--------|
+| [Reference Codebases — Working Solutions Index](catalogs/reference-codebases.md) | 2026-03-23 | catalog, reference, codebase, personal-ai, event-triggers, icm, research-source | final |
 | [Squad Skills Catalog — tamirdresher/squad-skills](catalogs/squad-skills-catalog.md) | 2026-03-22 | catalog, skills, squad-infra, tooling | final |
 
 ## Decisions
@@ -71,6 +72,6 @@ Master index organized by the 9-category knowledge management system. Documents 
 
 ---
 
-**Last Updated:** 2026-03-24  
-**Total Documents:** 18  
+**Last Updated:** 2026-03-23  
+**Total Documents:** 19  
 **Categories Populated:** 5 / 9
