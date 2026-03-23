@@ -337,7 +337,6 @@ These are not tools but context and reference sources used for research, pattern
 | Property | Value |
 |----------|-------|
 | **Path** | `C:\dev\defender\MDC-AI-Shared\extensions\personal-ai\` |
-| **Owner** | Tamir Dresher |
 | **Language** | TypeScript + PowerShell |
 | **Purpose** | Upstream system the squad is modeled after |
 | **Key areas** | IcM integration (`src/icm/`), PR review (`skills/pr-reviewer/`), MCP configs (`mcp-configs/`), cron system (`src/cron/`), notifications (`src/notifications/`) |

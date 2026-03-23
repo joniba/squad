@@ -16,7 +16,7 @@ When researching solutions for the squad, **look here first**. These codebases c
 
 ---
 
-## 1. Personal AI Companion (Tamir Dresher)
+## 1. Personal AI Companion
 
 | Field | Value |
 |-------|-------|
@@ -24,7 +24,6 @@ When researching solutions for the squad, **look here first**. These codebases c
 | **What** | VS Code extension — full personal AI assistant with skills, agents, IcM, dashboards, engineering pipeline, notifications |
 | **Why it matters** | This is the upstream system our squad is modeled after. Many problems we face are already solved here. |
 | **Language** | TypeScript + PowerShell scripts |
-| **Key author** | Tamir Dresher |
 
 ### Directory Map
 
