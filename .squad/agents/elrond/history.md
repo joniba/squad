@@ -645,3 +645,23 @@ Deep-dived into WorkIQ's Teams chat message retrieval to determine whether it ca
 - Microsoft Learn: Items - Get REST API (Azure DevOps Git) — api-version 7.1
 - Web search: ADO REST API file content endpoints
 - eng.ms: ACCESS DENIED (consistent with prior sessions)
+
+### 2025-07-16: IcM Scan End-to-End Research — MCP Bypass via Direct Kusto REST
+
+**Context:** P0-CRITICAL research task to determine how the personal-ai VS Code extension queries IcM without MCP permission dialogs, and design a standalone solution for pa-squad's icm-scan.
+
+**Key Finding:** The event triggers system in MDC-AI-Shared/personal-ai completely bypasses MCP tools. It uses `az account get-access-token --resource <kustoClusterUrl>` for authentication and direct HTTP POST to `{cluster}/v1/rest/query` with KQL queries against `IncidentsSnapshotV2()`. Two API patterns exist:
+- **Pattern A (primary):** Kusto REST API — for listing/querying incidents. Cluster: `https://icmcluster.kusto.windows.net`, DB: `IcMDataWarehouse`
+- **Pattern B (fallback):** IcM REST API at `https://portal.microsofticm.com/api` — for restricted/redacted incidents, using resource `https://microsofticm.onmicrosoft.com/IcmAPI`
+
+**Architecture Patterns Documented:**
+- Circuit breaker (3 failures → 15min cooldown → half-open probe) from `notifications/poller.ts`
+- Watermark-based dedup (lastCheckTime + seenIds) from `notifications/watermarkStore.ts`
+- Trigger engine with 10+ condition operators from `notifications/service.ts`
+- Token caching (45min) from `icm/client.ts`
+
+**Designed Solution:** Standalone PowerShell script that replaces the current agent-delegating stub. Flow: az token → Kusto REST query → filter (Sev0-2, CRIs, Sev2.5) → watermark dedup → Teams webhook notification. Changes scheduler.json from agent type to script type.
+
+**Deliverable:** `docs/research/icm-scan-end-to-end-research.md` — committed to main.
+
+**Sources:** 8 implementation files in MDC-AI-Shared/personal-ai (client.ts, poller.ts, config.ts, service.ts, etc.)
