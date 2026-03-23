@@ -610,3 +610,38 @@ Deep-dived into WorkIQ's Teams chat message retrieval to determine whether it ca
 - docs/research/workiq-chat-limitations-research.md (primary deliverable)
 - .squad/decisions.md: Teams Watchdog Architecture (6-step pipeline)
 - teams-knowledge/skills/teams-monitor/SKILL.md: Prior WorkIQ analysis
+
+### 2026-03-23: ADO PR file content access methods for code review
+
+**Context:** Galadriel (Reviewer) could not read file contents when reviewing ADO PR 15064785 (Sentinel-TiPipeline). The ADO MCP server has no `get_file_contents` tool — confirmed gap. Jonathan requested CRITICAL deep research to find workarounds.
+
+**Key findings (4 approaches tested with actual API calls):**
+
+1. **`az devops invoke` (Items API) — PRIMARY SOLUTION ✅**
+   - `az devops invoke --area git --resource items --route-parameters project=One repositoryId=Sentinel-TiPipeline --query-parameters "path=/global.json" "includeContent=true" "versionDescriptor.version=features/sagimarus/tiexpertagent" "versionDescriptor.versionType=branch" --org https://dev.azure.com/msazure`
+   - Returns full file content in JSON `content` field
+   - Supports branch versions — can read files from PR source branch
+   - Uses existing `az login` auth — no PAT needed
+
+2. **Local git clone + `git show` — FASTEST FALLBACK ✅**
+   - Sentinel-TiPipeline exists at `C:\dev\ti\Sentinel-TiPipeline` (28 total TI repos)
+   - `git fetch origin features/sagimarus/tiexpertagent && git show FETCH_HEAD:path/to/file.cs`
+   - Fastest per-file; works offline after initial fetch
+
+3. **`ado-search_code` — PARTIAL ⚠️**
+   - Returns full file contents in `gitItem.content` field when files match search
+   - Only works on indexed branches (typically default branch). PR branch returned 0 results
+   - Noisy — returns extra files, wastes context tokens
+
+4. **`ado-repo_list_directory` — CONFIRMED NO CONTENT ❌**
+   - Returns metadata only (path, gitObjectType, commitId). No content field.
+
+**Key insight:** The ADO MCP server has a genuine gap — no file content read tool. But `az devops invoke` fills it completely via shell execution. Galadriel needs her charter updated to include the `az devops invoke` command template for reading files during PR review.
+
+**Deliverable:** docs/research/ado-file-access-research.md (303 lines, with test evidence and command templates)
+
+**Evidence sources:**
+- 6 live tool/API tests against Sentinel-TiPipeline (all documented with inputs/outputs)
+- Microsoft Learn: Items - Get REST API (Azure DevOps Git) — api-version 7.1
+- Web search: ADO REST API file content endpoints
+- eng.ms: ACCESS DENIED (consistent with prior sessions)
