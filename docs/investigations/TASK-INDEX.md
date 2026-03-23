@@ -25,7 +25,7 @@ status: active
 
 | Status | ICM ID | Title | Type | Links | Action Needed | Details |
 |--------|--------|-------|------|-------|---------------|---------|
-| ⬜ | 764634026 | AzRel Red Flag - Ocean View- SR17 - MSPKI Cert Attestation for Central or Self Migration | Security | [Report](icm-764634026-investigation.md) · [Portal](https://portal.microsofticm.com/imp/v5/incidents/details/764634026/home) | **Open - Pending Investigation** | Critical security incident; Sev 25 (High) ACTIVE; Owned by AzRel Security Engineering; Created 2026-03-18; Migration from MSPKI G1 → G2 root CA blocked by certificate pinning & SDP violations |
+| 🔍 | 764634026 | AzRel Red Flag - Ocean View- SR17 - MSPKI Cert Attestation for Central or Self Migration | Security | [Report](icm-764634026-investigation.md) · [Portal](https://portal.microsofticm.com/imp/v5/incidents/details/764634026/home) | **Investigate complete — awaiting remediation.** TI services confirmed using MSPKI certs for client auth (mTLS). Deadline: Apr 10 (central) / May 16 (self-migration) | HIGH confidence: TAXIIRequestSender.cs uses ClientCertificateOption.Manual. Two remediation paths documented. |
 | ⬜ | 766712513 | ARM Watchlist API Error Rates (WEU-402) | LiveSite | [Report](icm-766712513-summary.md) · [Portal](https://portal.microsofticm.com/imp/v5/incidents/details/766712513/home) | **Run Kusto queries** to confirm subscription impact and failure causes (Gateway vs RP-side); check FCM change data; determine if self-resolving | Recurring pattern on `prd-weu-402` endpoint; Sev2 ACTIVE; likely single-tenant request flood or infrastructure issue; 5th recurrence in March 2026 |
 
 ---
