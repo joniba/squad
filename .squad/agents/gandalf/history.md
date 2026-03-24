@@ -9,6 +9,28 @@
 
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
 
+### 2026-03-28 — Milestone Lifecycle Implementation (#141)
+
+- **Governance wiring complete:** Rules 18–23 appended to routing.md. Gandalf, Galadriel, Bilbo charters updated. Ralph charter created from scratch.
+- **Ralph's charter is minimal by design:** He monitors, he doesn't do domain work. His milestone scan section is the core value — everything else is boundaries and failure recovery.
+- **Routing table row "Significant feature review" was already adequate.** No update needed — the new rules formalize the mechanics behind it.
+- **Design doc text used verbatim.** Section 5 (rules) and Section 6 (charter changes) were copied exactly. Paraphrasing governance rules introduces drift.
+
+### 2026-03-24 — Milestone-Based Feature Lifecycle Design (#141)
+
+- **Feature = Milestone:** Jonathan's canonical mapping is feature → GitHub milestone, task → GitHub issue. Any work with 2+ tasks gets a milestone.
+- **Key design files:** `docs/designs/milestone-feature-lifecycle.md` is the authoritative spec. Rules 18–23 in routing.md are the enforcement points once implemented.
+- **Post-completion pipeline order (strict):** Gandalf review → Galadriel E2E → Teams notify → Bilbo docs. Each gates the next. No notification fires until both review and E2E pass.
+- **Ralph has no charter.md yet.** Creating `.squad/agents/ralph/charter.md` is part of the implementation plan for this design.
+- **Milestone API:** `gh api repos/jbenami_microsoft/ms-pa/milestones --method POST -f title="..." -f description="..."` works. Repo owner is `jbenami_microsoft`. Milestone creation confirmed working in test (milestone #1 created and deleted during design exploration).
+- **Won't-fix detection:** GitHub API returns `state_reason` on closed issues. Value `"not_planned"` = won't fix. Ralph's scan must extract these and include in trigger JSON.
+- **Trigger JSON path:** `.squad/decisions/inbox/ralph-milestone-complete-{number}.json` — coordinator reads this to start the pipeline. Ralph skips triggers where `pipeline_status != "pending"`.
+- **No single-issue milestones (Rule 18).** If a request yields 1 issue, it's standalone — no milestone. This prevents milestone sprawl.
+- **Design doc for milestone:** Convention is `docs/designs/{slug}.md`. Reference in milestone description field.
+- **Review output path:** `docs/reviews/milestone-{number}-{slug}-review.md` (Gandalf), `docs/reviews/milestone-{number}-{slug}-e2e.md` (Galadriel).
+- **Remediation loop:** FAIL from Gandalf → re-open milestone → remediation issues → Ralph detects again → full pipeline restart. FAIL from Galadriel → re-open → fix issues → Ralph detects → pipeline restarts from Step 2 only.
+- **This design is DRAFT.** Boromir review required (Rule 13) before any implementation begins.
+
 ### 2026-03-22 — Triage Squad Feedback Issues #44-#49
 - **Routing patterns:** Feedback on external squad product (cli, watch mode, defaults) routes to Gandalf (product feedback tracking). Tool fixes (PR flags, model defaults) route to Gimli. Documentation/charter patterns route to Bilbo.
 - **Issue sources:** All 6 issues are Jonathan's onboarding feedback observations, filed on ms-pa repo because EMU tokens cannot write to bradygaster/squad directly.

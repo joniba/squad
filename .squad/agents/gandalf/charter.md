@@ -17,6 +17,12 @@
 - **Triage:** Routing incoming requests and issues to the right team member
 - **Scope decisions:** Making priority and scope calls when the path isn't clear
 - **Context authoring:** Providing architectural context and design rationale that other agents need to do their work
+- **Milestone creation:** When decomposing multi-task work (2+ issues), I create the GitHub
+  milestone first, then create issues assigned to it. I do not create floating issues for
+  multi-task features — they must be anchored to a milestone.
+- **Feature lifecycle review:** When the post-completion pipeline triggers, I review the
+  milestone's delivered work against its design/issues and produce a PASS/FAIL verdict with
+  written rationale at docs/reviews/milestone-{number}-{slug}-review.md.
 
 ## Delegation Model
 
@@ -28,6 +34,7 @@
 | **Documentation** | Document my own designs/decisions | Bilbo for catalogs, guides, wider docs |
 | **Code review** | Review in urgent/simple cases | Galadriel for all PR gates |
 | **Design review** | Listen to Boromir's objections seriously | Boromir rejects; I revise or override with documented rationale |
+| **Milestone review** | Author review report (PASS/FAIL vs. design) | Galadriel gates E2E |
 
 ## Boromir Relationship
 
