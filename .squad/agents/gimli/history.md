@@ -76,3 +76,39 @@
 - **Issues Closed:** #106, #108, #112, #116, #135
 - **Milestone:** All 4 MVP issues (#132-135) closed and E2E validated
 - **Next:** Integration and production release preparation
+
+### 2026-03-24 — Protocol Recovery Review Cycle (8 Branches, Gimli Role)
+
+**Context:** Retroactive review cycle for 8 branches committed without initial Galadriel review. Gimli authored/fixed 5 branches (#105, #106, #108, #119, #132). Full Cycle 1 review completed, fixes applied, Cycle 2 re-approved all.
+
+**Key Findings & Corrections:**
+
+1. **DGrep SDK Authentication Model — Clarified & Standardized**
+   - Uses dSTS (data Security Token Service), NOT standard AAD tokens
+   - Interactive auth: `DGrepUserAuthClient(dgrepFrontendUri)` (AAD dialog, SDK handles dSTS internally)
+   - Certificate auth: `DGrepClient(dgrepFrontendUri, X509Certificate2)` (cert-based dSTS)
+   - Exit codes standardized: 0 (success), 1 (user error), 2 (auth error), 3 (query error)
+   - NuGet package: `Microsoft.Azure.Monitoring.DGrep.SDK` 3.0.0-rc4 on msazure Official feed
+
+2. **Phase 2 Readiness Status**
+   - Interactive auth pathway blocked on interactive NuGet credential setup (in progress with Azure Artifacts team)
+   - Certificate auth ready for testing (no blocker)
+   - DGrep KQL subset limitations documented: no `ago()`, `let`, `has`, outer joins
+   - All built-in queries rewritten to work within supported subset
+
+3. **Notifications MVP — Delivery Complete**
+   - 26/26 tests pass across notify-feature-complete.ps1 and notify-blocked.ps1
+   - MVP callers wired into coordinator routing
+   - E2E validation: dry-run successful, Teams notification delivered in production
+   - Ready for daily orchestration via watchdog
+
+4. **Merge Conflict Resolution (Gimli)**
+   - Conflict 1: src/QueryOptions.cs parameter rename between #105→#106 (resolved via commit e7a3c9d2)
+   - Conflict 2: scripts/notify.ps1 parameter metadata in #132→#134 (resolved via commit f8c4d1e5)
+   - Both conflicts resolved with test verification post-merge
+
+**Learnings for Future Implementation:**
+- [HIGH] DGrep SDK uses dSTS internally — never write `IAuthProvider` dependencies expecting AAD tokens
+- [HIGH] SDK integration requires interactive NuGet credential setup for initial connection
+- [MED] Exit code standardization essential for error handling and troubleshooting
+- [MED] KQL subset limitations must be documented early and built-in queries validated against actual supported operations

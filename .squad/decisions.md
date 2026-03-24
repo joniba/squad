@@ -1,4 +1,185 @@
 # Squad Decisions
+
+## Inbox Merges — 2026-03-24T14:42Z (Review Recovery Protocol)
+
+### 2026-03-24: Protocol Recovery — 8 PR Review Cycle Complete
+
+**Decision by:** Galadriel (Reviewer), Gandalf (Orchestrator)  
+**Phase:** Retroactive review recovery following protocol violation (#13)  
+**Report:** `.squad/orchestration-log/2026-03-24T14-review-recovery.md`
+
+**Context:**
+Branches #105, #106, #108, #119, #132, #134, plus pre-approved #112 and #135 were committed without full Galadriel review. Recovery cycle: Galadriel reviewed all 8 (Cycle 1 findings: 18 total across all branches), authors fixed findings (Gimli: 5 branches, Bilbo: 1 branch), Galadriel re-reviewed all (Cycle 2: all APPROVED). Gandalf determined merge order and resolved 2 merge conflicts. All merged to main.
+
+**Key Decisions Recorded:**
+1. **DGrep SDK Architecture Clarified:**
+   - Uses dSTS (not AAD tokens) for authentication
+   - Connection model: MDS Endpoint + Namespace/Event (not Kusto cluster/database)
+   - KQL subset limitations: no `ago()`, `let`, `has`, `mv-expand`, `union`, outer joins
+   - Exit codes standardized: 0 (success), 1 (user error), 2 (auth error), 3 (query error)
+   - Phase 2 implementation ready pending interactive NuGet auth setup
+
+2. **Galadriel PR Gate Enforcement — WIRED:**
+   - routing.md Rule 10: Every PR MUST be reviewed by Galadriel before merge
+   - Issue routing: `squad:galadriel` label routing added
+   - Issue lifecycle: Rule 9 enforces `templates/issue-lifecycle.md` workflow
+   - Issue closure: Rule 11 restricts file-producing issues to close via PR merge only
+   - Worktree enforcement: Rule 12 mandates worktrees for all file-producing work
+
+3. **Notifications MVP — Delivery Complete:**
+   - 26/26 tests pass (notify-feature-complete.ps1 and notify-blocked.ps1)
+   - Ready for production delivery
+
+4. **TAXII Client Auth Remediation (Separate Task — Aragorn):**
+   - External TAXII client cert auth requires different remediation than internal service-to-service
+   - Proposed decision: Prefer non-MSPKI certificate or Bearer tokens over AAD/Managed Identity
+   - Next steps: Confirm Kusto query scope; engage OceanView SME
+   - Escalated to Jonathan for decision routing
+
+**Cross-Agent Learnings:**
+- **Galadriel:** Review patterns documented; integration wiring gap identified as recurring; domain terminology mismatches should be flagged
+- **Gimli:** DGrep SDK model clarified; notifications MVP delivery complete; Phase 2 unblocked
+- **Bilbo:** Documentation-test sync validated; docs consistency with executable samples critical
+- **Gandalf:** Merge sequence & conflict resolution patterns recorded; POC findings must gate feature work
+- **Coordinator:** Enforcement rules now wire review gates; lifecycle rules eliminate ambiguity
+
+**Impact:**
+- ✅ Protocol recovery complete; 8 branches reviewed, fixed, re-reviewed, merged
+- ✅ Integration wiring gap fixed (Galadriel PR gate now enforced)
+- ✅ Decisions framework strengthened (4 new enforcement rules added)
+
+---
+
+### 2026-03-24: DGrep Auth & SDK Findings (Gimli)
+**Author:** Gimli (Tool Builder)  
+**Context:** Phase A+B of DGrep correction plan (issues #105–#108)
+
+**Key Findings:**
+1. **DGrep SDK uses dSTS (data Security Token Service), NOT standard AAD/Entra tokens**
+   - Interactive auth: `new DGrepUserAuthClient(dgrepFrontendUri)` (pops AAD dialog, SDK handles dSTS exchange internally)
+   - Certificate auth: `new DGrepClient(dgrepFrontendUri, X509Certificate2)` (cert-based dSTS)
+   - No `az login` bridge — SDK does NOT accept AAD tokens directly
+   - Implication: `DgrepQueryExecutor` takes NO `IAuthProvider` dependency
+
+2. **DGrep SDK NuGet Package:**
+   - Correct package: `Microsoft.Azure.Monitoring.DGrep.SDK` version `3.0.0-rc4`
+   - Wrong name in old code: `Microsoft.Geneva.DGrep.SDK` (does not exist)
+   - Feed: `https://pkgs.dev.azure.com/msazure/_packaging/Official/nuget/v3/index.json`
+   - Returns 401 Unauthorized without Azure Artifacts credential provider with interactive auth
+
+3. **DGrep Connection Model (vs Kusto — CORRECTED):**
+   | Concept | Kusto (WRONG) | DGrep (CORRECT) |
+   |---------|---|---|
+   | Server | Cluster URL (`*.kusto.windows.net`) | MDS Endpoint (`*.monitoring.core.windows.net`) |
+   | Container | Database | Namespace (regex) + Event (regex) |
+   | Query lang | KQL (full) | KQL subset (no `ago()`, `let`, `has`) |
+   | Auth | AAD tokens | dSTS (SDK-internal) |
+   | Results | Columnar (`IDataReader`) | Row-per-dict (`RowSetResult.RowSet.Rows`) |
+
+4. **DGrep KQL Subset Limitations:**
+   NOT supported: `ago()`, `let`, `mv-expand`, `has`/`has_any`/`has_all`, `union`, outer joins
+   Use instead: explicit datetime literals, `mvexpand`, `contains`, `inner join`
+
+5. **Decisions Made:**
+   - Property renames without migration (Cluster→Endpoint, Database removed, Namespace/Event/QueryType added)
+   - Stub executor validates inputs, throws `NotImplementedException` (SDK integration blocked on interactive NuGet auth)
+   - Built-in queries rewritten to use only supported KQL subset
+   - `query` verb removed; `search`, `tail`, `saved`, `config`, `auth` remain
+   - Auth resource URL: `kusto.kusto.windows.net` → `https://management.azure.com/`
+
+---
+
+### 2026-03-24: Galadriel Hiring Process Audit & Fix (Coordinator)
+**Author:** Squad (Coordinator)  
+**Type:** Audit + Fix  
+**Date:** 2025-07-22
+
+**Summary:**
+Audited Galadriel's onboarding against the 8-step hiring process in `squad.agent.md`. Found gap in Step 7 (enforcement wiring). Fixed both issues.
+
+**Gaps Found & Fixed:**
+1. **Issue routing:** Missing `squad:galadriel` entry in routing.md Issue Routing table
+   - **Fix applied:** Added `| squad:galadriel | PR code review, quality gates | 👑 Galadriel |` to Issue Routing table
+
+2. **Enforcement wiring:** No enforcement rules existed for Galadriel in `routing.md` Rules section
+   - **Fix applied:** Added 4 numbered rules to routing.md:
+     - Rule 9: Issue lifecycle enforcement
+     - Rule 10: Galadriel PR Gate
+     - Rule 11: Issue closure restriction
+     - Rule 12: Worktree for all file-producing work
+
+**Root Cause:**
+Hiring process was followed through Step 6 but Step 7 (enforcement wiring) was skipped. Same pattern documented in workflow-wiring-guide: "Galadriel was on our roster from day one with 'Reviewer' as her role. She never reviewed a single PR because no RULE in routing.md told the coordinator to route PRs to her."
+
+**Files Changed:**
+- `.squad/routing.md` — Added squad:galadriel issue routing; added rules 9-12
+- Audit record in decisions.md
+
+---
+
+### 2026-03-24: Squad Workflow Wiring Guide — Boromir Review (REJECT)
+**Date:** 2026-03-29  
+**Author:** 💀 Boromir (Adversarial Design Reviewer)  
+**Target:** `worktrees/squad-137/docs/guides/squad-workflow-wiring-guide.md`  
+**Verdict:** **REJECT — The guide is correct but irrelevant. It documents the lock but doesn't install it.**
+
+**Core Issue:**
+The guide's premise is: "The coordinator didn't follow the workflow because the workflow wasn't documented." TRUE. But the conclusion — "therefore we need a guide teaching people how to wire configuration files" — is a NON SEQUITUR. The failure wasn't a knowledge gap. **Nobody did it.** A guide about how to do it doesn't fix the problem of nobody doing it.
+
+The actual configuration files remain unwired:
+- `templates/issue-lifecycle.md` — DOES NOT EXIST
+- `routing.md` Rules section — STILL MISSING Galadriel PR gate, issue lifecycle, closure restriction
+- `ceremonies.md` — No PR review ceremony
+
+**What's Missing:**
+1. **Actual configuration changes** (not just documentation of how)
+2. **Verification test** (clean session coordinator following rules? Not tested)
+3. **Framework safety net** (what prevents NEXT rule from being forgotten?)
+4. **Protection against systemic gap** (decisions.md has 5+ buried directives never encoded as rules)
+
+**Required Fixes:**
+1. Create `templates/issue-lifecycle.md` with the content the guide describes
+2. Add actual rules to `routing.md` (Galadriel PR Gate, issue lifecycle, closure restriction)
+3. Test with clean session
+4. File framework issue for dead `issue-lifecycle.md` reference in `squad.agent.md`
+
+**Key Insight:**
+The house is burning. You wrote a beautiful manual about smoke detectors. **Install the damn smoke detectors.** (Per Boromir's closing line)
+
+---
+
+### 2026-03-24: TAXII External Client Auth Remediation (Aragorn)
+**Source:** Aragorn investigation addendum — ICM 764634026  
+**Date:** 2025-07-14  
+**Requested by:** Jonathan  
+**Status:** For team review / decision (separate task from review recovery)
+
+**Context:**
+SecEng-Augusta uses MSPKI client certificate authentication for outbound connections to **external 3rd party TAXII servers** (not internal Microsoft services). This changes SR17 remediation path from originally recommended "switch to AAD/Managed Identity" approach.
+
+**Key Finding:**
+"Remove client cert auth and switch to AAD/Managed Identity" does NOT apply when client cert auth is used for external 3rd party TAXII connections:
+- External TAXII server operators do not trust Microsoft Entra ID / AAD
+- TAXII 2.1 (OASIS) supports multiple auth methods: mutual TLS, Bearer tokens, Basic auth
+- Correct remediation depends on what 3rd party server requires
+
+**Proposed Decision:**
+For SR17 ICM 764634026 — External TAXII Client Auth remediation order of operations:
+1. Run SR17 Kusto query first to confirm which MSPKI certs/domains are in scope
+2. If flagged certs are SERVER certs only (not client auth): tag `AzRF.Misattributed` — no ClientAuth blocker
+3. If flagged certs ARE used as client certs for external TAXII:
+   - **Preferred:** Switch to non-MSPKI certificate (public CA cert) for TAXII client identity
+   - **Alternative:** Coordinate with 3rd party TAXII operators to switch auth to Bearer tokens (TAXII 2.1 native)
+4. Engage OceanView SME via `AzRF.SMESupport` tag for external TAXII client auth edge case guidance
+5. Do NOT apply Option A (AAD/Managed Identity) from original investigation to external TAXII connections
+
+**Impact:**
+- Changes recommended remediation for SecEng-Augusta ICM 764634026
+- Establishes external 3rd party service client cert auth requires different pattern than internal service-to-service
+- Relevant precedent for any future TI service using MSPKI certs to authenticate to external feeds/APIs
+
+---
+
 ## Inbox Merges — 2026-03-25T02:03Z
 
 ### 2026-03-25: Pre-Design Scan — #112 Notification System Has Three Unresolved Gaps

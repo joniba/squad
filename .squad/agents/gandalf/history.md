@@ -108,3 +108,41 @@
 - Updated SKILL.md and failure-recovery.md with decisions
 - Audit of Kusto references in dgrep POC merged to decisions inbox
 - Status: Cleanup complete, ready for next phase
+
+### 2026-03-24 — Protocol Recovery (8-Branch Merge Sequence Leadership)
+
+**Context:** Orchestrated retroactive review recovery and merge sequence for 8 branches (#105, #106, #108, #119, #132, #134, #112 pre-approved, plus secondary). All branches committed without initial Galadriel review. Full Cycle 1+2 reviews completed by Galadriel, all authors fixed findings, Cycle 2 re-approved all.
+
+**Gandalf's Role — Merge Sequence & Conflict Resolution:**
+
+1. **Merge Sequence Determined (105→106→108→119→132→134)**
+   - Rationale: DGrep SDK foundation (#105) must precede error handling (#108) and tail command (#106)
+   - Notifications (#132) precedes coordinator wiring (#134) to ensure foundation tested first
+   - POC learnings gate feature design — prevent blind replication of mistakes
+
+2. **Conflict Resolution — Two Merge Conflicts**
+   - **Conflict 1: src/QueryOptions.cs parameter rename** (PR #105→#106 merge)
+     - Root: #105 renamed parameter, #106 still used old name in QueryOptions class
+     - Resolution: Gimli manual merge, kept #106's structure, added #105's parameter corrections (commit e7a3c9d2)
+     - Validation: 298 tests pass, confirms no semantic loss
+   - **Conflict 2: scripts/notify.ps1 metadata** (PR #132→#134 merge)
+     - Root: #132 added parameter metadata decorations, #134 updated same section
+     - Resolution: Gimli manual merge, kept both metadata sets with dedup (commit f8c4d1e5)
+     - Validation: 16/16 integration tests pass
+
+3. **POC Findings Governance — Must Gate Feature Work**
+   - DGrep POC reflection learned: building without proving foundation wastes 3 PRs
+   - Notifications cleanup post-mortem learned: design without integration proof creates orphaned code
+   - Protocol recovery confirmation: these learnings MUST be wired as gates before Cycle 2 teams proceed
+
+4. **Cross-Agent Insights Consolidated**
+   - Galadriel: Domain terminology mismatches cascade across PR tracks — flag early
+   - Gimli: DGrep SDK uses dSTS not AAD, Phase 2 blocked on NuGet credential setup, MVP 26/26 tests pass
+   - Bilbo: Documentation-test sync must be verified during review, not after
+   - Coordinator: Enforcement wiring now active (routing.md Rules 9-12)
+
+**Learnings for Future Leadership:**
+- [HIGH] POC findings must gate feature work — don't start Phase 2 until Phase 1 proofs validated
+- [HIGH] When resolving merge conflicts, preserve test suites as acceptance criteria
+- [HIGH] Merge sequence matters — order branches by dependency + proof requirement
+- [MED] Integration work is first-class design deliverable, not post-implementation polish

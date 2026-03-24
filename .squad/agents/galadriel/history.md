@@ -42,3 +42,40 @@ Galadriel was hired based on Elrond's analysis of the coffee-ratings "Bobbie" ch
 
 **Security hygiene:**
 - Hardcoded PPE subscription/workspace GUIDs in source are a Medium finding even in private repos. The pattern creates risk if prod values are later added to the same file. Flag consistently.
+
+### 2026-03-24 — Protocol Recovery (8-Branch Review Cycle)
+
+**Context:** Retroactive review of 8 branches (#105–#108, #119, #132, #134, plus #112 pre-approved) committed without full cycle review (issue #13). Conducted full Cycle 1 review on all 8, documented findings, authors fixed, Cycle 2 re-approved all. All merged.
+
+**Findings & Patterns:**
+1. **Domain terminology is a design signal — flag mismatches between issue description and code naming**
+   - Example: DGrep issues described "Kusto cluster" and "Kusto database," but DGrep SDK uses MDS endpoints, namespaces, events. No flag from review despite 6 PRs merged against wrong model.
+   - Fix: Add to charter — when tech terminology appears in issue descriptions, cross-check against original research and domain docs BEFORE implementing
+   - Pattern: This same mismatch pattern appeared in notification track (calling it "integration wiring" when actually "missing callers")
+
+2. **Reviewers need domain context to catch terminology mismatches**
+   - Galadriel reviewed 6 DGrep PRs against issue descriptions and found no problems because the code matched the (incorrect) descriptions
+   - Fix: Before multi-PR tracks on unfamiliar domains, provide one-paragraph domain brief to reviewer (e.g., "DGrep uses MDS endpoints and dSTS auth, not Kusto clusters and AAD tokens")
+   - Pattern: "PR matches issue description" is necessary but not sufficient for quality gate
+
+3. **Domain mismatches often cascade across multiple PRs in same track**
+   - DGrep track: 6 PRs, all with same conceptual error (Kusto vs DGrep). Single-PR catch doesn't help if the mental model is baked into the track
+   - Mitigation: Require team design review before issue creation when pivoting tech stacks (TypeScript → C#)
+
+4. **Integration points are first-class deliverables**
+   - Notification track: Built 3 PRs of notification infrastructure with zero production callers
+   - DGrep track: Built query executor without end-to-end delivery validation
+   - Fix pattern: For multi-PR tracks, every integration point must be tracked as separate issue + verified before feature complete
+   - Reviewer signal: "Who calls this code outside tests?" must be answerable
+
+5. **PR Gate Enforcement Now Wired:**
+   - All future PRs require Galadriel review before merge (routing.md Rule 10 now enforced)
+   - Issue routing: `squad:galadriel` added to routing table
+   - Prevents repeat of protocol violation where branches were committed without review gate
+
+**Learnings for Future Cycles:**
+- [HIGH] Before implementing multi-PR tracks in unfamiliar domains, provide domain context brief
+- [HIGH] Flag terminology mismatches between issue descriptions and actual domain naming
+- [HIGH] Track integration points as first-class deliverables — each must be separate issue
+- [MED] Tech stack pivots require design re-review (issue descriptions must be validated against original research)
+- [MED] POC findings must gate feature work, not run in parallel

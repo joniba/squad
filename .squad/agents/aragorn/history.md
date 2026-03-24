@@ -272,3 +272,14 @@ TI services **ARE using client certificates for mTLS at the HTTP transport layer
 7. **Remediation priority for external TAXII client cert**: Option E1 (provision a non-MSPKI cert from a public CA for TAXII client identity) is cleanest — removes MSPKI dependency entirely for external connections without requiring 3rd party auth protocol change.
 
 **Delivered**: Addendum appended to `docs/investigations/icm-764634026/icm-764634026-investigation.md`; decision filed at `.squad/decisions/inbox/aragorn-taxii-remediation.md`
+
+### 2026-03-24 — Protocol Recovery (TAXII Remediation Task Escalation)
+
+**Context:** Retroactive review cycle for 8 branches. Aragorn maintained security/compliance validation track. All branches committed without initial Galadriel review. Full Cycle 1+2 reviews completed, all findings fixed.
+
+**Aragorn's Note — TAXII Remediation Task:**
+- During recovery review cycle, TAXII remediation investigation (#764634026) surfaced a separate escalation path requiring Jonathan's routing confirmation.
+- Task scope: SecEng-Augusta external TAXII client cert remediation (G2 cert provisioning or auth method negotiation).
+- Blocking decision: Whether `AzRF.Misattributed` or `AzRF.SMESupport` tag applies — depends on whether flagged MSPKI certs are server-only or include client auth dependency.
+- **Status:** ESCALATED SEPARATELY — Not part of 8-branch protocol recovery protocol. Jonathan to route remediation workflow and confirm escalation path.
+- **Reference:** `.squad/decisions/inbox/aragorn-taxii-remediation.md` (filed 2026-03-24)
