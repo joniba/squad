@@ -66,11 +66,22 @@
 | Fix implemented but retry still fails | ✅ **Yes** — the fix didn't work |
 | **Aragorn fails during an active livesite incident** | ✅ **Yes** — operational urgency overrides the pipeline. Don't wait for Elrond. |
 
-**How to notify:**
-- **Current (old system):** Call `scripts/send-teams-notification.ps1` with a brief summary. This is the active system with proven delivery.
-- **Target (once MVP is validated):** Call `scripts/notify-blocked.ps1` which invokes `notify.ps1` with Type='urgent' and structured event data. This provides deduplication, retry, and richer Adaptive Card formatting.
-- **Migration plan:** Switch to `notify-blocked.ps1` ONLY after end-to-end validation (issue #135). Until then, use the old system.
-- Tag the GitHub issue `needs-human`. Include: what failed, what was tried, what's needed from Jonathan.
+**How to notify:** Call the dispatcher script with the `blocked` event:
+
+```powershell
+# From the repo root:
+.\scripts\notify-squad-event.ps1 -Event "blocked" `
+    -What "<what is blocked>" `
+    -Why "<why it needs Jonathan>" `
+    -ActionNeeded "<specific action>" `
+    -Link "<GitHub issue URL>" `
+    -Urgency "<blocking-feature|livesite|decision-needed>" `
+    -Agent "<agent name>"
+```
+
+This routes to `scripts/notify-blocked.ps1` → `scripts/notify.ps1` (urgent tier, immediate delivery) → Teams webhook. The old `send-teams-notification.ps1` is NOT used for failure escalation — use the dispatcher above.
+
+Tag the GitHub issue `needs-human`. Include: what failed, what was tried, what's needed from Jonathan.
 
 ## Failure Report Format
 
@@ -128,7 +139,15 @@ Use ISO 8601 UTC: `2026-03-22T17:30:00Z`
 - Always uses `claude-opus-4.6` for failure research
 - Always checks reference codebases first (`docs/catalogs/reference-codebases.md`)
 - Produces tested, working solutions — not theoretical suggestions
-- **If no solution found:** Explicitly state "No solution found — escalating to Jonathan" with full reasoning. This triggers Gandalf to notify Jonathan immediately via Teams webhook + `needs-human` label.
+- **If no solution found:** Explicitly state "No solution found — escalating to Jonathan" with full reasoning. This triggers Gandalf to notify Jonathan immediately via the dispatcher:
+  ```powershell
+  .\scripts\notify-squad-event.ps1 -Event "blocked" `
+      -What "Failure recovery exhausted: <task>" `
+      -Why "Elrond found no viable solution after researching <topic>" `
+      -ActionNeeded "<what Jonathan should do>" `
+      -Link "<issue URL>" -Urgency "decision-needed" -Agent "Elrond"
+  ```
+  Also tag the GitHub issue `needs-human`.
 
 ### Ralph (Work Monitor)
 - Triages implementation routing after Gandalf approves research
