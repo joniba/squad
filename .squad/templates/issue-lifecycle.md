@@ -43,8 +43,10 @@ After collecting agent results for issue-linked work:
 | Research/investigation | PR merge auto-close only (report goes through PR) |
 | Tracking/strategic (e.g., "Monitor X") | Coordinator may close with comment when condition is met |
 | Superseded issues | Coordinator may close with comment linking to replacement issue |
+| Governance (Rule 15) | Coordinator closes with `gh issue close` + comment after commit to main (Rule 24) |
+| Recovery merge (direct `git merge`) | Coordinator closes with `gh issue close` + comment after verifying merge (Rule 25) |
 
-**Never use `gh issue close` for any issue that produced files.** The only path to closure is a merged PR with "Closes #N".
+**Never use `gh issue close` for any issue that produced files — EXCEPT** governance work committed directly to main (Rule 24) and branches merged via direct `git merge` during recovery (Rule 25). These are the only two authorized exceptions. The comment must cite the applicable rule.
 
 ## Worktree Requirement
 

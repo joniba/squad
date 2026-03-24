@@ -101,7 +101,17 @@
   4. [MED] PR reviewers (Galadriel) should flag library code with zero production callers — ask "who calls this?"
   5. [MED] I (Gandalf) approved the design and declared the track complete without verifying end-to-end delivery. I own this gap.
 
-### 2026-03-28 — #112 Notifications Cleanup & DGrep Kusto Audit
+### 2026-03-28 — Issue Hygiene and Worktree Cleanup (#142)
+
+- **Trigger:** 17 open issues on the board, many representing completed work. Root causes: governance work on main (no PR auto-close), direct `git merge` during recovery (no PR auto-close), and stale worktrees accumulating.
+- **Rules added:** 24 (governance issue closure), 25 (post-merge issue verification), 26 (worktree cleanup).
+- **Rule 11 updated:** Cross-references to new exceptions (Rules 24 and 25) added.
+- **Issue-lifecycle.md updated:** Closure rules table expanded with governance and recovery merge rows.
+- **Design rationale:** `docs/designs/issue-hygiene.md` — three problems, three targeted rules, alternatives considered and rejected.
+- **Key principle:** Tracking visibility (Rule 17) and closure mechanism (Rule 11) are separate concerns. Governance work should be tracked but needs its own closure path since Rule 15 precludes PRs.
+- **Stale worktrees found:** 9 worktrees on disk with merged branches. Rule 26 prevents future accumulation; Ralph periodic scan catches drift.
+- **Boromir review:** Skipped per Jonathan's explicit request. Governance hygiene, not architectural design.
+- **Pattern:** This is the first time we've explicitly carved exceptions into Rule 11. The exceptions are narrow (two specific scenarios), documented (comments must cite the rule), and additive (no existing protections weakened).
 
 - **Notifications cleanup executed:** Renamed `proactive-notifications.md` → `human-attention-notifications.md` (R1). Closed #115 (library code done in PR #122). Updated #116 body to clarify integration work remains. Labeled #117 as P3-low/post-MVP with scope decision. Created 4 MVP caller issues (#132–#135): notify-feature-complete, notify-blocked, coordinator wiring, E2E validation.
 - **SKILL.md updated (R6):** Now documents BOTH old system (`send-teams-notification.ps1`, 2 callers, active) and new system (`notify.ps1`, 0 callers, built). Agents now know both systems exist.
