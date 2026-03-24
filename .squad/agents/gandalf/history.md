@@ -79,6 +79,14 @@
   4. [MED] PR reviewers (Galadriel) should flag library code with zero production callers — ask "who calls this?"
   5. [MED] I (Gandalf) approved the design and declared the track complete without verifying end-to-end delivery. I own this gap.
 
+### 2026-03-28 — #112 Notifications Cleanup & DGrep Kusto Audit
+
+- **Notifications cleanup executed:** Renamed `proactive-notifications.md` → `human-attention-notifications.md` (R1). Closed #115 (library code done in PR #122). Updated #116 body to clarify integration work remains. Labeled #117 as P3-low/post-MVP with scope decision. Created 4 MVP caller issues (#132–#135): notify-feature-complete, notify-blocked, coordinator wiring, E2E validation.
+- **SKILL.md updated (R6):** Now documents BOTH old system (`send-teams-notification.ps1`, 2 callers, active) and new system (`notify.ps1`, 0 callers, built). Agents now know both systems exist.
+- **failure-recovery.md updated (R7):** Notification section now specifies: use old system (`send-teams-notification.ps1`) until MVP validated, then switch to `notify-blocked.ps1`. Migration path is explicit, not ambiguous.
+- **DGrep Kusto audit completed:** Found 47 "Kusto" references across 13 files in `tools/dgrep-cli/`. Key finding: `KustoQueryExecutor.cs` must become `DgrepQueryExecutor.cs`, `--cluster` should become `--endpoint`, `--database` should become `--namespace`. KQL references as a query language are FINE. Audit written to `.squad/decisions/inbox/gandalf-dgrep-kusto-audit.md`.
+- **Key principle reinforced:** "Until MVP is proven to work, do NOT replace existing Teams integrations." Both systems coexist by design — old is active, new is staged.
+
 ### 2026-03-25 — Pre-Design Scan #112 Completion
 
 - **Trigger:** Proactive deep scan of #112 (Teams Notifications) to unblock design work
