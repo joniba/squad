@@ -29,6 +29,7 @@ How to decide who handles what.
 | `squad:bilbo` | Documentation, reports, summaries | 📝 Bilbo |
 | `squad:gimli` | Scripts, tools, automation | 🔧 Gimli |
 | `squad:aragorn` | Livesite, incidents, ops | ⚙️ Aragorn |
+| `squad:galadriel` | PR code review, quality gates | 👑 Galadriel |
 | `squad:frodo` | TI domain backend code, RP changes | 🗡️ Frodo |
 
 ### How Issue Assignment Works
@@ -81,3 +82,7 @@ Every design doc Gandalf produces MUST be reviewed by Boromir before implementat
 6. **Anticipate downstream work.** If a feature is being built, spawn the tester to write test cases from requirements simultaneously.
 7. **Issue-labeled work** — when a `squad:{member}` label is applied to an issue, route to that member. The Lead handles all `squad` (base label) triage.
 8. **@copilot routing** — when evaluating issues, check @copilot's capability profile in `team.md`. Route 🟢 good-fit tasks to `squad:copilot`. Flag 🟡 needs-review tasks for PR review. Keep 🔴 not-suitable tasks with squad members.
+9. **Issue lifecycle enforcement** — all issue-linked work follows the lifecycle in `.squad/templates/issue-lifecycle.md`. The coordinator adds the ISSUE CONTEXT block to spawn prompts and follows the post-work steps (verify push → verify PR → route to reviewer → merge on approval). Read `issue-lifecycle.md` before spawning any agent for issue work.
+10. **Galadriel PR Gate** — every PR created by any agent MUST be reviewed by Galadriel before merge. The coordinator spawns Galadriel (sync) with the PR diff after the author pushes and creates the PR. On REJECT, the original author addresses feedback. On APPROVE, the coordinator merges via `gh pr merge`. No PR merges without Galadriel's approval.
+11. **Issue closure restriction** — issues that produced files (code, docs, scripts, designs, tests) close ONLY via PR merge auto-close ("Closes #N" in PR body). Never use `gh issue close` for file-producing work. Exception: tracking/strategic issues and superseded issues may be closed with a comment.
+12. **Worktree for all file-producing work** — every task that creates or modifies files (including documentation) requires a worktree. Exceptions: read-only queries, Scribe (.squad/ state), pure analysis producing no files.
