@@ -49,3 +49,18 @@
 **Commit:** 846d753 on squad/132-notifications-mvp-scripts
 
 **Next:** Merge to main, wire into coordinator.ps1 for E2E orchestration
+
+## 2026-03-24T23:59:00Z — Notifications Coordinator Wiring & DGrep SDK Stabilization Batch
+- **Tasks:** #105 (DGrep SDK), #108 (DGrep error handling), #134 (Coordinator wiring)
+- **Status:** ✅ COMPLETED — 381 tests passing, 3 issues closed
+- **Deliverables:**
+  1. DGrep SDK: Removed Kusto refs, built DgrepQueryExecutor (298 tests, -622 LOC)
+  2. DGrep Error Handling: RetryPolicy + RetryingQueryExecutor with exponential backoff (363 tests, +41 new)
+  3. Coordinator Wiring: notify-squad-event.ps1 dispatcher + failure-recovery.md (16/16 integration tests)
+- **Key Patterns:**
+  1. QueryExecutor abstraction encapsulates KQL execution + Azure auth; enables swapping implementations
+  2. RetryPolicy framework separates retry logic (exponential backoff, jitter) from query execution
+  3. Coordinator dispatcher routes events → notify-feature-complete.ps1 or notify-blocked.ps1 → Teams card
+  4. Failure recovery: Non-blocking exception handling ensures partial failures don't break event stream
+- **Cross-Agent:** Bilbo completed Notifications documentation (#120) using outputs from this batch
+- **Boromir:** Hired (committed separately); next task is on-call integration with Notifications MVP

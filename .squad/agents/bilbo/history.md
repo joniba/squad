@@ -107,6 +107,18 @@
 - Included anti-patterns section so implementers learn from gotchas, not experience them
 - Documentation follows consistent structure: problem → pattern → examples → mistakes → checklist
 
+## 2026-03-24T23:59:00Z — Notifications Runbook & Architecture Overview (#120)
+- **Status:** ✅ COMPLETED — 2 guides (runbook + overview), 6 closed issues total
+- **Deliverables:**
+  1. `notifications-runbook.md` — step-by-step operator procedures, Teams card validation, troubleshooting
+  2. `notifications-overview.md` — architecture diagram, MVP caller patterns, integration points
+- **Key Sections:**
+  - Architecture: notify.ps1 foundation → notify-feature-complete.ps1 + notify-blocked.ps1 → dispatcher → Teams
+  - Operations: Dry-run validation with -WhatIf, manual card formatting tests, failure recovery patterns
+  - Integration: Coordinator wiring via notify-squad-event.ps1, Teams routing tables, expandability patterns
+- **Cross-Agent Notes:** Built documentation after Gimli's coordinator wiring (#134); provides immediate reference for Teams notification operators
+- **Prior session context:** Bilbo previously completed squad skills catalog, documentation index, and template guides; this closes Notifications epic
+
 ### Comprehensive Feature Documentation — 6 How-To Guides (2024-12-19)
 **Deliverables:** 
 - `docs/guides/teams-watchdog-setup.md` (8,661 chars) — Daily Teams monitor for decisions/action items
