@@ -99,3 +99,12 @@
 - **Finding 3:** Foundation unproven — notify.ps1 never validated in production. MVP depends on it working.
 - **Recommendation:** File 4 MVP issues (feature-complete, blocked, coordinator wiring, E2E validation), validate notify.ps1 in dry-run + one real notification, scope decision on 🟡 Action tier (out of MVP), then proceed with design.
 - **Pattern recognized:** Same Phase 1/2 wiring gap as dgrep SDK issue — library code built, never wired to production callers. Reflects dgrep reflection learning #5: "building features without an integration proof point."
+
+## 2026-03-24T00:16:24Z — Cleanup Session Consolidated
+- Closed #115 (cleanup notification)
+- Updated #116, #117 (notification follow-ups)
+- Created 4 MVP issues (#132-135) for notification workflow redesign
+- Renamed design documentation for clarity
+- Updated SKILL.md and failure-recovery.md with decisions
+- Audit of Kusto references in dgrep POC merged to decisions inbox
+- Status: Cleanup complete, ready for next phase

@@ -18,3 +18,13 @@
 - **2026-07-22 — WorkIQ patterns skill (#85):** Created `.squad/skills/workiq-patterns/SKILL.md` — a general-purpose skill documenting WorkIQ query patterns for Teams message retrieval. Built from Elrond's live-tested research (11 tests). Key patterns: (1) WorkIQ is a semantic search engine, not an ID-based retrieval system — URLs don't work, but sender + chat name + time + topic reliably finds specific messages; (2) Indexing delay means sub-hour time windows are unreliable — use "today" or "last 24 hours"; (3) Results are curated (~25 max), AI-summarized by default — ask for "exact content" when verbatim text is needed; (4) Rate-limit to one query per agent action. Skill follows `.squad/templates/skill.md` format with tools metadata declaring `workiq-ask_work_iq`. Any agent needing Teams context reads this at spawn time — not tied to any specific protocol.
 
 - **2026-03-25 — #112 Pre-Design Scan Complete (Gandalf findings):** Gandalf completed deep scan of Teams Notifications (#112). Three unresolved gaps found: (1) new notify.ps1 system built but zero production callers (1,268 LOC dead code); (2) MVP caller scripts not tracked as GitHub issues (notify-feature-complete.ps1, notify-blocked.ps1 defined in design but not filed); (3) foundation unproven (notify.ps1 never validated in production). Recommendation: file 4 MVP issues, validate notify.ps1 dry-run + real notification, scope decision on 🟡 Action tier, then proceed with design. Report at `docs/investigations/112-pre-design-scan.md`. Gimli's action items: (1) Create GitHub issue #??? for `notify-feature-complete.ps1` MVP caller (Gimli owner, depends on notify.ps1 validation); (2) Create GitHub issue #??? for `notify-blocked.ps1` MVP caller (Gimli owner, same dependency); (3) Create GitHub issue #??? for coordinator wiring (how does coordinator invoke notify-feature-complete.ps1? depends on #??? and #???); (4) Create GitHub issue #??? for E2E validation test (once MVP callers exist, Gimli writes integration test that calls notify-feature-complete.ps1 and verifies a Teams card arrived).
+
+## 2026-03-24T00:16:24Z — DGrep POC Validation & Issue Resolution
+- DGrep POC build passes (322 tests)
+- Authentication verified with az cli
+- SDK types compile successfully
+- 6 closed issues: #101, #102, #103, #104, #107, #110
+- Test endpoint saved: Diagnostics PROD, AugustaPrdEus2, Log/SentinelLogEntry
+- Interactive dSTS query hung (investigating)
+- Directives enforced: YOLO mode active, Kusto removed from CLI, Teams integration deferred until MVP
+- Status: POC validation complete, ready for next phase
