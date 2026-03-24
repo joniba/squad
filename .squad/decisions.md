@@ -1,5 +1,25 @@
 # Squad Decisions
+## Inbox Merges — 2026-03-25T02:03Z
 
+### 2026-03-25: Pre-Design Scan — #112 Notification System Has Three Unresolved Gaps
+
+**Decision by:** Gandalf  
+**Scope:** Issue #112 (Proactive Teams Notifications)  
+**Report:** docs/investigations/112-pre-design-scan.md
+
+**Key findings before design work should proceed:**
+
+1. **The new notification system (1,268 lines across 3 scripts) has zero production callers.** It was built but never wired. The old 50-line send-teams-notification.ps1 still does all the work. Before building MORE on top of the new system, someone needs to validate it actually works (dry-run + one real notification).
+
+2. **The MVP caller scripts don't exist and have no tracked issues.** The MVP plan defines 
+otify-feature-complete.ps1 and 
+otify-blocked.ps1 but these were never filed as GitHub issues. This is the exact same pattern that caused the Phase 1/2 wiring gap last time — plans documented but never tracked.
+
+3. **Issue #117 (PR/review workflows) is out of MVP scope.** Jonathan's MVP is two triggers only: feature-complete and blocked-on-human. The 🟡 Action tier should be explicitly deprioritized to prevent scope creep.
+
+**Recommendation:** File MVP issues, validate notify.ps1 works, then proceed with design refinement. Do not start new implementation until the foundation is proven.
+
+---
 ## Inbox Merges — 2026-03-23T23:00Z
 
 ### 2026-03-23T21:10:00Z: CRITICAL — Lockout rules violation fix

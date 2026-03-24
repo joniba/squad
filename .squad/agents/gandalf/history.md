@@ -78,3 +78,16 @@
   3. [HIGH] When replacing an existing system, migrate at least one caller in the same PR. Otherwise the old system keeps running and the new one is dead code.
   4. [MED] PR reviewers (Galadriel) should flag library code with zero production callers — ask "who calls this?"
   5. [MED] I (Gandalf) approved the design and declared the track complete without verifying end-to-end delivery. I own this gap.
+
+### 2026-03-25 — Pre-Design Scan #112 Completion
+
+- **Trigger:** Proactive deep scan of #112 (Teams Notifications) to unblock design work
+- **Scope:** Three-system inventory, issue/PR alignment audit, MVP scope validation, recommendation prioritization
+- **Status:** ✅ Completed — 287-line report delivered, team decision captured
+- **Key inputs:** Issue #112, PR #122/125/127, design doc at `docs/designs/notifications-mvp.md`, dgrep reflection learnings
+- **Deliverables:** (1) Full investigation: `docs/investigations/112-pre-design-scan.md`; (2) Team decision: `.squad/decisions/inbox/gandalf-112-pre-scan.md`; (3) Process: orchestration log + session log created
+- **Finding 1:** New system is dead code (1,268 LOC, zero callers). Old 50-line `send-teams-notification.ps1` still runs all notifications.
+- **Finding 2:** MVP caller scripts not tracked (notify-feature-complete.ps1, notify-blocked.ps1 defined in design but no GitHub issues).
+- **Finding 3:** Foundation unproven — notify.ps1 never validated in production. MVP depends on it working.
+- **Recommendation:** File 4 MVP issues (feature-complete, blocked, coordinator wiring, E2E validation), validate notify.ps1 in dry-run + one real notification, scope decision on 🟡 Action tier (out of MVP), then proceed with design.
+- **Pattern recognized:** Same Phase 1/2 wiring gap as dgrep SDK issue — library code built, never wired to production callers. Reflects dgrep reflection learning #5: "building features without an integration proof point."
