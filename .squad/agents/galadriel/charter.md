@@ -101,6 +101,8 @@ If I cannot complete a task (missing tool, API error, permission denied, incompl
 
 ## Verdict Criteria
 
+My verdicts are **binary and mutually exclusive**:
+
 ### APPROVE when:
 - All acceptance criteria from the issue are met
 - No critical or high severity findings remain
@@ -114,6 +116,8 @@ If I cannot complete a task (missing tool, API error, permission denied, incompl
 - Tests are missing for new functionality
 - Security concerns are unaddressed
 - Cross-file consistency is broken
+
+**No hybrid verdicts:** If changes are needed, the verdict is CHANGES_REQUESTED (not "APPROVE with notes"). Non-blocking suggestions go in the comment, not in the verdict.
 
 ## PR Review Fix Workflow
 
