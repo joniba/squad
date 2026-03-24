@@ -327,27 +327,90 @@ function Build-FeatureCard {
     return Build-CardEnvelope -Body $body -Actions $actions
 }
 
+function Build-InvestigationCompleteCard {
+    param([hashtable]$Event)
+    $body = @(
+        @{ type = "TextBlock"; size = "Medium"; weight = "Bolder"; text = "🔍 $($Event.title)" }
+    )
+
+    $facts = @()
+    if ($Event.icmNumber) {
+        $facts += @{ title = "IcM"; value = "$($Event.icmNumber)" }
+    }
+    if ($Event.conclusion) {
+        $facts += @{ title = "Verdict"; value = "$($Event.conclusion)" }
+    }
+    if ($facts.Count -gt 0) {
+        $body += @{ type = "FactSet"; facts = $facts; spacing = "Small" }
+    }
+
+    $actions = @()
+    if ($Event.reportUrl) {
+        $actions += @{ type = "Action.OpenUrl"; title = "View Report"; url = "$($Event.reportUrl)" }
+    }
+    if ($Event.issueNumber) {
+        $issueUrl = "https://github.com/jbenami_microsoft/ms-pa/issues/$($Event.issueNumber)"
+        $actions += @{ type = "Action.OpenUrl"; title = "View Issue"; url = $issueUrl }
+    }
+
+    return Build-CardEnvelope -Body $body -Actions $actions
+}
+
 function Build-BatchFeatureCard {
     param([array]$Features)
     $body = @(
         @{ type = "TextBlock"; size = "Medium"; weight = "Bolder"; text = "🔵 Feature Summary ($($Features.Count) items)" }
     )
     foreach ($feat in $Features) {
-        $body += @{ type = "ColumnSet"; separator = $true; columns = @(
-            @{ type = "Column"; width = "stretch"; items = @(
-                @{ type = "TextBlock"; weight = "Bolder"; text = "🔵 $($feat.featureTitle)"; wrap = $true }
-                @{ type = "TextBlock"; text = "$($feat.summary)"; wrap = $true; spacing = "Small" }
+        # Detect investigation-complete events (they have icmNumber instead of testInstructions)
+        if ($feat.icmNumber) {
+            $body += @{ type = "ColumnSet"; separator = $true; columns = @(
+                @{ type = "Column"; width = "stretch"; items = @(
+                    @{ type = "TextBlock"; weight = "Bolder"; text = "🔍 $($feat.featureTitle)"; wrap = $true }
+                    @{ type = "TextBlock"; text = "$($feat.summary)"; wrap = $true; spacing = "Small" }
+                    @{ type = "FactSet"; facts = @(
+                        @{ title = "IcM"; value = "$($feat.icmNumber)" }
+                        @{ title = "Verdict"; value = "$($feat.conclusion)" }
+                    ); spacing = "Small" }
+                )}
             )}
-        )}
-        if ($feat.testInstructions) {
-            $body += @{ type = "TextBlock"; text = "$($feat.testInstructions)"; wrap = $true; fontType = "monospace"; size = "Small"; spacing = "Small" }
+        } else {
+            # Regular feature event
+            $body += @{ type = "ColumnSet"; separator = $true; columns = @(
+                @{ type = "Column"; width = "stretch"; items = @(
+                    @{ type = "TextBlock"; weight = "Bolder"; text = "🔵 $($feat.featureTitle)"; wrap = $true }
+                    @{ type = "TextBlock"; text = "$($feat.summary)"; wrap = $true; spacing = "Small" }
+                )}
+            )}
+            if ($feat.testInstructions) {
+                $body += @{ type = "TextBlock"; text = "$($feat.testInstructions)"; wrap = $true; fontType = "monospace"; size = "Small"; spacing = "Small" }
+            }
         }
     }
+    
     $actions = @()
-    $firstUrl = ($Features | Where-Object { $_.issuesUrl } | Select-Object -First 1).issuesUrl
-    if ($firstUrl) {
-        $actions += @{ type = "Action.OpenUrl"; title = "View Issues"; url = "$firstUrl" }
+    
+    # Build actions: for investigation events, add both View Report and View Issue buttons
+    $investigationFeature = $Features | Where-Object { $_.icmNumber } | Select-Object -First 1
+    if ($investigationFeature) {
+        if ($investigationFeature.reportUrl) {
+            $actions += @{ type = "Action.OpenUrl"; title = "View Report"; url = "$($investigationFeature.reportUrl)" }
+        }
+        if ($investigationFeature.issueNumber) {
+            $issueUrl = "https://github.com/jbenami_microsoft/ms-pa/issues/$($investigationFeature.issueNumber)"
+            $actions += @{ type = "Action.OpenUrl"; title = "View Issue"; url = $issueUrl }
+        }
+    } else {
+        # Regular feature event: use issuesUrl or fallback to reportUrl
+        $firstUrl = ($Features | Where-Object { $_.issuesUrl } | Select-Object -First 1).issuesUrl
+        if (-not $firstUrl) {
+            $firstUrl = ($Features | Where-Object { $_.reportUrl } | Select-Object -First 1).reportUrl
+        }
+        if ($firstUrl) {
+            $actions += @{ type = "Action.OpenUrl"; title = "View Details"; url = "$firstUrl" }
+        }
     }
+    
     return Build-CardEnvelope -Body $body -Actions $actions
 }
 
@@ -438,14 +501,19 @@ function Send-TeamsWebhook {
 function Add-ToFeatureQueue {
     param([hashtable]$Event, [hashtable]$State)
     $entry = @{
-        featureId      = $Event.eventId
-        featureTitle   = $Event.featureTitle
-        summary        = $Event.summary
+        featureId        = $Event.eventId
+        featureTitle     = $Event.featureTitle ?? $Event.title
+        summary          = $Event.summary ?? ""
         testInstructions = $Event.testInstructions
-        issuesUrl      = $Event.issuesUrl
-        nextAction     = $Event.nextAction
-        nextActionDue  = $Event.nextActionDue
-        queuedAt       = (Get-Date -Format 'o')
+        issuesUrl        = $Event.issuesUrl
+        nextAction       = $Event.nextAction
+        nextActionDue    = $Event.nextActionDue
+        queuedAt         = (Get-Date -Format 'o')
+        # Investigation-complete fields
+        icmNumber        = $Event.icmNumber
+        conclusion       = $Event.conclusion
+        reportUrl        = $Event.reportUrl
+        issueNumber      = $Event.issueNumber
     }
     if (-not $State.featureQueue) { $State.featureQueue = @() }
     $State.featureQueue = @($State.featureQueue) + @($entry)

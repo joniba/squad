@@ -19,6 +19,7 @@
       - pr-review-complete:  🟡 PR review approved/rejected
       - build-test-failure:  🔴 Build or test failure
       - feature-complete:    🔵 Feature work finished (batched)
+      - investigation-complete: 🔍 Investigation completed (batched)
       - ralph-round-complete: 🔵 Ralph round summary (batched)
 
 .EXAMPLE
@@ -336,6 +337,18 @@ function Build-EventFromTemplate {
                 issuesUrl        = $EventData.issuesUrl ?? ""
             }
         }
+        "investigation-complete" {
+            return @{
+                eventId      = "investigation:$($EventData.icmNumber ?? 'unknown'):$now"
+                title        = $EventData.title ?? "Investigation Complete"
+                featureTitle = $EventData.featureTitle ?? $EventData.title ?? "Investigation Complete"
+                summary      = $EventData.summary ?? "Investigation complete"
+                icmNumber    = $EventData.icmNumber ?? ""
+                conclusion   = $EventData.conclusion ?? ""
+                reportUrl    = $EventData.reportUrl ?? ""
+                issueNumber  = $EventData.issueNumber ?? ""
+            }
+        }
         default {
             # Pass through raw event data — caller is responsible for structure
             if (-not $EventData.eventId) {
@@ -452,6 +465,7 @@ function Initialize-DefaultTriggers {
         @{ Name = "pr-review-complete";    EventType = "pr-review";   Tier = "action";  Template = "pr-review" }
         @{ Name = "build-test-failure";    EventType = "build";       Tier = "urgent";  Template = "build-failure" }
         @{ Name = "feature-complete";      EventType = "feature";     Tier = "feature"; Template = "feature-complete" }
+        @{ Name = "investigation-complete"; EventType = "investigation"; Tier = "feature"; Template = "investigation-complete" }
         @{ Name = "ralph-round-complete";  EventType = "ralph";       Tier = "feature"; Template = "ralph-round" }
     )
 

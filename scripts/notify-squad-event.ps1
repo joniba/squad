@@ -12,12 +12,13 @@
     Supported events:
       feature-complete  → scripts/notify-feature-complete.ps1
       blocked           → scripts/notify-blocked.ps1
+      investigation-complete → scripts/notify-investigation-complete.ps1
 
     Does NOT replace old callers (send-teams-notification.ps1, squad-daily-summary.ps1).
     Those remain available for their existing consumers (icm-scan, daily summary).
 
 .PARAMETER Event
-    The event type to dispatch. Currently: "feature-complete" or "blocked".
+    The event type to dispatch. Currently: "feature-complete", "blocked", or "investigation-complete".
 
 .PARAMETER FeatureName
     [feature-complete] Human-readable feature name.
@@ -63,6 +64,21 @@
 .PARAMETER Agent
     [blocked] Which agent is blocked.
 
+.PARAMETER IcmNumber
+    [investigation-complete] The incident management number (e.g., "123456789").
+
+.PARAMETER Title
+    [investigation-complete] The investigation title.
+
+.PARAMETER Conclusion
+    [investigation-complete] The investigation verdict (e.g., "false positive", "remediation needed", "design flaw").
+
+.PARAMETER ReportUrl
+    [investigation-complete] GitHub permalink to the investigation report (e.g., "https://github.com/org/repo/blob/main/docs/investigations/icm-123/report.md").
+
+.PARAMETER IssueNumber
+    [investigation-complete] GitHub issue number associated with the investigation.
+
 .PARAMETER DryRun
     Build the card JSON but don't send to Teams.
 
@@ -92,7 +108,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)]
-    [ValidateSet("feature-complete", "blocked")]
+    [ValidateSet("feature-complete", "blocked", "investigation-complete")]
     [string]$Event,
 
     # --- feature-complete parameters ---
@@ -112,6 +128,13 @@ param(
     [ValidateSet("blocking-feature", "livesite", "decision-needed", "")]
     [string]$Urgency = "blocking-feature",
     [string]$Agent,
+
+    # --- investigation-complete parameters ---
+    [string]$IcmNumber,
+    [string]$Title,
+    [string]$Conclusion,
+    [string]$ReportUrl,
+    [string]$IssueNumber,
 
     # --- common flags ---
     [switch]$DryRun,
@@ -144,6 +167,13 @@ switch ($Event) {
             Write-Error "Either -Issues (multi-issue mode) or -Why (single-issue mode) is required for event 'blocked'."
             exit 1
         }
+    }
+    "investigation-complete" {
+        Assert-Param "IcmNumber"    $IcmNumber
+        Assert-Param "Title"        $Title
+        Assert-Param "Conclusion"   $Conclusion
+        Assert-Param "ReportUrl"    $ReportUrl
+        Assert-Param "IssueNumber"  $IssueNumber
     }
 }
 
@@ -248,6 +278,30 @@ switch ($Event) {
         if ($Force)  { $params.Force  = $true }
 
         Write-Host "🚨 Dispatching blocked → notify-blocked.ps1"
+        & $callerScript @params
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    }
+
+    # -------------------------------------------------------------------
+    "investigation-complete" {
+        $callerScript = Join-Path $scriptDir "notify-investigation-complete.ps1"
+        if (-not (Test-Path $callerScript)) {
+            Write-Error "Caller script not found: $callerScript"
+            exit 1
+        }
+
+        $params = @{
+            IcmNumber   = $IcmNumber
+            Title       = $Title
+            Conclusion  = $Conclusion
+            ReportUrl   = $ReportUrl
+            IssueNumber = $IssueNumber
+        }
+
+        if ($DryRun) { $params.DryRun = $true }
+        if ($Force)  { $params.Force  = $true }
+
+        Write-Host "🔍 Dispatching investigation-complete → notify-investigation-complete.ps1"
         & $callerScript @params
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     }

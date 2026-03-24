@@ -135,6 +135,21 @@ After completing an investigation, Aragorn MUST include a `## Priority Assessmen
 
 This assessment informs Bilbo's TASK-INDEX ordering — it's not just severity, but investigation-driven prioritization.
 
+### Investigation Completion Notification
+
+When an investigation PR merges to main, the coordinator fires the investigation-complete notification:
+
+```powershell
+.\scripts\notify-squad-event.ps1 -Event "investigation-complete" `
+    -IcmNumber "<incident-number>" `
+    -Title "<investigation title>" `
+    -Conclusion "<verdict (e.g., 'false positive', 'remediation needed')>" `
+    -ReportUrl "https://github.com/jbenami_microsoft/ms-pa/blob/main/docs/investigations/icm-<number>/<filename>" `
+    -IssueNumber "<GitHub-issue-number>"
+```
+
+The investigation report URL MUST be a GitHub permalink to the remote (not a local file path). Format: `https://github.com/jbenami_microsoft/ms-pa/blob/main/docs/investigations/icm-{number}/{report-filename}`.
+
 ## Boundaries
 
 **I handle:** Livesite incidents, IcM investigation, Azure diagnostics, troubleshooting, on-call support, operational health, incident communication
