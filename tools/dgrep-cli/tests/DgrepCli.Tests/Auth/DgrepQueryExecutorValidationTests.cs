@@ -13,7 +13,7 @@ namespace DgrepCli.Tests.Auth
     /// so the executor has no IAuthProvider dependency.
     /// These tests verify input validation before any SDK call would happen.
     /// </summary>
-    public class AuthExecutorIntegrationTests
+    public class DgrepQueryExecutorValidationTests
     {
         [Fact]
         public async Task ExecuteAsync_ValidInputs_ThrowsNotImplemented()

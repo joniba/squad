@@ -125,6 +125,9 @@ namespace DgrepCli.Commands
                     _stdout.WriteLine($"  Identity:     {token.DisplayIdentity}");
                     _stdout.WriteLine($"  Token expiry: {token.ExpiresOn:u}");
                     _stdout.WriteLine($"  Token length: {token.Token?.Length ?? 0} chars");
+                    _stdout.WriteLine();
+                    _stdout.WriteLine("⚠️  Note: This validates Azure CLI authentication only. DGrep SDK uses dSTS for");
+                    _stdout.WriteLine("    authentication, which is validated at query time.");
                     return 0;
                 }
                 catch (NotImplementedException ex)
