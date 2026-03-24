@@ -146,20 +146,24 @@ namespace DgrepCli.Tests.Execution
     public class QueryExceptionTests
     {
         [Fact]
-        public void QueryConnectionException_ContainsClusterUrl()
+        public void QueryConnectionException_ContainsEndpointUrl()
         {
-            var ex = new QueryConnectionException("https://test.kusto.windows.net", "Connection refused");
-            Assert.Contains("https://test.kusto.windows.net", ex.Message);
+            var ex = new QueryConnectionException("https://test.endpoint.net", "Connection refused");
+            Assert.Contains("https://test.endpoint.net", ex.Message);
             Assert.Contains("Connection refused", ex.Message);
-            Assert.Equal("https://test.kusto.windows.net", ex.ClusterUrl);
+            Assert.Contains("Check your network", ex.Message);
+            Assert.Equal("https://test.endpoint.net", ex.EndpointUrl);
+            Assert.Equal("https://test.endpoint.net", ex.ClusterUrl); // backward compat
         }
 
         [Fact]
-        public void QuerySyntaxException_ContainsQuery()
+        public void QuerySyntaxException_ContainsQueryAndServerError()
         {
-            var ex = new QuerySyntaxException("bad query", "Unexpected token");
+            var ex = new QuerySyntaxException("bad query | where x", "Unexpected token");
             Assert.Contains("Unexpected token", ex.Message);
-            Assert.Equal("bad query", ex.Query);
+            Assert.Contains("bad query | where x", ex.Message);
+            Assert.Equal("bad query | where x", ex.Query);
+            Assert.Equal("Unexpected token", ex.ServerError);
         }
 
         [Fact]
@@ -171,11 +175,28 @@ namespace DgrepCli.Tests.Execution
         }
 
         [Fact]
-        public void QueryAuthException_PointsToAuthCommand()
+        public void QueryAuthException_PointsToAuthStatus()
         {
             var ex = new QueryAuthException("Token expired");
-            Assert.Contains("dgrep auth", ex.Message);
+            Assert.Contains("dgrep auth status", ex.Message);
             Assert.Contains("Token expired", ex.Message);
+        }
+
+        [Fact]
+        public void QueryRateLimitException_ShowsConcurrentLimit()
+        {
+            var ex = new QueryRateLimitException();
+            Assert.Contains("5 concurrent", ex.Message);
+            Assert.Contains("Wait and retry", ex.Message);
+            Assert.Equal(5, ex.MaxConcurrent);
+        }
+
+        [Fact]
+        public void QueryRateLimitException_CustomLimit()
+        {
+            var ex = new QueryRateLimitException(10);
+            Assert.Contains("10 concurrent", ex.Message);
+            Assert.Equal(10, ex.MaxConcurrent);
         }
     }
 }
