@@ -250,3 +250,25 @@ TI services **ARE using client certificates for mTLS at the HTTP transport layer
 
 **Delivered:** `docs/investigations/icm-764634026-investigation.md` (full 4-stage report with code evidence, remediation path, and timeline)
 
+
+### 2025-07-14: ICM 764634026 Addendum — External TAXII Client Auth Remediation
+
+**Trigger**: Jonathan clarified that SecEng-Augusta uses MSPKI client cert auth for outbound connections to **3rd party external TAXII servers**, not internal Microsoft services. This changes the remediation path.
+
+**Key Learnings**:
+
+1. **"Switch to AAD/Managed Identity" does not apply for external 3rd party auth.** External TAXII server operators have no trust relationship with Microsoft Entra ID. This was the original Option A recommendation and it must be revised for external connections.
+
+2. **TAXII 2.1 (OASIS standard) natively supports multiple auth methods**: mutual TLS (client certs), Bearer tokens, and Basic auth. Auth method is negotiated between client and server. This means Bearer token migration is a valid, spec-compliant alternative to client cert auth for external TAXII connections.
+
+3. **SR17 ClientAuth blocker still applies if the MSPKI cert is the client cert**, even for external connections — MSPKI G2 lacks ClientAuth EKU regardless of whether the server is internal or external. However, the fix is different: use a non-MSPKI cert or switch auth method, not AAD/MSI.
+
+4. **First diagnostic step is always the SR17 Kusto query** to identify exactly which MSPKI cert/domain is flagged and what role it plays (server cert vs. client cert). The remediation path splits completely based on this answer.
+
+5. **`AzRF.Misattributed` may be the right tag** if Kusto confirms the flagged MSPKI certs are server certs only (used for TLS termination on SecEng-Augusta's own TAXII endpoints), with no client auth dependency. External-facing server cert migration is straightforward G2 migration.
+
+6. **`AzRF.SMESupport` is the escalation path** for novel edge cases like external-TAXII client auth. The SR17 TSG does not document a formal exemption for external 3rd party client auth; OceanView SME review is the mechanism for handling this.
+
+7. **Remediation priority for external TAXII client cert**: Option E1 (provision a non-MSPKI cert from a public CA for TAXII client identity) is cleanest — removes MSPKI dependency entirely for external connections without requiring 3rd party auth protocol change.
+
+**Delivered**: Addendum appended to `docs/investigations/icm-764634026/icm-764634026-investigation.md`; decision filed at `.squad/decisions/inbox/aragorn-taxii-remediation.md`

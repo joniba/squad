@@ -904,3 +904,151 @@ The ClientAuth blocker remains **CRITICAL** for TI services and requires impleme
 3. Execute Kusto queries from SR17 TSG to identify affected service OIDs and certificate thumbprints
 4. Prioritize code changes required for Option A (remove client-cert auth from TAXIIRequestSender.cs)
 5. Execute remediation pre-April 10 central migration deadline
+
+
+---
+
+## Addendum: Client Auth Remediation for External TAXII Servers
+
+**Date**: 2025-07-14  
+**Author**: Aragorn (Operator)  
+**Trigger**: Jonathan clarification — SecEng-Augusta uses client certificate authentication for communication **with 3rd party external TAXII servers**, NOT within Microsoft's internal service mesh.
+
+---
+
+### Context Shift
+
+The original investigation (Stages 1–4) confirmed client certificate authentication at the HTTP transport layer (`TAXIIRequestSender.cs`) and recommended **Option A: remove client-cert auth and switch to AAD/Managed Identity**. That recommendation assumed the TAXII connections were internal Microsoft-to-Microsoft communication.
+
+Jonathan's clarification changes the remediation picture materially:
+
+- The MSPKI client cert is presented **to external 3rd party TAXII servers** (e.g., threat intel feed providers, ISAC feeds, government sharing hubs)
+- These are not Microsoft-internal services; they do not support AAD or Managed Identity authentication
+- TAXII 2.1 (OASIS standard) allows multiple auth methods: mutual TLS (client certs), Bearer tokens, and Basic auth — choice is driven by what the 3rd party server requires
+
+---
+
+### SR17 Applicability Re-Assessment
+
+The SR17 TSG (OceanView) establishes two key constraints:
+
+1. **"ClientAuth" blocker**: Applies when an **MSPKI certificate** is used for client authentication. MSPKI G2 certificates **do not have the ClientAuth EKU**, so any MSPKI cert used as a client cert will fail mTLS after G2 migration.
+
+2. **Central migration opt-in note** (TSG verbatim): *"By opting into central migration, you acknowledge and agree that MSPKI certificates are not being used for client authentication."* SecEng-Augusta **cannot** opt into central migration under this condition.
+
+**The SR17 blocker still applies** — but the nature of the dependency and the remediation path differ significantly depending on which role the MSPKI certificate plays:
+
+| Certificate Role | SR17 Impact | Remediation |
+|---|---|---|
+| **Server cert** (3rd party clients connect TO SecEng-Augusta's TAXII endpoint) | G2 migration is straightforward; no ClientAuth EKU needed for server TLS | Standard G2 migration per SR17 Step 2b |
+| **Client cert** (SecEng-Augusta connects TO 3rd party TAXII servers, presenting MSPKI cert) | G2 migration breaks these connections; G2 certs lack ClientAuth EKU | See remediation options below |
+
+**Critical open question**: Exactly which role the flagged MSPKI certificate plays must be confirmed via the SR17 Kusto query before executing any remediation. Run:
+
+```kusto
+cluster('azrelsikusto-dev.westus.kusto.windows.net').database('Security').AzRF_OV_SR17_Scope_Table
+| where ServiceOid == "<SecEng-Augusta OID>"
+| project ExclusionReason, ServiceOid, serviceName, DomainName, CertCA, ObjectPath
+```
+
+---
+
+### Why "Switch to AAD/Managed Identity" Does NOT Apply Here
+
+The original Option A recommendation was predicated on internal-to-internal auth. For external 3rd party TAXII servers:
+
+- External TAXII servers have **no trust relationship with Microsoft Entra ID**
+- Managed Identity tokens are not accepted by external services
+- This auth pattern cannot be substituted with AAD/MSI without coordinating full protocol changes with each 3rd party provider
+
+**Option A must be revised** for the external TAXII use case.
+
+---
+
+### Revised Remediation Options (External TAXII Client Auth)
+
+#### Option E1: Switch External TAXII Connections to Non-MSPKI Client Certificates ✅ Recommended
+
+- Provision a **non-MSPKI certificate** (e.g., from a public CA such as DigiCert, or a cert issued directly by/for the 3rd party TAXII relationship) for each external TAXII connection
+- Update `TAXIIRequestSender.cs` to load the external-TAXII-specific cert from a separate KeyVault secret (separate from the MSPKI cert)
+- The MSPKI G1→G2 migration proceeds independently for server-side certs
+- This eliminates the MSPKI dependency on the external TAXII client auth path entirely
+- **Benefit**: Clean separation of MSPKI usage (internal/server) vs. external TAXII client identity
+- **Requires**: Coordinating new client cert issuance with each 3rd party TAXII operator
+
+#### Option E2: Switch External TAXII Connections to Bearer Token / Basic Auth
+
+- TAXII 2.1 spec natively supports Bearer tokens and Basic authentication as alternatives to mutual TLS
+- Coordinate with each 3rd party TAXII server operator to agree on the auth method change
+- Update `TAXIIRequestSender.cs` to use token-based auth for external connections (conditional on `IsMicrosoftInternalTaxiiServer == false`)
+- **Benefit**: Eliminates client cert dependency entirely for external connections; simplifies long-term management
+- **Risk**: Requires 3rd party cooperation; some providers may mandate mutual TLS for security policy reasons; government/regulated sharing hubs may require client certs
+
+#### Option E3: Misattribution Tag (If MSPKI Cert Is Server-Side Only)
+
+- If Kusto investigation confirms the flagged MSPKI domains are **only used as server certificates** (not as client certs for outbound connections), the "ClientAuth" blocker may be a **misattribution**
+- Tag the ICM with `AzRF.Misattributed` and provide evidence in the IcM Discussion: list the domains and clarify their role (server cert only, not client auth)
+- The OceanView team will review and remove from SR17 scope if confirmed
+- **This must be verified via Kusto before asserting** — do not apply this tag speculatively
+
+#### Option E4: SME Support via OceanView Bridge
+
+- Tag the ICM with `AzRF.SMESupport` to engage the Red Flag / Domain SME team
+- Explain the external TAXII context explicitly: "Client cert auth is used for outbound connections to 3rd party TAXII servers (not internal Microsoft services). The 3rd party server requires mutual TLS and we cannot substitute AAD/Managed Identity auth."
+- The OceanView SME team may have established patterns or exceptions for external-facing client cert usage that are not documented in the public TSG
+
+---
+
+### What Documentation / Justification Is Needed
+
+Regardless of which option is pursued, prepare the following:
+
+1. **Kusto output** showing which MSPKI domains/certs are flagged (SR17 scope query)
+2. **Architecture diagram or written description** clarifying:
+   - Which TAXII connections are inbound (SecEng-Augusta as server) vs. outbound (SecEng-Augusta as client to 3rd party)
+   - Which certificate(s) are used in each direction
+   - Whether those certs are MSPKI-issued
+3. **List of 3rd party TAXII server operators** and their auth requirements (mutual TLS mandatory vs. flexible)
+4. **Code reference**: `TAXIIRequestSender.cs` lines 55-56 (client cert attachment) and `IsMicrosoftInternalTaxiiServer` classification logic — demonstrate that external TAXII connections are a distinct code path
+5. **IcM tags** per SR17 TSG:
+   - `AzRF.HasETA.YYYY.MM.DD` — set when remediation timeline is confirmed
+   - `AzRF.SMESupport` — if engaging OceanView team
+   - `AzRF.Misattributed` — only if Kusto confirms no client auth usage on MSPKI certs
+
+---
+
+### Is There an Exemption Process?
+
+The SR17 TSG does **not** document a formal exemption process for "external 3rd party client auth." The TSG is structured around:
+- Verifying the blocker
+- Addressing the safety concern (remove client auth, or accept central migration with attestation)
+- Then migrating to G2
+
+However, the key insight is: **if the MSPKI certificate is not the one doing client auth** (i.e., a non-MSPKI cert handles TAXII client auth, and the MSPKI cert is only used as a server cert), then the ClientAuth blocker does not apply and the service can proceed with standard G2 migration. This is effectively a scope correction, not an exemption.
+
+If the MSPKI cert IS used for TAXII client auth and a code change is needed, there is no waiver — the team must execute remediation (Options E1 or E2) before the applicable deadline.
+
+---
+
+### Revised Recommended Action Plan
+
+| Step | Action | Owner | Deadline |
+|---|---|---|---|
+| 1 | Run SR17 Kusto query to identify exact MSPKI certs/domains in scope | Jonathan / SecEng-Augusta team | ASAP |
+| 2 | For each flagged domain: determine if it's a server cert or used for outbound client auth | SecEng-Augusta team | ASAP |
+| 3a | **If server cert only**: Tag `AzRF.Misattributed`, document in IcM Discussion, confirm with OceanView SME | Jonathan | Within 1 week |
+| 3b | **If client cert for external TAXII**: Assess 3rd party TAXII server auth flexibility; select Option E1 or E2 | SecEng-Augusta / TAXII operators | Before April 10, 2025 |
+| 4 | Tag IcM with `AzRF.SMESupport` to engage OceanView for external-TAXII client auth guidance | Jonathan | When pursuing 3b |
+| 5 | Tag IcM with `AzRF.HasETA.YYYY.MM.DD` once timeline is confirmed | Jonathan | Per SR17 requirement |
+| 6 | Execute chosen remediation (cert swap or auth method change), validate, tag `AzRF.DeploymentComplete` | SecEng-Augusta team | Before deadline |
+
+---
+
+### Key Takeaways from This Addendum
+
+- **"Remove client cert auth and use AAD/MSI" does NOT apply to external 3rd party TAXII connections** — external providers don't trust Microsoft's AAD
+- **SR17 does still apply** if MSPKI certs are used as client certs for external TAXII, because G2 lacks ClientAuth EKU
+- **The first diagnostic step is always the Kusto query** — confirm which MSPKI certs/domains are actually in scope and what role they play
+- **TAXII 2.1 supports multiple auth methods** — migration from mutual TLS to Bearer/Basic auth is a valid, spec-compliant remediation for external connections
+- **Potential misattribution**: If the flagged MSPKI certs are server certs (not client certs), the ClientAuth blocker is a false positive; use `AzRF.Misattributed` tag
+- **Engage OceanView SME** (`AzRF.SMESupport`) for the external TAXII edge case — this scenario may have established precedent not documented in the public TSG
