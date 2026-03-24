@@ -28,3 +28,24 @@
 - Interactive dSTS query hung (investigating)
 - Directives enforced: YOLO mode active, Kusto removed from CLI, Teams integration deferred until MVP
 - Status: POC validation complete, ready for next phase
+
+## 2026-03-24T02:36:28Z — Notifications MVP Scripts Delivery (Gimli)
+**Task:** #132 + #133 — Notifications MVP scripts  
+**Status:** ✅ COMPLETED
+
+**Deliverables:**
+- `scripts/notify-feature-complete.ps1` — MVP caller notifying feature completion to Teams
+- `scripts/notify-blocked.ps1` — MVP caller notifying work blocked to Teams
+- `tests/notifications/notify-feature-complete.Tests.ps1` — 13 Pester tests
+- `tests/notifications/notify-blocked.Tests.ps1` — 13 Pester tests
+- **Total:** 26/26 tests pass
+
+**Key Patterns:**
+1. Both callers wrap `scripts/notify.ps1` (production foundation system)
+2. Standardized parameter handling: `FeatureName`, `Owner`, `Teams`, `Message`
+3. Error handling: non-blocking exceptions logged; notification delivery verified in tests
+4. Tests verify: parameter validation, JSON structure, Teams card formatting
+
+**Commit:** 846d753 on squad/132-notifications-mvp-scripts
+
+**Next:** Merge to main, wire into coordinator.ps1 for E2E orchestration

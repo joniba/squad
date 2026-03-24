@@ -275,6 +275,35 @@
 - Troubleshooting: 7 scenarios (auth failures, empty results, Teams delivery issues, WorkIQ errors, etc.)
 
 *Teams Knowledge Library Guide:*
+
+## 2026-03-24T02:36:28Z — DGrep CLI Documentation Delivery (Bilbo)
+**Task:** #133 + #109 — DGrep CLI documentation (README + Quickstart + Knowledge Library)  
+**Status:** ✅ COMPLETED
+
+**Deliverables:**
+- `docs/dgrep-cli-guide.md` — Primary README (336 lines, 9.2 KB)
+  - Overview, Installation, Core Concepts (Entity, Query, SDK)
+  - CLI Quickstart examples
+  - Configuration and Troubleshooting  
+- `docs/dgrep-cli-quickstart.md` — Quick reference (107 lines, 3.1 KB)
+  - Single-command examples for first-time users
+  - Parameter cheat sheet for Diagnostics, LogEntry, Table schema
+  - Common queries (logs, diagnostics, aggregations)
+- `teams-knowledge/dgrep-endpoints.md` — POC validated test endpoint
+  - Diagnostics PROD, AugustaPrdEus2 region verified
+  - SDK authentication confirmed with `az cli`
+  - 322 tests pass — foundation reliable
+
+**Key Patterns:**
+1. Documentation follows "discovery + reference" model: guide for learning, quickstart for copy-paste
+2. Examples grounded in prod-ready endpoint (not mock data)
+3. Troubleshooting section covers 3 high-impact scenarios: auth, query timeouts, schema mismatches
+4. Clear prerequisites and validation step (322-test POC run)
+
+**Issues Resolved:** #109, #133  
+**Commit Context:** POC validation complete; documentation released with tested endpoint reference
+
+**Next:** Merge to main, link from squad wiki for agent discovery
 - Library Purpose: Feed-driven repository for decisions, action items, context, thematic insights
 - Structure: decisions/, action-items/, context/, themes/ folders with naming conventions (YYYY-MM-DD-slug)
 - Browsing Patterns: Using INDEX.md for category discovery, TAGS.md for tag-based lookup, RECENT.md for timeline view
