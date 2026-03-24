@@ -158,7 +158,7 @@ namespace DgrepCli.Tests.Commands
             var cmd = CreateCommand();
             var exitCode = cmd.Execute(opts);
 
-            Assert.Equal(1, exitCode);
+            Assert.Equal(DgrepExitCodes.TransientFailure, exitCode);
             Assert.Contains("https://bad.cluster", _stderr.ToString());
         }
 
@@ -196,7 +196,7 @@ namespace DgrepCli.Tests.Commands
             var cmd = CreateCommand();
             var exitCode = cmd.Execute(opts);
 
-            Assert.Equal(1, exitCode);
+            Assert.Equal(DgrepExitCodes.TransientFailure, exitCode);
             Assert.Contains("timed out", _stderr.ToString().ToLower());
         }
 
@@ -215,7 +215,7 @@ namespace DgrepCli.Tests.Commands
             var cmd = CreateCommand();
             var exitCode = cmd.Execute(opts);
 
-            Assert.Equal(1, exitCode);
+            Assert.Equal(DgrepExitCodes.AuthFailure, exitCode);
             Assert.Contains("dgrep auth", _stderr.ToString());
         }
 

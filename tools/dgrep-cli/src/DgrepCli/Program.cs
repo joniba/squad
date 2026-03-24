@@ -110,7 +110,7 @@ namespace DgrepCli
             var configManager = new ConfigManager();
             var config = configManager.Load();
             var authProvider = AuthProviderFactory.Create(config);
-            var executor = new KustoQueryExecutor(authProvider);
+            var executor = new RetryingQueryExecutor(new KustoQueryExecutor(authProvider));
             var command = new SavedCommand(executor, configManager);
             return command.Execute(opts);
         }
@@ -120,7 +120,7 @@ namespace DgrepCli
             var configManager = new ConfigManager();
             var config = configManager.Load();
             var authProvider = AuthProviderFactory.Create(config);
-            var executor = new KustoQueryExecutor(authProvider);
+            var executor = new RetryingQueryExecutor(new KustoQueryExecutor(authProvider));
             var command = new QueryCommand(executor, configManager);
             return command.Execute(opts);
         }

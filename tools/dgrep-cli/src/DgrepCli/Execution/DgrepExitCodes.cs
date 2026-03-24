@@ -16,5 +16,8 @@ namespace DgrepCli.Execution
 
         /// <summary>Authentication failure: expired cert, cancelled auth dialog, no credentials.</summary>
         public const int AuthFailure = 3;
+
+        /// <summary>Unexpected internal error: retry loop exited unexpectedly or unhandled exception.</summary>
+        public const int InternalError = 4;
     }
 }

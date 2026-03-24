@@ -205,17 +205,42 @@ namespace DgrepCli.Commands
             catch (OperationCanceledException)
             {
                 _stderr.WriteLine($"Error: Query timed out after {timeout.TotalSeconds:F0} seconds.");
-                return 1;
+                return DgrepExitCodes.TransientFailure;
+            }
+            catch (QueryRateLimitException ex)
+            {
+                _stderr.WriteLine($"Error: {ex.Message}");
+                return DgrepExitCodes.TransientFailure;
+            }
+            catch (QueryConnectionException ex)
+            {
+                _stderr.WriteLine($"Error: {ex.Message}");
+                return DgrepExitCodes.TransientFailure;
+            }
+            catch (QueryAuthException ex)
+            {
+                _stderr.WriteLine($"Error: {ex.Message}");
+                return DgrepExitCodes.AuthFailure;
+            }
+            catch (QueryTimeoutException ex)
+            {
+                _stderr.WriteLine($"Error: {ex.Message}");
+                return DgrepExitCodes.TransientFailure;
+            }
+            catch (QuerySyntaxException ex)
+            {
+                _stderr.WriteLine($"Error: {ex.Message}");
+                return DgrepExitCodes.UserError;
             }
             catch (QueryException ex)
             {
                 _stderr.WriteLine($"Error: {ex.Message}");
-                return 1;
+                return DgrepExitCodes.UserError;
             }
             catch (NotImplementedException ex)
             {
                 _stderr.WriteLine($"Error: {ex.Message}");
-                return 1;
+                return DgrepExitCodes.InternalError;
             }
         }
 

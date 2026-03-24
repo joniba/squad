@@ -167,7 +167,7 @@ namespace DgrepCli.Tests.Execution
         {
             var policy = new RetryPolicy(10, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(5));
             var delay = policy.GetDelay(20);
-            Assert.True(delay <= TimeSpan.FromMilliseconds(5000 * 1.25)); // Max with jitter overhead
+            Assert.True(delay <= TimeSpan.FromSeconds(5)); // Jitter applied before cap, so result is always <= MaxDelay
         }
 
         // -- ExecuteAsync --
@@ -489,6 +489,7 @@ namespace DgrepCli.Tests.Execution
             Assert.Equal(1, DgrepExitCodes.UserError);
             Assert.Equal(2, DgrepExitCodes.TransientFailure);
             Assert.Equal(3, DgrepExitCodes.AuthFailure);
+            Assert.Equal(4, DgrepExitCodes.InternalError);
         }
     }
 }

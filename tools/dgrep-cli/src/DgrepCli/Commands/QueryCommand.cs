@@ -110,38 +110,43 @@ namespace DgrepCli.Commands
             {
                 _stderr.WriteLine($"Error: Query timed out after {timeout.TotalSeconds:F0} seconds. " +
                                   "Increase timeout with --timeout or config defaultTimeout.");
-                return 1;
+                return DgrepExitCodes.TransientFailure;
+            }
+            catch (QueryRateLimitException ex)
+            {
+                _stderr.WriteLine($"Error: {ex.Message}");
+                return DgrepExitCodes.TransientFailure;
             }
             catch (QueryConnectionException ex)
             {
                 _stderr.WriteLine($"Error: {ex.Message}");
-                _stderr.WriteLine($"Check that the cluster URL is correct: {ex.ClusterUrl}");
-                return 1;
-            }
-            catch (QuerySyntaxException ex)
-            {
-                _stderr.WriteLine($"Error: {ex.Message}");
-                return 1;
-            }
-            catch (QueryTimeoutException ex)
-            {
-                _stderr.WriteLine($"Error: {ex.Message}");
-                return 1;
+                _stderr.WriteLine($"Check that the cluster URL is correct: {ex.EndpointUrl}");
+                return DgrepExitCodes.TransientFailure;
             }
             catch (QueryAuthException ex)
             {
                 _stderr.WriteLine($"Error: {ex.Message}");
-                return 1;
+                return DgrepExitCodes.AuthFailure;
+            }
+            catch (QueryTimeoutException ex)
+            {
+                _stderr.WriteLine($"Error: {ex.Message}");
+                return DgrepExitCodes.TransientFailure;
+            }
+            catch (QuerySyntaxException ex)
+            {
+                _stderr.WriteLine($"Error: {ex.Message}");
+                return DgrepExitCodes.UserError;
             }
             catch (QueryException ex)
             {
                 _stderr.WriteLine($"Error: {ex.Message}");
-                return 1;
+                return DgrepExitCodes.UserError;
             }
             catch (NotImplementedException ex)
             {
                 _stderr.WriteLine($"Error: {ex.Message}");
-                return 1;
+                return DgrepExitCodes.InternalError;
             }
         }
 

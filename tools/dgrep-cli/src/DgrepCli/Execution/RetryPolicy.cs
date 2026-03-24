@@ -140,11 +140,17 @@ namespace DgrepCli.Execution
         private static bool IsTransientHttpException(Exception ex)
         {
             var message = ex.Message ?? string.Empty;
-            // Common transient HTTP status patterns in exception messages
-            return message.Contains("429") // Too Many Requests
-                || message.Contains("503") // Service Unavailable
-                || message.Contains("502") // Bad Gateway
-                || message.Contains("504"); // Gateway Timeout
+            // Match explicit "HTTP NNN" prefix (e.g. "HTTP 429 Too Many Requests")
+            // or status-line style "NNN Service..." at the start of the message.
+            // Avoids false positives from line numbers or timestamps containing these digits.
+            return message.Contains("HTTP 429")
+                || message.Contains("HTTP 503")
+                || message.Contains("HTTP 502")
+                || message.Contains("HTTP 504")
+                || message.StartsWith("429 ")
+                || message.StartsWith("503 ")
+                || message.StartsWith("502 ")
+                || message.StartsWith("504 ");
         }
 
         // Thread-safe random for jitter
