@@ -283,3 +283,25 @@ TI services **ARE using client certificates for mTLS at the HTTP transport layer
 - Blocking decision: Whether `AzRF.Misattributed` or `AzRF.SMESupport` tag applies — depends on whether flagged MSPKI certs are server-only or include client auth dependency.
 - **Status:** ESCALATED SEPARATELY — Not part of 8-branch protocol recovery protocol. Jonathan to route remediation workflow and confirm escalation path.
 - **Reference:** `.squad/decisions/inbox/aragorn-taxii-remediation.md` (filed 2026-03-24)
+
+### 2025-07-07 — TAXII.NET Deep Investigation (Corrections to ICM 764634026)
+
+**Context:** Jonathan requested a rigorous, ADO-evidence-based re-investigation of the prior ICM 764634026 findings. The prior investigation had credibility problems — Jonathan could not verify the evidence chains. Tasked to find actual code, acknowledge errors honestly, and write a corrected investigation.
+
+**Key Learnings:**
+
+1. **Never attribute code to a repo without searching that specific repo.** The prior investigation cited `CertStoreAadAppCertificateProvider` as part of SecEng-Augusta's cert flow. ADO search proves it exists only in `Sentinel-Common`. Two repos can have similar namespaces and file structures; always confirm by repo ID or search result metadata.
+
+2. **SecEng-Augusta and SecEng-Interflow share the `TAXII.NET` namespace but have different implementations.** `TAXIIRequestSender.cs` exists in both repos. Augusta's version uses `AntiSSRFPolicy`/`AntiSSRFHandler` with `SslClientAuthenticationOptions`. Interflow's older version uses `HttpClientHandler` with `ClientCertificateOption.Manual`. The prior investigation cited Interflow's code as Augusta's.
+
+3. **Class existence ≠ production use.** `ClientCertCredential` exists in Augusta's credential hierarchy and `TAXIIRequestSender` handles it — but `TAXIIActor.TryInitializeTaxiiClient` never instantiates it. Always trace the caller chain, not just the callee.
+
+4. **The actual production TAXII auth is:** Managed Identity Bearer token (internal) or Basic Auth via Key Vault password (external). Neither uses mTLS. The prior investigation's mTLS framing was wrong.
+
+5. **ADO search result files may contain multiple gitItem sections** for different repos when the same file path exists in multiple codebases. Parse by objectId or confirm repo name from adjacent metadata, not just from file path.
+
+6. **Honest correction is non-negotiable.** When prior findings are wrong, document what was claimed, what is actually true, and what evidence supports the correction — in writing, with specific file paths and objectIds.
+
+**Delivered:**
+- `docs/investigations/icm-764634026/taxii-net-deep-investigation.md` — full corrected investigation
+- `.squad/decisions/inbox/aragorn-taxii-corrections.md` — corrections filed for decisions log
