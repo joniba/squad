@@ -67,7 +67,7 @@ namespace DgrepCli.Tests.Auth
             });
             var provider = new AzCliAuthProvider(runner);
 
-            var token = await provider.GetTokenAsync("https://kusto.kusto.windows.net", CancellationToken.None);
+            var token = await provider.GetTokenAsync("https://management.azure.com/", CancellationToken.None);
 
             Assert.NotNull(token);
             Assert.StartsWith("eyJ0eXAi", token.Token);
@@ -87,11 +87,11 @@ namespace DgrepCli.Tests.Auth
             });
             var provider = new AzCliAuthProvider(runner);
 
-            await provider.GetTokenAsync("https://kusto.kusto.windows.net", CancellationToken.None);
+            await provider.GetTokenAsync("https://management.azure.com/", CancellationToken.None);
 
             Assert.Equal("az", runner.LastFileName);
             Assert.Contains("account get-access-token", runner.LastArguments);
-            Assert.Contains("--resource https://kusto.kusto.windows.net", runner.LastArguments);
+            Assert.Contains("--resource https://management.azure.com/", runner.LastArguments);
             Assert.Contains("--output json", runner.LastArguments);
         }
 
@@ -107,7 +107,7 @@ namespace DgrepCli.Tests.Auth
             var provider = new AzCliAuthProvider(runner);
 
             var ex = await Assert.ThrowsAsync<AuthException>(
-                () => provider.GetTokenAsync("https://kusto.kusto.windows.net", CancellationToken.None));
+                () => provider.GetTokenAsync("https://management.azure.com/", CancellationToken.None));
             Assert.Contains("not installed", ex.Message);
             Assert.Contains("https://aka.ms/installazurecli", ex.Message);
         }
@@ -124,7 +124,7 @@ namespace DgrepCli.Tests.Auth
             var provider = new AzCliAuthProvider(runner);
 
             var ex = await Assert.ThrowsAsync<AuthException>(
-                () => provider.GetTokenAsync("https://kusto.kusto.windows.net", CancellationToken.None));
+                () => provider.GetTokenAsync("https://management.azure.com/", CancellationToken.None));
             Assert.Contains("az login", ex.Message);
         }
 
@@ -140,7 +140,7 @@ namespace DgrepCli.Tests.Auth
             var provider = new AzCliAuthProvider(runner);
 
             var ex = await Assert.ThrowsAsync<AuthException>(
-                () => provider.GetTokenAsync("https://kusto.kusto.windows.net", CancellationToken.None));
+                () => provider.GetTokenAsync("https://management.azure.com/", CancellationToken.None));
             Assert.Contains("exit 2", ex.Message);
         }
 
@@ -156,7 +156,7 @@ namespace DgrepCli.Tests.Auth
             var provider = new AzCliAuthProvider(runner);
 
             var ex = await Assert.ThrowsAsync<AuthException>(
-                () => provider.GetTokenAsync("https://kusto.kusto.windows.net", CancellationToken.None));
+                () => provider.GetTokenAsync("https://management.azure.com/", CancellationToken.None));
             Assert.Contains("Empty response", ex.Message);
         }
 
@@ -172,7 +172,7 @@ namespace DgrepCli.Tests.Auth
             var provider = new AzCliAuthProvider(runner);
 
             var ex = await Assert.ThrowsAsync<AuthException>(
-                () => provider.GetTokenAsync("https://kusto.kusto.windows.net", CancellationToken.None));
+                () => provider.GetTokenAsync("https://management.azure.com/", CancellationToken.None));
             Assert.Contains("Failed to parse", ex.Message);
         }
 
@@ -188,7 +188,7 @@ namespace DgrepCli.Tests.Auth
             var provider = new AzCliAuthProvider(runner);
 
             var ex = await Assert.ThrowsAsync<AuthException>(
-                () => provider.GetTokenAsync("https://kusto.kusto.windows.net", CancellationToken.None));
+                () => provider.GetTokenAsync("https://management.azure.com/", CancellationToken.None));
             Assert.Contains("No accessToken", ex.Message);
         }
 

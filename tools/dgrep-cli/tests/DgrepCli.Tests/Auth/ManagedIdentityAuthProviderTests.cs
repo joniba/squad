@@ -20,7 +20,7 @@ namespace DgrepCli.Tests.Auth
         {
             var provider = new ManagedIdentityAuthProvider();
             var ex = await Assert.ThrowsAsync<NotImplementedException>(
-                () => provider.GetTokenAsync("https://kusto.kusto.windows.net", CancellationToken.None));
+                () => provider.GetTokenAsync("https://management.azure.com/", CancellationToken.None));
             Assert.Contains("Azure.Identity SDK", ex.Message);
             Assert.Contains("Azure-hosted environments", ex.Message);
         }

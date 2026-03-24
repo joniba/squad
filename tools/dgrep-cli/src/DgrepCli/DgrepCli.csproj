@@ -25,9 +25,11 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.*" />
   </ItemGroup>
 
-  <!-- Phase 2: Uncomment when ready for SDK integration
+  <!-- Phase 2: Uncomment when ready for SDK integration.
+       Correct package: Microsoft.Azure.Monitoring.DGrep.SDK (available from msazure Official NuGet feed).
+       The SDK handles dSTS authentication internally — it does NOT use standard AAD bearer tokens.
   <ItemGroup>
-    <PackageReference Include="Microsoft.Geneva.DGrep.SDK" Version="*" />
+    <PackageReference Include="Microsoft.Azure.Monitoring.DGrep.SDK" Version="3.0.0-rc4" />
   </ItemGroup>
   -->
 

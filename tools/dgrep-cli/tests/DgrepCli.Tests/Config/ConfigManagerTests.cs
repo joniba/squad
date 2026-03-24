@@ -36,7 +36,7 @@ namespace DgrepCli.Tests.Config
 
             Assert.NotNull(config);
             Assert.Null(config.DefaultNamespace);
-            Assert.Null(config.DefaultCluster);
+            Assert.Null(config.DefaultEndpoint);
             Assert.Null(config.DefaultMaxRows);
             Assert.NotNull(config.SavedQueries);
             Assert.Empty(config.SavedQueries);

@@ -41,15 +41,16 @@ namespace DgrepCli.Tests.Commands
         }
 
         private void SeedQuery(string name, string query, string description = null,
-                               string cluster = null, string database = null)
+                               string endpoint = null, string ns = null, string evt = null)
         {
             var config = _configManager.Load();
             config.SavedQueries[name] = new SavedQuery
             {
                 Query = query,
                 Description = description,
-                DefaultCluster = cluster,
-                DefaultDatabase = database
+                Endpoint = endpoint,
+                Namespace = ns,
+                Event = evt
             };
             _configManager.Save(config);
         }
@@ -66,9 +67,9 @@ namespace DgrepCli.Tests.Commands
 
             Assert.Equal(0, exit);
             var output = _stdout.ToString();
-            Assert.Contains("icm-errors", output);
-            Assert.Contains("icm-latency", output);
-            Assert.Contains("icm-throttling", output);
+            Assert.Contains("recent-errors", output);
+            Assert.Contains("top-messages", output);
+            Assert.Contains("sample-events", output);
         }
 
         [Fact]
@@ -117,10 +118,11 @@ namespace DgrepCli.Tests.Commands
             {
                 Action = "add",
                 Name = "new-query",
-                Query = "TestTable | where Status == '{{status}}'",
+                Query = "source | where Status == '{{status}}'",
                 Description = "Filter by status",
-                Database = "MyDB",
-                Cluster = "https://mycluster.kusto.windows.net"
+                Namespace = "MyNs",
+                Event = "MyEvent",
+                Endpoint = "https://production.diagnostics.monitoring.core.windows.net/"
             });
 
             Assert.Equal(0, exit);
@@ -130,10 +132,11 @@ namespace DgrepCli.Tests.Commands
             var config = _configManager.Load();
             Assert.True(config.SavedQueries.ContainsKey("new-query"));
             var saved = config.SavedQueries["new-query"];
-            Assert.Equal("TestTable | where Status == '{{status}}'", saved.Query);
+            Assert.Equal("source | where Status == '{{status}}'", saved.Query);
             Assert.Equal("Filter by status", saved.Description);
-            Assert.Equal("MyDB", saved.DefaultDatabase);
-            Assert.Equal("https://mycluster.kusto.windows.net", saved.DefaultCluster);
+            Assert.Equal("MyNs", saved.Namespace);
+            Assert.Equal("MyEvent", saved.Event);
+            Assert.Equal("https://production.diagnostics.monitoring.core.windows.net/", saved.Endpoint);
         }
 
         [Fact]
@@ -171,8 +174,9 @@ namespace DgrepCli.Tests.Commands
             var saved = config.SavedQueries["minimal"];
             Assert.Equal("TestTable | take 1", saved.Query);
             Assert.Null(saved.Description);
-            Assert.Null(saved.DefaultDatabase);
-            Assert.Null(saved.DefaultCluster);
+            Assert.Null(saved.Namespace);
+            Assert.Null(saved.Event);
+            Assert.Null(saved.Endpoint);
         }
 
         // ============================================================
@@ -213,8 +217,10 @@ namespace DgrepCli.Tests.Commands
         [Fact]
         public void Show_ExistingQuery_DisplaysAllDetails()
         {
-            SeedQuery("detailed", "TestTable | where Env == '{{environment}}'",
-                       "Query by environment", "https://cluster.kusto.windows.net", "ProdDB");
+            SeedQuery("detailed", "source | where Env == '{{environment}}'",
+                       "Query by environment",
+                       endpoint: "https://production.diagnostics.monitoring.core.windows.net/",
+                       ns: "ProdNs", evt: "Log");
 
             var cmd = CreateCommand();
             var exit = cmd.Execute(new SavedOptions { Action = "show", Name = "detailed" });
@@ -223,10 +229,10 @@ namespace DgrepCli.Tests.Commands
             var output = _stdout.ToString();
             Assert.Contains("detailed", output);
             Assert.Contains("Query by environment", output);
-            Assert.Contains("https://cluster.kusto.windows.net", output);
-            Assert.Contains("ProdDB", output);
+            Assert.Contains("https://production.diagnostics.monitoring.core.windows.net/", output);
+            Assert.Contains("ProdNs", output);
             Assert.Contains("environment", output); // parameter name
-            Assert.Contains("TestTable | where Env == '{{environment}}'", output);
+            Assert.Contains("source | where Env == '{{environment}}'", output);
         }
 
         [Fact]
@@ -262,8 +268,9 @@ namespace DgrepCli.Tests.Commands
         [Fact]
         public void Run_SimpleQuery_ExecutesWithCorrectQuery()
         {
-            SeedQuery("simple", "TestTable | take 10",
-                       cluster: "https://c.kusto.windows.net", database: "DB1");
+            SeedQuery("simple", "source | take 10",
+                       endpoint: "https://prod.diagnostics.monitoring.core.windows.net/",
+                       ns: "TestNs", evt: "Log");
 
             _executor.WithResult(MockQueryExecutor.CreateSimpleResult(
                 new[] { "Name" }, new[] { "string" }, new[] { new object[] { "test" } }));
@@ -272,16 +279,17 @@ namespace DgrepCli.Tests.Commands
             var exit = cmd.Execute(new SavedOptions { Action = "run", Name = "simple" });
 
             Assert.Equal(0, exit);
-            Assert.Equal("TestTable | take 10", _executor.LastQuery);
-            Assert.Equal("https://c.kusto.windows.net", _executor.LastOptions.Cluster);
-            Assert.Equal("DB1", _executor.LastOptions.Database);
+            Assert.Equal("source | take 10", _executor.LastQuery);
+            Assert.Equal("https://prod.diagnostics.monitoring.core.windows.net/", _executor.LastOptions.Endpoint);
+            Assert.Equal("TestNs", _executor.LastOptions.Namespace);
         }
 
         [Fact]
         public void Run_WithParameterSubstitution_ReplacesPlaceholders()
         {
-            SeedQuery("parameterized", "Logs | where Level == '{{level}}' and Region == '{{region}}'",
-                       cluster: "https://c.kusto.windows.net", database: "DB1");
+            SeedQuery("parameterized", "source | where Level == '{{level}}' and Region == '{{region}}'",
+                       endpoint: "https://prod.diagnostics.monitoring.core.windows.net/",
+                       ns: "TestNs", evt: "Log");
 
             _executor.WithResult(MockQueryExecutor.CreateSimpleResult(
                 new[] { "Count" }, new[] { "long" }, new[] { new object[] { 42L } }));
@@ -295,14 +303,15 @@ namespace DgrepCli.Tests.Commands
             });
 
             Assert.Equal(0, exit);
-            Assert.Equal("Logs | where Level == 'Error' and Region == 'WestUS2'", _executor.LastQuery);
+            Assert.Equal("source | where Level == 'Error' and Region == 'WestUS2'", _executor.LastQuery);
         }
 
         [Fact]
         public void Run_MissingRequiredParam_ReturnsError()
         {
             SeedQuery("needs-param", "T | where X == '{{required}}'",
-                       cluster: "https://c.kusto.windows.net", database: "DB1");
+                       endpoint: "https://prod.diagnostics.monitoring.core.windows.net/",
+                       ns: "TestNs", evt: "Log");
 
             var cmd = CreateCommand();
             var exit = cmd.Execute(new SavedOptions { Action = "run", Name = "needs-param" });
@@ -315,7 +324,8 @@ namespace DgrepCli.Tests.Commands
         public void Run_ExtraParams_IgnoredSilently()
         {
             SeedQuery("one-param", "T | where X == '{{x}}'",
-                       cluster: "https://c.kusto.windows.net", database: "DB1");
+                       endpoint: "https://prod.diagnostics.monitoring.core.windows.net/",
+                       ns: "TestNs", evt: "Log");
 
             _executor.WithResult(new QueryResult());
 
@@ -332,34 +342,36 @@ namespace DgrepCli.Tests.Commands
         }
 
         [Fact]
-        public void Run_NoCluster_ReturnsError()
+        public void Run_NoEndpoint_ReturnsError()
         {
-            SeedQuery("no-cluster", "T | take 1", database: "DB1");
+            SeedQuery("no-endpoint", "T | take 1", ns: "TestNs", evt: "Log");
 
             var cmd = CreateCommand();
-            var exit = cmd.Execute(new SavedOptions { Action = "run", Name = "no-cluster" });
+            var exit = cmd.Execute(new SavedOptions { Action = "run", Name = "no-endpoint" });
 
             Assert.Equal(1, exit);
-            Assert.Contains("No cluster specified", _stderr.ToString());
+            Assert.Contains("No endpoint specified", _stderr.ToString());
         }
 
         [Fact]
-        public void Run_NoDatabase_ReturnsError()
+        public void Run_NoNamespace_ReturnsError()
         {
-            SeedQuery("no-db", "T | take 1", cluster: "https://c.kusto.windows.net");
+            SeedQuery("no-ns", "T | take 1",
+                       endpoint: "https://prod.diagnostics.monitoring.core.windows.net/");
 
             var cmd = CreateCommand();
-            var exit = cmd.Execute(new SavedOptions { Action = "run", Name = "no-db" });
+            var exit = cmd.Execute(new SavedOptions { Action = "run", Name = "no-ns" });
 
             Assert.Equal(1, exit);
-            Assert.Contains("No database specified", _stderr.ToString());
+            Assert.Contains("No namespace specified", _stderr.ToString());
         }
 
         [Fact]
         public void Run_CliOverridesSavedDefaults()
         {
             SeedQuery("overridable", "T | take 1",
-                       cluster: "https://saved.kusto.windows.net", database: "SavedDB");
+                       endpoint: "https://saved.diagnostics.monitoring.core.windows.net/",
+                       ns: "SavedNs", evt: "SavedEvt");
 
             _executor.WithResult(new QueryResult());
 
@@ -368,22 +380,23 @@ namespace DgrepCli.Tests.Commands
             {
                 Action = "run",
                 Name = "overridable",
-                Cluster = "https://cli.kusto.windows.net",
-                Database = "CliDB"
+                Endpoint = "https://cli.diagnostics.monitoring.core.windows.net/",
+                Namespace = "CliNs",
+                Event = "CliEvt"
             });
 
             Assert.Equal(0, exit);
-            Assert.Equal("https://cli.kusto.windows.net", _executor.LastOptions.Cluster);
-            Assert.Equal("CliDB", _executor.LastOptions.Database);
+            Assert.Equal("https://cli.diagnostics.monitoring.core.windows.net/", _executor.LastOptions.Endpoint);
+            Assert.Equal("CliNs", _executor.LastOptions.Namespace);
         }
 
         [Fact]
         public void Run_FallsBackToGlobalConfig()
         {
-            // Saved query has no cluster/database; global config provides them
+            // Saved query has no endpoint/namespace; global config provides them
             var config = _configManager.Load();
-            config.DefaultCluster = "https://global.kusto.windows.net";
-            config.DefaultDatabase = "GlobalDB";
+            config.DefaultEndpoint = "https://global.diagnostics.monitoring.core.windows.net/";
+            config.DefaultNamespace = "GlobalNs";
             config.SavedQueries["fallback"] = new SavedQuery { Query = "T | take 1" };
             _configManager.Save(config);
 
@@ -393,8 +406,8 @@ namespace DgrepCli.Tests.Commands
             var exit = cmd.Execute(new SavedOptions { Action = "run", Name = "fallback" });
 
             Assert.Equal(0, exit);
-            Assert.Equal("https://global.kusto.windows.net", _executor.LastOptions.Cluster);
-            Assert.Equal("GlobalDB", _executor.LastOptions.Database);
+            Assert.Equal("https://global.diagnostics.monitoring.core.windows.net/", _executor.LastOptions.Endpoint);
+            Assert.Equal("GlobalNs", _executor.LastOptions.Namespace);
         }
 
         [Fact]
@@ -413,9 +426,10 @@ namespace DgrepCli.Tests.Commands
         public void Run_ExecutorThrows_ReturnsError()
         {
             SeedQuery("will-fail", "T | take 1",
-                       cluster: "https://c.kusto.windows.net", database: "DB1");
+                       endpoint: "https://prod.diagnostics.monitoring.core.windows.net/",
+                       ns: "TestNs", evt: "Log");
 
-            _executor.WithException(new QueryConnectionException("Connection refused", "https://c.kusto.windows.net"));
+            _executor.WithException(new QueryConnectionException("https://prod.diagnostics.monitoring.core.windows.net/", "Connection refused"));
 
             var cmd = CreateCommand();
             var exit = cmd.Execute(new SavedOptions { Action = "run", Name = "will-fail" });
@@ -557,47 +571,38 @@ namespace DgrepCli.Tests.Commands
         [Fact]
         public void BuiltInQueries_ContainsAllThree()
         {
-            var builtIn = BuiltInQueries.GetAll();
+            var builtIn = SavedCommand.GetBuiltInQueries();
 
-            Assert.True(builtIn.ContainsKey("icm-errors"));
-            Assert.True(builtIn.ContainsKey("icm-latency"));
-            Assert.True(builtIn.ContainsKey("icm-throttling"));
+            Assert.True(builtIn.ContainsKey("recent-errors"));
+            Assert.True(builtIn.ContainsKey("top-messages"));
+            Assert.True(builtIn.ContainsKey("sample-events"));
         }
 
         [Fact]
-        public void BuiltInQueries_IcmErrors_HasExpectedStructure()
+        public void BuiltInQueries_RecentErrors_HasExpectedStructure()
         {
-            var q = BuiltInQueries.GetAll()["icm-errors"];
+            var q = SavedCommand.GetBuiltInQueries()["recent-errors"];
 
             Assert.NotEmpty(q.Query);
-            Assert.Contains("{{time_window}}", q.Query);
-            Assert.Equal("Error rates by resource type in a time window", q.Description);
-            Assert.Equal("Diagnostics", q.DefaultDatabase);
+            Assert.Equal("Recent error-level log entries", q.Description);
         }
 
         [Fact]
-        public void BuiltInQueries_IcmLatency_HasExpectedStructure()
+        public void BuiltInQueries_TopMessages_HasExpectedStructure()
         {
-            var q = BuiltInQueries.GetAll()["icm-latency"];
+            var q = SavedCommand.GetBuiltInQueries()["top-messages"];
 
             Assert.NotEmpty(q.Query);
-            Assert.Contains("{{time_window}}", q.Query);
-            Assert.Contains("{{operation}}", q.Query);
-            Assert.Contains("P50", q.Query);
-            Assert.Contains("P95", q.Query);
-            Assert.Contains("P99", q.Query);
-            Assert.Equal("P50/P95/P99 latency by operation", q.Description);
+            Assert.Equal("Top messages by frequency", q.Description);
         }
 
         [Fact]
-        public void BuiltInQueries_IcmThrottling_HasExpectedStructure()
+        public void BuiltInQueries_SampleEvents_HasExpectedStructure()
         {
-            var q = BuiltInQueries.GetAll()["icm-throttling"];
+            var q = SavedCommand.GetBuiltInQueries()["sample-events"];
 
             Assert.NotEmpty(q.Query);
-            Assert.Contains("{{time_window}}", q.Query);
-            Assert.Contains("429", q.Query);
-            Assert.Equal("Throttled requests by subscription", q.Description);
+            Assert.Equal("Sample N events from the source", q.Description);
         }
 
         [Fact]
@@ -608,9 +613,9 @@ namespace DgrepCli.Tests.Commands
             cmd.Execute(new SavedOptions { Action = "list" });
 
             var config = _configManager.Load();
-            Assert.True(config.SavedQueries.ContainsKey("icm-errors"));
-            Assert.True(config.SavedQueries.ContainsKey("icm-latency"));
-            Assert.True(config.SavedQueries.ContainsKey("icm-throttling"));
+            Assert.True(config.SavedQueries.ContainsKey("recent-errors"));
+            Assert.True(config.SavedQueries.ContainsKey("top-messages"));
+            Assert.True(config.SavedQueries.ContainsKey("sample-events"));
         }
 
         [Fact]
@@ -623,7 +628,7 @@ namespace DgrepCli.Tests.Commands
             cmd.Execute(new SavedOptions { Action = "list" });
 
             var config = _configManager.Load();
-            Assert.False(config.SavedQueries.ContainsKey("icm-errors"));
+            Assert.False(config.SavedQueries.ContainsKey("recent-errors"));
             Assert.True(config.SavedQueries.ContainsKey("my-query"));
         }
 

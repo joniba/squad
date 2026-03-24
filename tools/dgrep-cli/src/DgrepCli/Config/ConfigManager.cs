@@ -105,8 +105,6 @@ namespace DgrepCli.Config
             switch (key.ToLowerInvariant())
             {
                 case "defaultnamespace": return config.DefaultNamespace;
-                case "defaultcluster": return config.DefaultCluster;
-                case "defaultdatabase": return config.DefaultDatabase;
                 case "defaulttimerange": return config.DefaultTimeRange;
                 case "defaultmaxrows": return config.DefaultMaxRows?.ToString();
                 case "certificatepath": return config.CertificatePath;
@@ -123,8 +121,6 @@ namespace DgrepCli.Config
             switch (key.ToLowerInvariant())
             {
                 case "defaultnamespace": config.DefaultNamespace = value; break;
-                case "defaultcluster": config.DefaultCluster = value; break;
-                case "defaultdatabase": config.DefaultDatabase = value; break;
                 case "defaulttimerange": config.DefaultTimeRange = value; break;
                 case "defaultmaxrows":
                     int maxRows;
@@ -143,7 +139,7 @@ namespace DgrepCli.Config
                     config.AuthMethod = lower;
                     break;
                 default:
-                    throw new ArgumentException($"Unknown config key '{key}'. Valid keys: defaultNamespace, defaultCluster, defaultDatabase, defaultTimeRange, defaultMaxRows, certificatePath, outputFormat, defaultEndpoint, defaultQueryType, authMethod.");
+                    throw new ArgumentException($"Unknown config key '{key}'. Valid keys: defaultNamespace, defaultTimeRange, defaultMaxRows, certificatePath, outputFormat, defaultEndpoint, defaultQueryType, authMethod.");
             }
         }
 
@@ -158,8 +154,6 @@ namespace DgrepCli.Config
             void Add(string k, string v) { if (v != null) result[k] = v; }
 
             Add("defaultNamespace", config.DefaultNamespace);
-            Add("defaultCluster", config.DefaultCluster);
-            Add("defaultDatabase", config.DefaultDatabase);
             Add("defaultTimeRange", config.DefaultTimeRange);
             Add("defaultMaxRows", config.DefaultMaxRows?.ToString());
             Add("certificatePath", config.CertificatePath);

@@ -105,22 +105,22 @@ namespace DgrepCli.Commands
 
             _stdout.WriteLine($"Testing authentication with method: {provider.Name}");
 
-            var cluster = config.DefaultCluster;
-            if (string.IsNullOrWhiteSpace(cluster))
+            var endpoint = config.DefaultEndpoint;
+            if (string.IsNullOrWhiteSpace(endpoint))
             {
-                _stdout.WriteLine("No default cluster configured. Using Kusto resource URL for token test.");
-                cluster = "https://kusto.kusto.windows.net";
+                _stdout.WriteLine("No default endpoint configured. Using Azure Management resource URL for token test.");
+                endpoint = "https://management.azure.com/";
             }
             else
             {
-                _stdout.WriteLine($"Target cluster: {cluster}");
+                _stdout.WriteLine($"Target endpoint: {endpoint}");
             }
 
             using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30)))
             {
                 try
                 {
-                    var token = provider.GetTokenAsync(cluster, cts.Token).GetAwaiter().GetResult();
+                    var token = provider.GetTokenAsync(endpoint, cts.Token).GetAwaiter().GetResult();
                     _stdout.WriteLine("Authentication successful!");
                     _stdout.WriteLine($"  Identity:     {token.DisplayIdentity}");
                     _stdout.WriteLine($"  Token expiry: {token.ExpiresOn:u}");

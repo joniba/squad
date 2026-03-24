@@ -86,8 +86,10 @@ namespace DgrepCli.Commands
             {
                 Query = opts.Query,
                 Description = opts.Description,
-                DefaultDatabase = opts.Database,
-                DefaultCluster = opts.Cluster
+                Endpoint = opts.Endpoint,
+                Namespace = opts.Namespace,
+                Event = opts.Event,
+                QueryType = opts.QueryType
             };
 
             config.SavedQueries[opts.Name] = savedQuery;
@@ -123,10 +125,14 @@ namespace DgrepCli.Commands
             _stdout.WriteLine($"Name:        {opts.Name}");
             if (!string.IsNullOrEmpty(query.Description))
                 _stdout.WriteLine($"Description: {query.Description}");
-            if (!string.IsNullOrEmpty(query.DefaultCluster))
-                _stdout.WriteLine($"Cluster:     {query.DefaultCluster}");
-            if (!string.IsNullOrEmpty(query.DefaultDatabase))
-                _stdout.WriteLine($"Database:    {query.DefaultDatabase}");
+            if (!string.IsNullOrEmpty(query.Endpoint))
+                _stdout.WriteLine($"Endpoint:    {query.Endpoint}");
+            if (!string.IsNullOrEmpty(query.Namespace))
+                _stdout.WriteLine($"Namespace:   {query.Namespace}");
+            if (!string.IsNullOrEmpty(query.Event))
+                _stdout.WriteLine($"Event:       {query.Event}");
+            if (!string.IsNullOrEmpty(query.QueryType))
+                _stdout.WriteLine($"Query Type:  {query.QueryType}");
 
             // Show parameters found in template
             var paramNames = ExtractParameterNames(query.Query);
@@ -163,29 +169,32 @@ namespace DgrepCli.Commands
                 return 1;
             }
 
-            // Resolve cluster/database: CLI override → saved query → global config → null
-            var globalConfig = config;
-            var cluster = ResolveString(opts.Cluster, savedQuery.DefaultCluster, globalConfig.DefaultCluster);
-            var database = ResolveString(opts.Database, savedQuery.DefaultDatabase, globalConfig.DefaultDatabase);
-            var outputFormat = ResolveString(opts.Output, globalConfig.OutputFormat, "table");
-            var timeout = QueryCommand.ResolveTimeout(opts.Timeout, globalConfig);
-            var maxRows = QueryCommand.ResolveMaxRows(opts.MaxRows ?? 0, globalConfig.DefaultMaxRows);
+            // Resolve endpoint/namespace/event: CLI override → saved query → global config → null
+            var endpoint = ResolveString(opts.Endpoint, savedQuery.Endpoint, config.DefaultEndpoint);
+            var ns = ResolveString(opts.Namespace, savedQuery.Namespace, config.DefaultNamespace);
+            var evt = ResolveString(opts.Event, savedQuery.Event, null);
+            var queryType = ResolveString(opts.QueryType, savedQuery.QueryType, config.DefaultQueryType) ?? "kql";
+            var outputFormat = ResolveString(opts.Output, config.OutputFormat, "table");
+            var timeout = ResolveTimeout(opts.Timeout, config);
+            var maxRows = ResolveMaxRows(opts.MaxRows ?? 0, config.DefaultMaxRows);
 
-            if (string.IsNullOrWhiteSpace(cluster))
+            if (string.IsNullOrWhiteSpace(endpoint))
             {
-                _stderr.WriteLine("Error: No cluster specified. Use --cluster, set it on the saved query, or set defaultCluster in config.");
+                _stderr.WriteLine("Error: No endpoint specified. Use --endpoint, set it on the saved query, or set defaultEndpoint in config.");
                 return 1;
             }
-            if (string.IsNullOrWhiteSpace(database))
+            if (string.IsNullOrWhiteSpace(ns))
             {
-                _stderr.WriteLine("Error: No database specified. Use --database, set it on the saved query, or set defaultDatabase in config.");
+                _stderr.WriteLine("Error: No namespace specified. Use --namespace, set it on the saved query, or set defaultNamespace in config.");
                 return 1;
             }
 
             var queryOptions = new Execution.QueryOptions
             {
-                Cluster = cluster,
-                Database = database,
+                Endpoint = endpoint,
+                Namespace = ns,
+                Event = evt,
+                QueryType = queryType,
                 Timeout = timeout,
                 MaxRows = maxRows
             };
@@ -266,7 +275,7 @@ namespace DgrepCli.Commands
         }
 
         /// <summary>
-        /// Ensures built-in ICM investigation queries are seeded in the config.
+        /// Ensures built-in DGrep investigation queries are seeded in the config.
         /// Only adds them if the config has no saved queries at all (fresh install).
         /// </summary>
         internal void EnsureBuiltInQueries(DgrepConfig config)
@@ -274,11 +283,51 @@ namespace DgrepCli.Commands
             if (config.SavedQueries.Count > 0)
                 return;
 
-            foreach (var kvp in BuiltInQueries.GetAll())
+            foreach (var kvp in GetBuiltInQueries())
             {
                 config.SavedQueries[kvp.Key] = kvp.Value;
             }
             _configManager.Save(config);
+        }
+
+        /// <summary>
+        /// Built-in saved queries using DGrep-compatible KQL syntax.
+        /// These use only the DGrep KQL subset (no ago(), let, has, etc.).
+        /// </summary>
+        internal static Dictionary<string, SavedQuery> GetBuiltInQueries()
+        {
+            return new Dictionary<string, SavedQuery>
+            {
+                ["recent-errors"] = new SavedQuery
+                {
+                    Query = "source | where Level == \"Error\" | project TIMESTAMP, Message, Level | take 50",
+                    Description = "Recent error-level log entries"
+                },
+                ["top-messages"] = new SavedQuery
+                {
+                    Query = "source | summarize count() by Message | order by count_ desc | take 20",
+                    Description = "Top messages by frequency"
+                },
+                ["sample-events"] = new SavedQuery
+                {
+                    Query = "source | take {{count}}",
+                    Description = "Sample N events from the source"
+                }
+            };
+        }
+
+        internal static TimeSpan ResolveTimeout(int cliSeconds, DgrepConfig config)
+        {
+            if (cliSeconds > 0)
+                return TimeSpan.FromSeconds(cliSeconds);
+            return TimeSpan.FromSeconds(300);
+        }
+
+        internal static int ResolveMaxRows(int cliValue, int? configValue)
+        {
+            if (cliValue > 0) return cliValue;
+            if (configValue.HasValue && configValue.Value > 0) return configValue.Value;
+            return 500000;
         }
 
         private static Dictionary<string, string> ParseParameters(IEnumerable<string> parameters)

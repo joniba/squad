@@ -12,34 +12,34 @@ namespace DgrepCli.Execution
     }
 
     /// <summary>
-    /// Thrown when the executor cannot connect to the cluster.
+    /// Thrown when the executor cannot connect to the DGrep endpoint.
     /// </summary>
     public class QueryConnectionException : QueryException
     {
-        public string ClusterUrl { get; }
+        public string Endpoint { get; }
 
-        public QueryConnectionException(string clusterUrl, string message)
-            : base($"Failed to connect to cluster '{clusterUrl}': {message}")
+        public QueryConnectionException(string endpoint, string message)
+            : base($"Failed to connect to endpoint '{endpoint}': {message}")
         {
-            ClusterUrl = clusterUrl;
+            Endpoint = endpoint;
         }
 
-        public QueryConnectionException(string clusterUrl, string message, Exception inner)
-            : base($"Failed to connect to cluster '{clusterUrl}': {message}", inner)
+        public QueryConnectionException(string endpoint, string message, Exception inner)
+            : base($"Failed to connect to endpoint '{endpoint}': {message}", inner)
         {
-            ClusterUrl = clusterUrl;
+            Endpoint = endpoint;
         }
     }
 
     /// <summary>
-    /// Thrown when the query has a syntax error (pass through from Kusto).
+    /// Thrown when the query has a syntax error (pass through from DGrep).
     /// </summary>
     public class QuerySyntaxException : QueryException
     {
         public string Query { get; }
 
-        public QuerySyntaxException(string query, string kustoError)
-            : base($"Query syntax error: {kustoError}")
+        public QuerySyntaxException(string query, string serverError)
+            : base($"Query syntax error: {serverError}")
         {
             Query = query;
         }

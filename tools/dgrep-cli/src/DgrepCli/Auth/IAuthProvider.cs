@@ -17,7 +17,9 @@ namespace DgrepCli.Auth
     }
 
     /// <summary>
-    /// Abstraction for authentication: obtain a bearer token for Kusto connections.
+    /// Abstraction for authentication: obtain a bearer token for Azure resource access.
+    /// Note: DGrep SDK handles its own dSTS authentication internally.
+    /// This provider is used for CLI-level auth validation (e.g. az login status checks).
     /// </summary>
     public interface IAuthProvider
     {
