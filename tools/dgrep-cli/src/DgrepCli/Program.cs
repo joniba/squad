@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using CommandLine;
 using CommandLine.Text;
 using DgrepCli.Auth;
@@ -76,18 +77,21 @@ namespace DgrepCli
             if (errors.Any())
                 return PrintValidationErrors(errors);
 
-            Console.WriteLine("Tail command parsed successfully.");
-            Console.WriteLine($"  Endpoint:   {opts.Endpoint}");
-            Console.WriteLine($"  Namespace:  {opts.Namespace}");
-            Console.WriteLine($"  Event:      {opts.Event}");
-            Console.WriteLine($"  From:       {opts.From}");
-            Console.WriteLine($"  To:         {opts.To}");
-            Console.WriteLine($"  Query:      {opts.Query}");
-            Console.WriteLine($"  Interval:   {opts.Interval}s");
-            Console.WriteLine($"  Output:     {opts.Output}");
+            var configManager = new ConfigManager();
+            var config = configManager.Load();
+            var authProvider = AuthProviderFactory.Create(config);
+            var executor = new KustoQueryExecutor(authProvider);
+            var command = new TailCommand(executor);
 
-            Console.Error.WriteLine("\nNote: Streaming not yet implemented (Phase 2).");
-            return 0;
+            using (var cts = new CancellationTokenSource())
+            {
+                Console.CancelKeyPress += (s, e) =>
+                {
+                    e.Cancel = true;
+                    cts.Cancel();
+                };
+                return command.Execute(opts, cts.Token);
+            }
         }
 
         static int RunConfig(ConfigOptions opts)
