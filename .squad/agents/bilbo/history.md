@@ -316,6 +316,42 @@
 **Commit Context:** POC validation complete; documentation released with tested endpoint reference
 
 **Next:** Merge to main, link from squad wiki for agent discovery
+
+### DGrep Documentation Gaps — KQL Cheat Sheet, Troubleshooting, Sample Queries (2026-07-18)
+**Deliverables:**
+- `docs/guides/dgrep-kql-cheatsheet.md` (9.6 KB) — KQL patterns for ICM/Geneva investigation
+- `docs/guides/dgrep-troubleshooting.md` (11.6 KB) — Common errors and fixes
+- `docs/guides/dgrep-sample-queries.md` (9.9 KB) — Ready-to-use query examples with ICM workflow
+
+**What was documented:**
+
+*KQL Cheat Sheet:*
+- Error severity levels, time range patterns, identity column filtering
+- Aggregation patterns with the `summarize` partial-results pitfall documented
+- Full string operations reference (contains, startswith, regex, comparisons)
+- Complete DGrep-vs-Kusto pitfalls table (no `ago()`, no `let`, no `has`, no `join kind=leftouter`, spelling differences)
+- Supported/unsupported operators and aggregations exhaustively listed
+- Copy-paste patterns for ICM error investigation, correlation ID tracing, regex stack traces
+
+*Troubleshooting:*
+- Auth failures: az login, dSTS, certificate auth, MFA issues
+- Network/endpoint issues: wrong MDS endpoint, proxy/firewall
+- Rate limiting: 5 concurrent queries, orphaned query cleanup, query timeout
+- Query syntax errors: KQL vs MQL confusion, top 5 common KQL mistakes
+- "No results" systematic checklist: wrong namespace, time range, identity scoping, permissions
+- Config file issues: location, JSON syntax, saved queries
+
+*Sample Queries:*
+- Basic search, scoped search with identity columns
+- Saved query creation, parameterization, and execution
+- Piping to jq, Select-String, CSV/Excel export
+- Full real-world ICM investigation workflow (7-step scenario from alert to evidence export)
+- Additional patterns: user lookup, slow requests, regex exceptions, cross-tenant comparison
+
+**Source reference:** All content grounded in `docs/research/geneva-dgrep-research.md` sections 3-5 (KQL subset, auth, rate limits).
+
+**Issues Resolved:** #119
+**Branch:** squad/119-dgrep-docs-gaps
 - Library Purpose: Feed-driven repository for decisions, action items, context, thematic insights
 - Structure: decisions/, action-items/, context/, themes/ folders with naming conventions (YYYY-MM-DD-slug)
 - Browsing Patterns: Using INDEX.md for category discovery, TAGS.md for tag-based lookup, RECENT.md for timeline view
