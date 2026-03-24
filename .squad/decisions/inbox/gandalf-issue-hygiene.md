@@ -1,5 +1,7 @@
 # Decision: Issue Hygiene and Worktree Cleanup (#142)
 
+**[SUPERSEDED — See PR #147 for follow-up decision]**
+
 - **Date:** 2026-03-28
 - **Author:** Gandalf
 - **Type:** Governance
@@ -20,6 +22,17 @@ Added three new rules (24–26) to `routing.md` addressing:
 - Rule 24: Governance work should be tracked (Rule 17) but has no PR path (Rule 15). Explicit closure step fills the gap.
 - Rule 25: Recovery scenarios (8-branch merge session) proved that `git merge` bypasses auto-close. Safety net catches edge cases.
 - Rule 26: 9 stale worktrees found on disk. Post-merge cleanup + periodic scan prevents accumulation.
+
+## Follow-Up (PR #147)
+
+This decision was refined in PR #147. The governance exception (Rule 15 → Rule 24) was **NOT implemented**. Instead, the team decided to eliminate the governance exception entirely and require all work (including governance) to follow the standard PR lifecycle. 
+
+**What actually got implemented:**
+- Rule 23 (Post-merge issue verification) — Solution 2 from this decision, renumbered after Rule 15 removal
+- Rule 24 (Worktree cleanup) — Solution 3 from this decision, renumbered after Rule 15 removal
+- **NOT Rule 24 (Governance closure)** — This was rejected in favor of unified governance approach
+
+See `docs/designs/issue-hygiene.md` for the final design rationale.
 
 ## Boromir Review
 

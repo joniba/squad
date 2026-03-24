@@ -3,7 +3,7 @@
 > **Issue:** #142
 > **Author:** Gandalf (Lead)
 > **Date:** 2026-03-28
-> **Status:** Implemented (Rules 24–26 in routing.md)
+> **Status:** Partially implemented, then refined. Original governance exception (Rule 15) was removed in favor of unified PR-based governance. Actual implementation: Rules 23–24 in routing.md (post-merge verification + worktree cleanup). See PR #147.
 
 ## Problem Statement
 
@@ -23,15 +23,17 @@ Every issue gets a worktree at `./worktrees/squad-{N}/`. After the branch merges
 
 ## Solutions Chosen
 
-### Solution 1: Rule 24 — Governance issue closure (explicit step)
+> **2026-04-15 DECISION UPDATE:** After initial design approval, the governance exception approach (Rule 15) was reconsidered. The team decided that ALL work, including governance, should follow the standard PR lifecycle (branch → PR → review → merge) to maintain consistent oversight and audit trails. Therefore, Solution 1 below was NOT implemented. The governance work now follows Rule 11 like all other work. **Only Solutions 2 & 3 were implemented**, becoming Rules 23–24 in the current routing.md. The "Problem 1" no longer exists as a problem because governance work no longer has a special exception.
 
-**Approach chosen:** Add an explicit step to Rule 15's workflow: after committing governance changes, close the tracking issue with `gh issue close` and a comment citing the commit and Rule 15.
+### Solution 1: Rule 24 — Governance issue closure (explicit step) [NOT IMPLEMENTED]
 
-**Alternative considered and rejected:** Don't create issues for governance work at all (exempt from Rule 17). Rejected because governance work should be visible on the board — it's real work that takes time and affects the team. Exempting it from tracking means it becomes invisible, which contradicts the purpose of Rule 17 (all squad work appears on the GitHub board).
+**Status:** This solution was rejected as part of PR #147 decision to remove governance exceptions. Governance work now follows the standard PR lifecycle.
 
-**Why this is the right fix:** The issue exists for tracking visibility. The closure mechanism is what's broken. Adding an explicit `gh issue close` step with a required comment (citing commit + Rule 15) preserves visibility while providing the missing closure path. The comment creates an audit trail equivalent to what a PR merge would provide.
+**Original approach:** Add an explicit step to Rule 15's workflow: after committing governance changes, close the tracking issue with `gh issue close` and a comment citing the commit and Rule 15.
 
-### Solution 2: Rule 25 — Post-merge issue verification (catch-all)
+**Rejected because:** The team chose unified governance through PR-based review for all work types, eliminating the need for this exception.
+
+### Solution 2: Rule 23 — Post-merge issue verification (catch-all) [IMPLEMENTED]
 
 **Approach chosen:** After any merge to main, the coordinator verifies that all issues whose work just landed are properly closed. If an issue is still open after its branch merged, close it with `gh issue close` and a comment explaining why auto-close didn't fire.
 
@@ -42,7 +44,7 @@ Every issue gets a worktree at `./worktrees/squad-{N}/`. After the branch merges
 
 **Why this is the right fix:** It's a catch-all safety net. Regardless of how code reaches main, the coordinator checks that tracking issues reflect reality. This is idempotent (safe to run even if the issue is already closed) and handles future edge cases we haven't imagined yet.
 
-### Solution 3: Rule 26 — Worktree cleanup (post-merge + periodic scan)
+### Solution 3: Rule 24 — Worktree cleanup (post-merge + periodic scan) [IMPLEMENTED]
 
 **Approach chosen:** Two-pronged cleanup:
 1. **Post-merge step:** After every branch merge, remove the worktree and delete the local branch.
@@ -54,10 +56,11 @@ Every issue gets a worktree at `./worktrees/squad-{N}/`. After the branch merges
 
 ## Implementation
 
-- **Rules 24–26** added to `.squad/routing.md`
-- **Issue closure table** updated in `.squad/templates/issue-lifecycle.md` to document the two new exceptions (governance and recovery merge)
-- **This design doc** serves as the rationale record
+- **Rules 23–24** (originally proposed as Rules 25–26) added to `.squad/routing.md`
+- **Solution 1 (governance exception)** NOT implemented — the team decided to remove the governance exception entirely and require all work (including governance) to follow standard PR review
+- **Issue closure table** in `.squad/templates/issue-lifecycle.md` updated to document the recovery merge exception only (governance exception removed)
+- **This design doc** serves as the rationale record, with the 2026-04-15 decision note documenting why the approach was refined
 
-## Impact
+## Impact (Actual)
 
-These three rules close the governance gap, the recovery gap, and the accumulation gap. They're additive — no existing rules are weakened. The two exceptions to Rule 11 are narrow, documented, and require comments citing the applicable rule.
+Rule 23 (post-merge issue verification) and Rule 24 (worktree cleanup) close the recovery gap and accumulation gap respectively. The governance gap was closed by requiring governance work to follow the standard PR lifecycle (Rule 11) instead of creating a direct-commit exception. This simplifies the rule set and maintains consistent oversight for all work types.
