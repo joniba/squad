@@ -13,6 +13,7 @@ How to decide who handles what.
 | PR code review | 👑 Galadriel | `docs/reviews/` | "Review PR #42", code quality verification, finding reports |
 | Livesite, incidents, Azure ops | ⚙️ Aragorn | `docs/investigations/` | "Investigate IcM #123", "Check service health", troubleshoot |
 | TI domain backend code (C#, RP, STIX APIs) | 🗡️ Frodo | External repos (Sentinel-TiPipeline, SecurityInsights RP) | "Implement subscription filter", "Fix RP code", TI pipeline changes |
+| Design review (adversarial) | 💀 Boromir | — | EVERY design Gandalf produces gets Boromir review. Always rejects first draft on concept/approach. |
 | Scope & priorities | 🏗️ Gandalf | — | What to work on next, trade-offs, decisions |
 | Work review | 🏗️ Gandalf | — | Review output quality, check coherence |
 | Session logging | 📋 Scribe | — | Automatic — never needs routing |
@@ -60,6 +61,15 @@ Failed Agent → Gandalf (triage) → Elrond (research, opus) → Gandalf (revie
 ```
 
 **Key rule:** Jonathan is only notified if Elrond can't find a solution or the fix doesn't work after implementation. The squad self-heals autonomously.
+
+## Boromir Gate (Mandatory for Designs)
+
+Every design doc Gandalf produces MUST be reviewed by Boromir before implementation begins. Boromir always rejects the first draft — not on details, but on the entire concept and approach. He demands:
+- Alternative approaches that were considered and rejected (with reasons)
+- Evidence/research backing the chosen approach
+- Answers to "why not do this completely differently?"
+
+**Flow:** Gandalf designs → Boromir reviews (REJECT expected) → Gandalf revises → Boromir re-reviews → approve or reject again. Implementation is BLOCKED until Boromir approves.
 
 ## Rules
 

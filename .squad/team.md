@@ -20,6 +20,7 @@
 | 👑 Galadriel | Reviewer | `.squad/agents/galadriel/charter.md` | ✅ Active |
 | 📋 Scribe | Scribe | `.squad/agents/scribe/charter.md` | ✅ Active |
 | 🗡️ Frodo | TI Domain Backend Engineer | `.squad/agents/frodo/charter.md` | ✅ Active |
+| 💀 Boromir | Adversarial Design Reviewer | `.squad/agents/boromir/charter.md` | ✅ Active |
 | 🔄 Ralph | Work Monitor | — | 🔄 Monitor |
 
 ## Project Context
