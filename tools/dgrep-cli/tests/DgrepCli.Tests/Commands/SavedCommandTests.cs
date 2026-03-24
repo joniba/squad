@@ -434,7 +434,7 @@ namespace DgrepCli.Tests.Commands
             var cmd = CreateCommand();
             var exit = cmd.Execute(new SavedOptions { Action = "run", Name = "will-fail" });
 
-            Assert.Equal(1, exit);
+            Assert.Equal(DgrepExitCodes.TransientFailure, exit);
             Assert.Contains("Connection refused", _stderr.ToString());
         }
 

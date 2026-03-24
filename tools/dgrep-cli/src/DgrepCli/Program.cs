@@ -105,7 +105,7 @@ namespace DgrepCli
                 return PrintValidationErrors(errors);
 
             var configManager = new ConfigManager();
-            var executor = new DgrepQueryExecutor();
+            var executor = new RetryingQueryExecutor(new DgrepQueryExecutor());
             var command = new SavedCommand(executor, configManager);
             return command.Execute(opts);
         }

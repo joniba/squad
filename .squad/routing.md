@@ -63,15 +63,6 @@ Failed Agent → Gandalf (triage) → Elrond (research, opus) → Gandalf (revie
 
 **Key rule:** Jonathan is only notified if Elrond can't find a solution or the fix doesn't work after implementation. The squad self-heals autonomously.
 
-## Boromir Gate (Mandatory for Designs)
-
-Every design doc Gandalf produces MUST be reviewed by Boromir before implementation begins. Boromir always rejects the first draft — not on details, but on the entire concept and approach. He demands:
-- Alternative approaches that were considered and rejected (with reasons)
-- Evidence/research backing the chosen approach
-- Answers to "why not do this completely differently?"
-
-**Flow:** Gandalf designs → Boromir reviews (REJECT expected) → Gandalf revises → Boromir re-reviews → approve or reject again. Implementation is BLOCKED until Boromir approves.
-
 ## Rules
 
 1. **Eager by default** — spawn all agents who could usefully start work, including anticipatory downstream work.
@@ -86,3 +77,6 @@ Every design doc Gandalf produces MUST be reviewed by Boromir before implementat
 10. **Galadriel PR Gate** — every PR created by any agent MUST be reviewed by Galadriel before merge. The coordinator spawns Galadriel (sync) with the PR diff after the author pushes and creates the PR. On REJECT, the original author addresses feedback. On APPROVE, the coordinator merges via `gh pr merge`. No PR merges without Galadriel's approval.
 11. **Issue closure restriction** — issues that produced files (code, docs, scripts, designs, tests) close ONLY via PR merge auto-close ("Closes #N" in PR body). Never use `gh issue close` for file-producing work. Exception: tracking/strategic issues and superseded issues may be closed with a comment.
 12. **Worktree for all file-producing work** — every task that creates or modifies files (including documentation) requires a worktree. Exceptions: read-only queries, Scribe (.squad/ state), pure analysis producing no files.
+13. **Boromir Design Gate** — every design doc Gandalf produces MUST be reviewed by Boromir before implementation begins. The coordinator spawns Boromir (sync) with the design after Gandalf completes it. Boromir always rejects the first draft on concept/approach — he demands alternative approaches considered and rejected, evidence backing the chosen approach, and answers to "why not do this completely differently?" On REJECT, Gandalf revises and resubmits. Repeat from step 4 (re-review) until Boromir approves. Implementation is BLOCKED until Boromir approves. Gandalf has authority to override Boromir after genuinely considering his objections, but must document the override rationale in the decisions inbox.
+14. **Merge ordering via Gandalf** — when multiple PRs are pending merge (2+ approved PRs from the same work batch or related issues), the coordinator MUST consult Gandalf on merge order before merging. Gandalf determines sequencing based on dependency order, conflict risk, and logical progression. Single isolated PRs skip this gate and merge directly after Galadriel approval.
+15. **Squad governance via Gandalf** — modifications to `.squad/` governance files (charters, routing.md, team.md, ceremonies.md, casting state) MUST be authored by Gandalf. No other agent may modify these files. Other agents write only to their own history.md and the decisions inbox. When the coordinator needs a charter updated, routing changed, or a member added/removed, it routes the modification task to Gandalf.
