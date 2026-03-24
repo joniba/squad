@@ -15,7 +15,7 @@ How to decide who handles what.
 | TI domain backend code (C#, RP, STIX APIs) | 🗡️ Frodo | External repos (Sentinel-TiPipeline, SecurityInsights RP) | "Implement subscription filter", "Fix RP code", TI pipeline changes |
 | Design review (adversarial) | 💀 Boromir | — | EVERY design Gandalf produces gets Boromir review. Always rejects first draft on concept/approach. |
 | Scope & priorities | 🏗️ Gandalf | — | What to work on next, trade-offs, decisions |
-| Work review | 🏗️ Gandalf | — | Review output quality, check coherence |
+| Significant feature review | 🏗️ Gandalf | — | After a significant feature is completed and merged, review that it actually works end-to-end (not just "code merged") |
 | Session logging | 📋 Scribe | — | Automatic — never needs routing |
 | Work queue monitoring | 🔄 Ralph | — | "Ralph, go", "What's on the board?", backlog status |
 
@@ -83,3 +83,4 @@ Failed Agent → Gandalf (triage) → Elrond (research, opus) → Gandalf (revie
 16. **Notification on significant completion** — After the coordinator completes a significant batch of work (feature completion, multi-branch merge, investigation conclusion, or PR merge resulting in committed artifacts), call the notification dispatcher from the repo root. SCOPE: only for work producing committed artifacts (not status checks, questions, or dry-runs). FAILURE: if notification fails, log it but don't block the workflow.
     - **Feature completion:** `.\scripts\notify-squad-event.ps1 -Event "feature-complete" -FeatureName "<feature name>" -Summary "<what shipped and impact>" -PRs "<#55,#56>" -DocLinks "<relevant URL>"`
     - **Blocked on human:** `.\scripts\notify-squad-event.ps1 -Event "blocked" -What "<what is blocked>" -Why "<why it needs Jonathan>" -ActionNeeded "<specific action>" -Link "<issue/PR URL>" -Agent "<agent who is blocked>"`
+17. **Issue-tracked work** — when the user names a squad member in their request (except Ralph and Scribe), the coordinator MUST create a GitHub issue BEFORE spawning the agent. Flow: (1) `gh issue create --title "{task summary}" --body "{user's request context}" --label "squad" --label "squad:{member-name}"`, (2) note the issue number, (3) spawn the agent with ISSUE CONTEXT block per `issue-lifecycle.md`. Exempt: Ralph (monitor), Scribe (infrastructure), and pure read-only queries that produce no artifacts (e.g., "Elrond, what does this function do?"). Research tasks that produce investigation docs ARE tracked (e.g., "Aragorn, investigate IcM 123"). When the user says "team, do X", treat as "Gandalf, analyze and decompose X" — create ONE issue for Gandalf; Gandalf creates sub-issues for each agent via `gh issue create`. This ensures ALL squad work appears on the GitHub board and Ralph can drive it.
