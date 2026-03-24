@@ -238,14 +238,51 @@ function Build-UrgentCard {
     param([hashtable]$Event)
     $body = @(
         @{ type = "TextBlock"; size = "Large"; weight = "Bolder"; text = "🔴 $($Event.title)"; color = "attention" }
-        @{ type = "TextBlock"; text = "$($Event.reason)"; wrap = $true; spacing = "Small" }
     )
-    if ($Event.actionLabel) {
-        $body += @{ type = "TextBlock"; text = "**What to do:**"; weight = "Bolder"; spacing = "Medium" }
-        $body += @{ type = "TextBlock"; text = "$($Event.actionLabel)"; wrap = $true }
+
+    # Metadata: Agent and Severity as separate FactSet rows (never on one line)
+    $facts = @()
+    if ($Event.agent) {
+        $facts += @{ title = "Agent"; value = "$($Event.agent)" }
     }
+    if ($Event.severity) {
+        $facts += @{ title = "Severity"; value = "$($Event.severity)" }
+    }
+    if ($facts.Count -gt 0) {
+        $body += @{ type = "FactSet"; facts = $facts; spacing = "Small" }
+    }
+
+    # Per-issue rows (multi-issue mode)
+    if ($Event.blockedIssues -and $Event.blockedIssues.Count -gt 0) {
+        $body += @{ type = "TextBlock"; text = "**Blocked issues ($($Event.blockedIssues.Count)):**"; weight = "Bolder"; spacing = "Medium" }
+        foreach ($issue in $Event.blockedIssues) {
+            $linkText = "[#$($issue.number) — $($issue.title)]($($issue.url))"
+            $body += @{ type = "TextBlock"; text = $linkText; wrap = $true; spacing = "Small" }
+            if ($issue.reason) {
+                $body += @{ type = "TextBlock"; text = "→ $($issue.reason)"; wrap = $true; spacing = "None"; isSubtle = $true; size = "Small" }
+            }
+        }
+    } elseif ($Event.reason) {
+        # Single-issue / legacy mode: show reason as a text block
+        $body += @{ type = "TextBlock"; text = "$($Event.reason)"; wrap = $true; spacing = "Small" }
+    }
+
+    # Action needed
+    if ($Event.actionNeeded) {
+        $body += @{ type = "TextBlock"; text = "**Action needed:** $($Event.actionNeeded)"; wrap = $true; weight = "Bolder"; spacing = "Medium" }
+    }
+
+    # Action buttons — one per issue (Adaptive Cards supports up to 6)
     $actions = @()
-    if ($Event.actionUrl) {
+    if ($Event.blockedIssues -and $Event.blockedIssues.Count -gt 0) {
+        $maxButtons = [Math]::Min($Event.blockedIssues.Count, 6)
+        for ($i = 0; $i -lt $maxButtons; $i++) {
+            $issue = $Event.blockedIssues[$i]
+            if ($issue.url) {
+                $actions += @{ type = "Action.OpenUrl"; title = "View #$($issue.number)"; url = "$($issue.url)" }
+            }
+        }
+    } elseif ($Event.actionUrl) {
         $label = if ($Event.actionLabel) { $Event.actionLabel } else { "View Details" }
         $actions += @{ type = "Action.OpenUrl"; title = $label; url = "$($Event.actionUrl)" }
     }
@@ -470,7 +507,7 @@ function Flush-FeatureQueue {
 
 # Validate event has required fields
 $requiredFields = switch ($Type) {
-    "urgent"  { @("title", "reason") }
+    "urgent"  { @("title") }  # reason OR blockedIssues checked below
     "action"  { @("title", "reason") }
     "feature" { @("featureTitle", "summary") }
 }
@@ -479,6 +516,11 @@ foreach ($field in $requiredFields) {
         Write-Error "Event missing required field '$field' for type '$Type'"
         exit 1
     }
+}
+# Urgent: must have either 'reason' or 'blockedIssues'
+if ($Type -eq "urgent" -and -not $Event.reason -and -not $Event.blockedIssues) {
+    Write-Error "Urgent event requires either 'reason' or 'blockedIssues'"
+    exit 1
 }
 
 # Load state

@@ -41,13 +41,21 @@
     [blocked] What is blocked — shown as the card header.
 
 .PARAMETER Why
-    [blocked] Why it needs human attention.
+    [blocked] Why it needs human attention (single-issue mode).
+    Ignored when -Issues is provided.
 
 .PARAMETER ActionNeeded
     [blocked] Specific action the human should take.
 
+.PARAMETER Issues
+    [blocked] JSON string with per-issue details. Array of objects, each with:
+      number, title, url, reason.
+    When provided, -Why and -Link are ignored; the card shows per-issue rows.
+
+    Example JSON: '[{"number":89,"title":"Credential setup","url":"https://...","reason":"Need creds"}]'
+
 .PARAMETER Link
-    [blocked] URL to the blocker (issue, PR, incident).
+    [blocked] URL to the blocker (single-issue mode). Ignored when -Issues is provided.
 
 .PARAMETER Urgency
     [blocked] Severity: "blocking-feature", "livesite", or "decision-needed".
@@ -67,10 +75,19 @@
         -PRs "#55,#56" -DocLinks "https://docs/auth.md"
 
 .EXAMPLE
+    # Single-issue blocked (legacy)
     .\scripts\notify-squad-event.ps1 -Event "blocked" `
         -What "DGrep auth needs VPN" -Why "dSTS requires corp tunnel" `
         -ActionNeeded "Enable VPN access" -Link "https://github.com/org/repo/issues/42" `
         -Urgency "blocking-feature"
+
+.EXAMPLE
+    # Multi-issue blocked (per-issue details)
+    .\scripts\notify-squad-event.ps1 -Event "blocked" `
+        -What "3 issues need credentials" `
+        -ActionNeeded "Provide access credentials or unblock dependencies" `
+        -Issues '[{"number":89,"title":"Credential setup","url":"https://github.com/jbenami_microsoft/ms-pa/issues/89","reason":"dSTS creds not configured"},{"number":90,"title":"VPN config","url":"https://github.com/jbenami_microsoft/ms-pa/issues/90","reason":"VPN access needed"}]' `
+        -Agent "Gimli" -Urgency "blocking-feature" -DryRun
 #>
 [CmdletBinding()]
 param(
@@ -90,6 +107,7 @@ param(
     [string]$What,
     [string]$Why,
     [string]$ActionNeeded,
+    [string]$Issues,
     [string]$Link,
     [ValidateSet("blocking-feature", "livesite", "decision-needed", "")]
     [string]$Urgency = "blocking-feature",
@@ -120,8 +138,12 @@ switch ($Event) {
     }
     "blocked" {
         Assert-Param "What"         $What
-        Assert-Param "Why"          $Why
         Assert-Param "ActionNeeded" $ActionNeeded
+        # Either -Issues (multi-issue) or -Why (single-issue) is required
+        if ([string]::IsNullOrWhiteSpace($Issues) -and [string]::IsNullOrWhiteSpace($Why)) {
+            Write-Error "Either -Issues (multi-issue mode) or -Why (single-issue mode) is required for event 'blocked'."
+            exit 1
+        }
     }
 }
 
@@ -192,11 +214,33 @@ switch ($Event) {
 
         $params = @{
             Title        = $What
-            Reason       = $Why
             ActionNeeded = $ActionNeeded
         }
 
-        if ($Link)    { $params.BlockerUrl = $Link }
+        # Multi-issue mode: parse JSON, pass as array
+        if ($Issues) {
+            try {
+                $parsedIssues = $Issues | ConvertFrom-Json
+                # Convert PSObjects to hashtables for downstream compatibility
+                $issueArray = @($parsedIssues | ForEach-Object {
+                    @{
+                        Number = $_.number
+                        Title  = $_.title
+                        Url    = $_.url
+                        Reason = $_.reason
+                    }
+                })
+                $params.Issues = $issueArray
+            } catch {
+                Write-Error "Failed to parse -Issues JSON: $_"
+                exit 1
+            }
+        } else {
+            # Single-issue mode (legacy)
+            $params.Reason = $Why
+            if ($Link) { $params.BlockerUrl = $Link }
+        }
+
         if ($Urgency) { $params.Severity   = $Urgency }
         if ($Agent)   { $params.Agent      = $Agent }
 
