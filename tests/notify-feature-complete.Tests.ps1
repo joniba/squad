@@ -10,17 +10,6 @@ BeforeAll {
     $script:SchedulerScript = Join-Path $PSScriptRoot "..\scripts\notification-scheduler.ps1"
     $script:TempDir        = Join-Path $TestDrive "feature-complete-tests"
     New-Item -Path $script:TempDir -ItemType Directory -Force | Out-Null
-
-    function New-TempWebhookFile {
-        param([string]$Url = "https://outlook.office.com/webhook/test-guid")
-        $path = Join-Path $script:TempDir "webhook-$(New-Guid).url"
-        Set-Content -Path $path -Value $Url
-        return $path
-    }
-
-    function New-TempStateFile {
-        return Join-Path $script:TempDir "state-$(New-Guid).json"
-    }
 }
 
 Describe "notify-feature-complete.ps1 — Parameter Validation" {

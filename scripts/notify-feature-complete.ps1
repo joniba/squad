@@ -103,5 +103,7 @@ if ($result.Sent) {
 } elseif ($result.Reason -eq "unknown-trigger") {
     Write-Warning "Feature-complete trigger not registered. Run Initialize-DefaultTriggers first."
 } else {
+    # Intentional: notification failure is non-blocking; feature completion has already occurred.
+    # Coupling the feature completion signal to notification infrastructure health would be worse.
     Write-Warning "Feature-complete notification not sent: $($result.Reason)"
 }
