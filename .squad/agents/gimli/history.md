@@ -65,3 +65,14 @@
 - **Cross-Agent:** Bilbo completed Notifications documentation (#120) using outputs from this batch
 - **Boromir:** Hired (committed separately); next task is on-call integration with Notifications MVP
 - **2025-07-15 — #105 DGrep CLI Correction (Phase A+B):** Executed full Kusto→DGrep model correction across 34 source files and 23 test files. Key learnings: (1) DGrep SDK uses dSTS internally, NOT AAD tokens — `DgrepQueryExecutor` takes no `IAuthProvider` dependency; (2) correct SDK package is `Microsoft.Azure.Monitoring.DGrep.SDK` 3.0.0-rc4 (not `Microsoft.Geneva.DGrep.SDK`), hosted on msazure Official feed which requires interactive Azure Artifacts credential provider (401 without it); (3) DGrep's KQL subset forbids `ago()`, `let`, `has` — all built-in queries had to be rewritten; (4) connection model is Endpoint+Namespace+Event (not Cluster+Database); (5) results come as `List<Dictionary<string,object>>` (row-per-dict), not columnar — conversion needed at executor boundary. Deleted 5 files (KustoQueryExecutor, QueryVerbOptions, QueryCommand, BuiltInQueries, QueryCommandTests), created 2 (DgrepQueryExecutor stub, nuget.config), modified 19 files. All 298 tests pass, zero Kusto references remain. Findings at `.squad/decisions/inbox/gimli-dgrep-auth-findings.md`.
+
+## 2026-03-24T01:01:43Z — Notifications MVP Completion Batch
+- **Tasks:** #106 (DGrep tail command), #108 (DGrep error handling), #135 (E2E validation)
+- **Status:** ✅ COMPLETED — MVP VALIDATED, dry-run passed, real webhook delivered
+- **Deliverables:**
+  1. TailCommand.cs — Polling loop with Ctrl+C support (350 tests)
+  2. RetryPolicy enhancement (363 tests)
+  3. E2E validation test suite (#135 VALIDATED)
+- **Issues Closed:** #106, #108, #112, #116, #135
+- **Milestone:** All 4 MVP issues (#132-135) closed and E2E validated
+- **Next:** Integration and production release preparation
