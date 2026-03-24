@@ -163,7 +163,11 @@ switch ($Event) {
         }
 
         if ($DocLinks) {
-            $params.IssuesUrl = ($DocLinks -split ',')[0].Trim()
+            $links = @(($DocLinks -split ',') | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+            if ($links.Count -gt 1) {
+                Write-Warning "-DocLinks received $($links.Count) values; only the first will be forwarded: $($links[0])"
+            }
+            $params.IssuesUrl = $links[0]
         }
 
         if ($TestInstructions) {
@@ -175,6 +179,7 @@ switch ($Event) {
 
         Write-Host "📢 Dispatching feature-complete → notify-feature-complete.ps1"
         & $callerScript @params
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     }
 
     # -------------------------------------------------------------------
@@ -200,5 +205,6 @@ switch ($Event) {
 
         Write-Host "🚨 Dispatching blocked → notify-blocked.ps1"
         & $callerScript @params
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     }
 }

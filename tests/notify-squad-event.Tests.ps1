@@ -225,6 +225,40 @@ $captured | ConvertTo-Json | Set-Content (Join-Path $PSScriptRoot "captured-bloc
     }
 
     # -----------------------------------------------------------------------
+    # Exit-code propagation
+    # -----------------------------------------------------------------------
+    Context "exit-code propagation" {
+        BeforeAll {
+            $mockDir = Join-Path $TestDrive "scripts-exitcode"
+            New-Item -Path $mockDir -ItemType Directory -Force | Out-Null
+
+            # Mock caller that exits non-zero to simulate a delivery failure
+            $mockCaller = @'
+param(
+    [string]$FeatureTitle,
+    [string]$Summary,
+    [string]$FeatureId,
+    [string]$IssuesUrl,
+    [string]$PRList,
+    [string]$TestInstructions,
+    [switch]$DryRun,
+    [switch]$Force
+)
+exit 2
+'@
+            Set-Content (Join-Path $mockDir "notify-feature-complete.ps1") $mockCaller
+            Copy-Item $dispatcherPath (Join-Path $mockDir "notify-squad-event.ps1")
+            $script:exitCodeDispatcher = Join-Path $mockDir "notify-squad-event.ps1"
+        }
+
+        It "propagates non-zero exit code from downstream script" {
+            & $script:exitCodeDispatcher -Event "feature-complete" `
+                -FeatureName "X" -Summary "Y" -DryRun
+            $LASTEXITCODE | Should -Be 2
+        }
+    }
+
+    # -----------------------------------------------------------------------
     # Error: missing downstream caller script
     # -----------------------------------------------------------------------
     Context "missing caller scripts" {
