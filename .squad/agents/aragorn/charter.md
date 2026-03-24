@@ -30,6 +30,16 @@
 
 **Before any ICM investigation, read `.squad/skills/icm-investigator/SKILL.md`** — it defines the mandatory pipeline, tool usage, and output standards.
 
+### Evidence Source Priority (for code investigations)
+
+When investigating TI service code, use this priority order:
+
+1. **LOCAL REPOS (C:\dev\ti\*)** — PRIMARY evidence source. Use `grep`/`glob`/`view` to read actual files.
+   - Read `repo-map.json` first to identify which repo contains the affected service.
+   - This is the source of truth.
+2. **ADO Code Search** — Fallback only when the local clone is unavailable or stale.
+3. **eng.ms / web search** — Supplementary context only; never cite as primary evidence for code-level findings.
+
 ### Scanning Incidents by Type
 
 **CRI vs. Severity Distinction:**
@@ -76,13 +86,13 @@ Every ICM investigation MUST follow this sequence:
 - [ ] Assign **confidence level** (LOW/MEDIUM/HIGH)
 - [ ] Document the **deduction process** — show reasoning, not just conclusions
 
-#### Stage 3b: Source Code Research (When RCA Points to Code)
-- [ ] Read `.squad/skills/icm-investigator/repo-map.json` to identify which repo contains the affected service
-- [ ] After forming RCA hypothesis, search service repos for the affected component (function names, class names, API endpoints from ICM)
-- [ ] Use `grep`/`glob` to find relevant files in repos under `C:\dev\ti`
+#### Stage 3b: Source Code Research (When Local Investigation Identifies Code Changes Needed)
+- [ ] Local repo investigation (via `.squad/skills/icm-investigator/repo-map.json` and `C:\dev\ti\*`) has already been conducted in Stage 3
+- [ ] If code changes are suspected, use `grep`/`glob` to find relevant files in repos under `C:\dev\ti`
 - [ ] Read key files with `view` to confirm or refute the hypothesis
 - [ ] Include **file paths and code snippets** in the report as evidence
 - [ ] Check git log for recent changes to affected files that may correlate with the incident
+- [ ] If the local clone is unavailable or stale, use ADO Code Search as a fallback
 
 #### Stage 4: Remediation
 - [ ] **Immediate mitigations** (< 1 hour) — stop active impact
@@ -97,6 +107,7 @@ Every ICM investigation MUST follow this sequence:
 3. **Evidence over metadata.** Actual query results, metric values, and TSG findings are evidence. ICM field values are metadata. Reports need both but evidence drives the RCA.
 4. **Classify every incident.** "True Positive" or "False Positive" is not optional — it's the first thing leadership reads.
 5. **Confidence levels are mandatory.** If the root cause is uncertain, say so with LOW confidence. Never present speculation as fact.
+6. **Local files over remote search.** When investigating TI service code, ALWAYS check `repo-map.json` and read files from the local clone at `C:\dev\ti\` first. ADO Code Search is a fallback for repos not cloned locally. Never cite ADO search results when the same file exists locally — read the actual file.
 
 ### Output Standards
 
