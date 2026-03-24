@@ -16,7 +16,12 @@ namespace DgrepCli.Tests.Execution
                 new[] { "Id" }, new[] { "int" }, new[] { new object[] { 42 } });
             executor.WithResult(expected);
 
-            var options = new QueryOptions { Cluster = "test", Database = "db" };
+            var options = new QueryOptions
+            {
+                Endpoint = "https://test.diagnostics.monitoring.core.windows.net/",
+                Namespace = "TestNs",
+                Event = "Log"
+            };
             var result = await executor.ExecuteAsync("test query", options, CancellationToken.None);
 
             Assert.Same(expected, result);
@@ -29,7 +34,12 @@ namespace DgrepCli.Tests.Execution
         public async Task ExecuteAsync_NoResultConfigured_ReturnsEmptyResult()
         {
             var executor = new MockQueryExecutor();
-            var options = new QueryOptions { Cluster = "test", Database = "db" };
+            var options = new QueryOptions
+            {
+                Endpoint = "https://test.diagnostics.monitoring.core.windows.net/",
+                Namespace = "TestNs",
+                Event = "Log"
+            };
             var result = await executor.ExecuteAsync("q", options, CancellationToken.None);
 
             Assert.NotNull(result);
@@ -40,9 +50,14 @@ namespace DgrepCli.Tests.Execution
         public async Task ExecuteAsync_WithException_Throws()
         {
             var executor = new MockQueryExecutor();
-            executor.WithException(new QueryConnectionException("cluster", "refused"));
+            executor.WithException(new QueryConnectionException("https://endpoint", "refused"));
 
-            var options = new QueryOptions { Cluster = "cluster", Database = "db" };
+            var options = new QueryOptions
+            {
+                Endpoint = "https://endpoint",
+                Namespace = "TestNs",
+                Event = "Log"
+            };
             await Assert.ThrowsAsync<QueryConnectionException>(
                 () => executor.ExecuteAsync("q", options, CancellationToken.None));
         }
@@ -57,7 +72,12 @@ namespace DgrepCli.Tests.Execution
             using (var cts = new CancellationTokenSource())
             {
                 cts.Cancel();
-                var options = new QueryOptions { Cluster = "test", Database = "db" };
+                var options = new QueryOptions
+                {
+                    Endpoint = "https://test.diagnostics.monitoring.core.windows.net/",
+                    Namespace = "TestNs",
+                    Event = "Log"
+                };
                 await Assert.ThrowsAsync<TaskCanceledException>(
                     () => executor.ExecuteAsync("q", options, cts.Token));
             }
@@ -68,7 +88,12 @@ namespace DgrepCli.Tests.Execution
         {
             var executor = new MockQueryExecutor();
             executor.WithResult(new QueryResult());
-            var options = new QueryOptions { Cluster = "test", Database = "db" };
+            var options = new QueryOptions
+            {
+                Endpoint = "https://test.diagnostics.monitoring.core.windows.net/",
+                Namespace = "TestNs",
+                Event = "Log"
+            };
 
             await executor.ExecuteAsync("q1", options, CancellationToken.None);
             await executor.ExecuteAsync("q2", options, CancellationToken.None);
@@ -96,13 +121,13 @@ namespace DgrepCli.Tests.Execution
         }
     }
 
-    public class KustoQueryExecutorTests
+    public class DgrepQueryExecutorTests
     {
         [Fact]
-        public async Task ExecuteAsync_EmptyCluster_ThrowsConnectionException()
+        public async Task ExecuteAsync_EmptyEndpoint_ThrowsConnectionException()
         {
-            var executor = new KustoQueryExecutor();
-            var options = new QueryOptions { Cluster = "", Database = "db" };
+            var executor = new DgrepQueryExecutor();
+            var options = new QueryOptions { Endpoint = "", Namespace = "Ns", Event = "Evt" };
 
             await Assert.ThrowsAsync<QueryConnectionException>(
                 () => executor.ExecuteAsync("q", options, CancellationToken.None));
@@ -111,47 +136,68 @@ namespace DgrepCli.Tests.Execution
         [Fact]
         public async Task ExecuteAsync_NullOptions_ThrowsArgumentNull()
         {
-            var executor = new KustoQueryExecutor();
+            var executor = new DgrepQueryExecutor();
 
             await Assert.ThrowsAsync<ArgumentNullException>(
                 () => executor.ExecuteAsync("q", null, CancellationToken.None));
         }
 
         [Fact]
-        public async Task ExecuteAsync_EmptyQuery_ThrowsSyntaxException()
+        public async Task ExecuteAsync_EmptyQuery_ThrowsArgumentException()
         {
-            var executor = new KustoQueryExecutor();
-            var options = new QueryOptions { Cluster = "https://cluster", Database = "db" };
+            var executor = new DgrepQueryExecutor();
+            var options = new QueryOptions
+            {
+                Endpoint = "https://production.diagnostics.monitoring.core.windows.net/",
+                Namespace = "Ns",
+                Event = "Evt"
+            };
 
-            await Assert.ThrowsAsync<QuerySyntaxException>(
+            await Assert.ThrowsAsync<ArgumentException>(
                 () => executor.ExecuteAsync("", options, CancellationToken.None));
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_MissingNamespace_ThrowsArgumentException()
+        {
+            var executor = new DgrepQueryExecutor();
+            var options = new QueryOptions
+            {
+                Endpoint = "https://production.diagnostics.monitoring.core.windows.net/",
+                Namespace = "",
+                Event = "Evt"
+            };
+
+            await Assert.ThrowsAsync<ArgumentException>(
+                () => executor.ExecuteAsync("source | take 10", options, CancellationToken.None));
         }
 
         [Fact]
         public async Task ExecuteAsync_ValidInputs_ThrowsNotImplemented()
         {
-            var executor = new KustoQueryExecutor();
+            var executor = new DgrepQueryExecutor();
             var options = new QueryOptions
             {
-                Cluster = "https://mycluster.kusto.windows.net",
-                Database = "TestDB"
+                Endpoint = "https://production.diagnostics.monitoring.core.windows.net/",
+                Namespace = "TestNs",
+                Event = "Log"
             };
 
             // The stub should throw NotImplementedException for valid inputs
             await Assert.ThrowsAsync<NotImplementedException>(
-                () => executor.ExecuteAsync("StormEvents | take 10", options, CancellationToken.None));
+                () => executor.ExecuteAsync("source | take 10", options, CancellationToken.None));
         }
     }
 
     public class QueryExceptionTests
     {
         [Fact]
-        public void QueryConnectionException_ContainsClusterUrl()
+        public void QueryConnectionException_ContainsEndpoint()
         {
-            var ex = new QueryConnectionException("https://test.kusto.windows.net", "Connection refused");
-            Assert.Contains("https://test.kusto.windows.net", ex.Message);
+            var ex = new QueryConnectionException("https://prod.diagnostics.monitoring.core.windows.net/", "Connection refused");
+            Assert.Contains("https://prod.diagnostics.monitoring.core.windows.net/", ex.Message);
             Assert.Contains("Connection refused", ex.Message);
-            Assert.Equal("https://test.kusto.windows.net", ex.ClusterUrl);
+            Assert.Equal("https://prod.diagnostics.monitoring.core.windows.net/", ex.Endpoint);
         }
 
         [Fact]

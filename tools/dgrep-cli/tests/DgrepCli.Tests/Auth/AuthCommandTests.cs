@@ -161,7 +161,7 @@ namespace DgrepCli.Tests.Auth
                     StdErr = ""
                 })));
 
-            var config = new DgrepConfig { DefaultCluster = "https://test.kusto.windows.net" };
+            var config = new DgrepConfig { DefaultEndpoint = "https://production.diagnostics.monitoring.core.windows.net/" };
             var (cmd, stdout, stderr) = CreateCommand(config, factory);
             var result = cmd.Execute(new AuthVerbOptions { Action = "test" });
 
@@ -171,11 +171,11 @@ namespace DgrepCli.Tests.Auth
             Assert.Contains("Identity:", output);
             Assert.Contains("Token expiry:", output);
             Assert.Contains("Token length:", output);
-            Assert.Contains("Target cluster:", output);
+            Assert.Contains("Target endpoint:", output);
         }
 
         [Fact]
-        public void Execute_TestAction_NoCluster_UsesDefaultResource()
+        public void Execute_TestAction_NoEndpoint_UsesDefaultResource()
         {
             var factory = new Func<DgrepConfig, string, IAuthProvider>((cfg, cli) =>
                 new AzCliAuthProvider(new MockProcessRunner(new ProcessResult
@@ -189,7 +189,7 @@ namespace DgrepCli.Tests.Auth
             cmd.Execute(new AuthVerbOptions { Action = "test" });
 
             var output = stdout.ToString();
-            Assert.Contains("No default cluster configured", output);
+            Assert.Contains("No default endpoint configured", output);
         }
 
         [Fact]

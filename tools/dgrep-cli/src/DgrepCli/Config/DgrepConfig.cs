@@ -9,14 +9,23 @@ namespace DgrepCli.Config
     /// </summary>
     public class DgrepConfig
     {
+        /// <summary>
+        /// Default MDS endpoint URL (e.g. "https://production.diagnostics.monitoring.core.windows.net/").
+        /// </summary>
+        [JsonProperty("defaultEndpoint")]
+        public string DefaultEndpoint { get; set; }
+
+        /// <summary>
+        /// Default namespace pattern (e.g. "MyServicePrd.*").
+        /// </summary>
         [JsonProperty("defaultNamespace")]
         public string DefaultNamespace { get; set; }
 
-        [JsonProperty("defaultCluster")]
-        public string DefaultCluster { get; set; }
-
-        [JsonProperty("defaultDatabase")]
-        public string DefaultDatabase { get; set; }
+        /// <summary>
+        /// Default query type: kql or mql.
+        /// </summary>
+        [JsonProperty("defaultQueryType")]
+        public string DefaultQueryType { get; set; }
 
         /// <summary>
         /// Default time range for queries (e.g. "1h", "24h", "30m").
@@ -50,18 +59,6 @@ namespace DgrepCli.Config
         public string OutputFormat { get; set; }
 
         /// <summary>
-        /// Default endpoint (e.g. diag-prod).
-        /// </summary>
-        [JsonProperty("defaultEndpoint")]
-        public string DefaultEndpoint { get; set; }
-
-        /// <summary>
-        /// Default query type: kql or mql.
-        /// </summary>
-        [JsonProperty("defaultQueryType")]
-        public string DefaultQueryType { get; set; }
-
-        /// <summary>
         /// Authentication method: azcli (default), certificate, managedidentity.
         /// </summary>
         [JsonProperty("authMethod")]
@@ -78,12 +75,6 @@ namespace DgrepCli.Config
 
         [JsonProperty("description")]
         public string Description { get; set; }
-
-        [JsonProperty("defaultDatabase")]
-        public string DefaultDatabase { get; set; }
-
-        [JsonProperty("defaultCluster")]
-        public string DefaultCluster { get; set; }
 
         [JsonProperty("endpoint")]
         public string Endpoint { get; set; }

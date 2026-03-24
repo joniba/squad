@@ -129,7 +129,7 @@ namespace DgrepCli.Tests.Auth
             {
                 var provider = new CertificateAuthProvider(tmpFile);
                 await Assert.ThrowsAsync<NotImplementedException>(
-                    () => provider.GetTokenAsync("https://kusto.kusto.windows.net", CancellationToken.None));
+                    () => provider.GetTokenAsync("https://management.azure.com/", CancellationToken.None));
             }
             finally
             {
@@ -142,7 +142,7 @@ namespace DgrepCli.Tests.Auth
         {
             var provider = new CertificateAuthProvider(null);
             await Assert.ThrowsAsync<AuthException>(
-                () => provider.GetTokenAsync("https://kusto.kusto.windows.net", CancellationToken.None));
+                () => provider.GetTokenAsync("https://management.azure.com/", CancellationToken.None));
         }
     }
 }

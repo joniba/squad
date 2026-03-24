@@ -27,8 +27,6 @@ namespace DgrepCli.Tests.Config
             var config = new DgrepConfig
             {
                 DefaultNamespace = "MyNamespace",
-                DefaultCluster = "diag-prod",
-                DefaultDatabase = "MyDB",
                 DefaultTimeRange = "24h",
                 DefaultMaxRows = 1000,
                 CertificatePath = @"C:\certs\my.pfx",
@@ -53,8 +51,6 @@ namespace DgrepCli.Tests.Config
             var deserialized = JsonConvert.DeserializeObject<DgrepConfig>(json);
 
             Assert.Equal("MyNamespace", deserialized.DefaultNamespace);
-            Assert.Equal("diag-prod", deserialized.DefaultCluster);
-            Assert.Equal("MyDB", deserialized.DefaultDatabase);
             Assert.Equal("24h", deserialized.DefaultTimeRange);
             Assert.Equal(1000, deserialized.DefaultMaxRows);
             Assert.Equal(@"C:\certs\my.pfx", deserialized.CertificatePath);
@@ -73,7 +69,7 @@ namespace DgrepCli.Tests.Config
             var config = JsonConvert.DeserializeObject<DgrepConfig>(json);
 
             Assert.Equal("NS1", config.DefaultNamespace);
-            Assert.Null(config.DefaultCluster);
+            Assert.Null(config.DefaultEndpoint);
             Assert.Null(config.DefaultTimeRange);
             Assert.Null(config.DefaultMaxRows);
             Assert.Null(config.OutputFormat);

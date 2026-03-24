@@ -44,7 +44,7 @@ namespace DgrepCli.Auth
         {
             try
             {
-                var token = await GetTokenAsync("https://kusto.kusto.windows.net", ct);
+                var token = await GetTokenAsync("https://management.azure.com/", ct);
                 return new AuthProviderStatus
                 {
                     IsValid = true,

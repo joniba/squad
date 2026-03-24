@@ -29,14 +29,13 @@ namespace DgrepCli
                 settings.AutoVersion = false;
             });
 
-            var result = parser.ParseArguments<SearchOptions, TailOptions, ConfigOptions, SavedOptions, QueryVerbOptions, AuthVerbOptions>(args);
+            var result = parser.ParseArguments<SearchOptions, TailOptions, ConfigOptions, SavedOptions, AuthVerbOptions>(args);
 
             return result.MapResult(
                 (SearchOptions opts) => RunSearch(opts),
                 (TailOptions opts) => RunTail(opts),
                 (ConfigOptions opts) => RunConfig(opts),
                 (SavedOptions opts) => RunSaved(opts),
-                (QueryVerbOptions opts) => RunQuery(opts),
                 (AuthVerbOptions opts) => RunAuth(opts),
                 errs => HandleParseErrors(result, errs)
             );
@@ -108,20 +107,8 @@ namespace DgrepCli
                 return PrintValidationErrors(errors);
 
             var configManager = new ConfigManager();
-            var config = configManager.Load();
-            var authProvider = AuthProviderFactory.Create(config);
-            var executor = new KustoQueryExecutor(authProvider);
+            var executor = new DgrepQueryExecutor();
             var command = new SavedCommand(executor, configManager);
-            return command.Execute(opts);
-        }
-
-        static int RunQuery(QueryVerbOptions opts)
-        {
-            var configManager = new ConfigManager();
-            var config = configManager.Load();
-            var authProvider = AuthProviderFactory.Create(config);
-            var executor = new KustoQueryExecutor(authProvider);
-            var command = new QueryCommand(executor, configManager);
             return command.Execute(opts);
         }
 
@@ -154,7 +141,6 @@ namespace DgrepCli
                     h.AddPreOptionsLine("");
                     h.AddPreOptionsLine("Commands:");
                     h.AddPreOptionsLine("  search    Run a DGrep query and display results");
-                    h.AddPreOptionsLine("  query     Execute a KQL query against a Kusto cluster");
                     h.AddPreOptionsLine("  auth      Manage authentication (status, test)");
                     h.AddPreOptionsLine("  tail      Stream DGrep results in real-time");
                     h.AddPreOptionsLine("  config    Manage CLI configuration");

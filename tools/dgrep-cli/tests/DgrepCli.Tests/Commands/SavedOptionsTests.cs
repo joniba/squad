@@ -16,19 +16,21 @@ namespace DgrepCli.Tests.Commands
         public void Saved_Add_ParsesNameAndFlags()
         {
             var result = Parse("saved", "add", "my-query",
-                "--query", "TestTable | where Status == '{{status}}'",
+                "--query", "source | where Status == '{{status}}'",
                 "--description", "Filter by status",
-                "--cluster", "https://c.kusto.windows.net",
-                "--database", "MyDB");
+                "--endpoint", "https://production.diagnostics.monitoring.core.windows.net/",
+                "--namespace", "MyNs",
+                "--event", "MyEvent");
 
             result.WithParsed<SavedOptions>(opts =>
             {
                 Assert.Equal("add", opts.Action);
                 Assert.Equal("my-query", opts.Name);
-                Assert.Equal("TestTable | where Status == '{{status}}'", opts.Query);
+                Assert.Equal("source | where Status == '{{status}}'", opts.Query);
                 Assert.Equal("Filter by status", opts.Description);
-                Assert.Equal("https://c.kusto.windows.net", opts.Cluster);
-                Assert.Equal("MyDB", opts.Database);
+                Assert.Equal("https://production.diagnostics.monitoring.core.windows.net/", opts.Endpoint);
+                Assert.Equal("MyNs", opts.Namespace);
+                Assert.Equal("MyEvent", opts.Event);
             });
 
             Assert.IsType<Parsed<object>>(result);
