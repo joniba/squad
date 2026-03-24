@@ -105,7 +105,28 @@ This answers: "Is the issue still happening? When did it start? Is it recovering
 | `azure-mcp-documentation` | Official Azure docs for error explanations |
 | `azure-mcp-get_azure_bestpractices` | Azure best practices and troubleshooting guidance |
 
-#### 2e. Additional Context (when relevant)
+#### 2e. Threat Intelligence (TI) Investigations
+
+**When the incident involves Threat Intelligence services** (e.g., STIX/TAXII ingestion, indicator management, pattern detection, bulk operations), **before running Kusto queries**, read the relevant Sentinel-TiPipeline SKILL.md files to understand API contracts and field semantics:
+
+| SKILL.md File | Use When | Key Content |
+|---|---|---|
+| `stix-api-operations` | Incident involves STIX object creation, read, update, delete, or field semantics | STIX API operations, field validation rules, supported object types and properties |
+| `bulk-actions-api` | Incident involves bulk indicator updates (SetTrue/SetFalse/Clear mutations) or indicator status changes | Bulk action contracts, mutator behavior (especially SetFalse for revoked indicators), transaction semantics |
+| `file-import-api` | Incident involves STIX bundle import, file format validation, or ingestion errors | Bundle format requirements, validation rules, import pipeline error codes |
+| `ingestion-api` | Incident involves TI indicator ingestion, TAXII server connectivity, or pipeline throughput | Ingestion endpoint contracts, TAXII collection handling, rate limits, failure modes |
+
+**Example TI CRIs benefiting from these references:**
+- **ICM 51000000954460** (revoked indicators): `bulk-actions-api` SKILL.md clarifies SetFalse behavior vs. deletion semantics
+- **ICM 51000000943039** (pattern_type errors): `stix-api-operations` SKILL.md documents valid pattern_type field values
+- **ICM 21000000951041** (TAXII ingestion): `ingestion-api` or `file-import-api` SKILL.md clarifies bundle format and endpoint requirements
+
+**How to use:**
+1. If the ICM title, enrichment data, or error messages mention STIX, TAXII, bulk updates, or indicator status, check the relevant SKILL.md in Sentinel-TiPipeline
+2. Read the API contract documentation to understand field semantics, validation rules, and error codes **before** constructing Kusto queries
+3. Use the API contract to interpret Kusto results (e.g., which error codes indicate validation failures vs. dependency issues)
+
+#### 2f. Additional Context (when relevant)
 
 | Tool | Purpose |
 |------|---------|
