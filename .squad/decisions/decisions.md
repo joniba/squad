@@ -1,5 +1,26 @@
 # Decisions\n
 
+### 2025-07-24: DGrep error handling & retry policy (#108)
+
+**By:** Gimli (Tool Builder)
+**Branch:** `squad/108-dgrep-error-handling`
+**Commit:** bce8a38
+
+**Decision:** Implemented retry-with-backoff as a decorator pattern (`RetryingQueryExecutor` wrapping `IQueryExecutor`) rather than embedding retry logic in individual executors. This keeps retry concerns separated from query execution and makes it testable/swappable.
+
+**Key design choices:**
+1. **RetryPolicy class** — Configurable (maxRetries, baseDelay, maxDelay) with exponential backoff + ±25% jitter to prevent thundering herd. Static factories `Default` (3 retries, 1s base) and `None`.
+2. **Transient vs non-transient classification** — Rate limit, connection, timeout → retry. Auth, syntax → fail immediately. HTTP 429/502/503/504 detected in message text as fallback.
+3. **Exit codes** — 0=success, 1=user error, 2=transient failure, 3=auth failure. Standardized in `DgrepExitCodes`.
+4. **QueryRateLimitException** — New exception type for DGrep's 5-concurrent-query-per-user limit.
+5. **Backward compat** — `ClusterUrl` kept as alias for `EndpointUrl` on `QueryConnectionException`.
+6. **Improved error messages** — All exceptions now include actionable guidance (e.g., "Run 'dgrep auth status'").
+
+**Test coverage:** 41 new xUnit tests. All 363 tests pass.
+
+---
+
+
 ### 2026-03-23T21:10:00Z: CRITICAL — Lockout rules violation fix
 
 **Context:** Coordinator enforced lockout rules from its system prompt (squad.agent.md) when interpreting Galadriel's PR #124 review. Said "NOT Gimli — lockout rules" despite Decision #48 explicitly removing lockout rules and Galadriel's charter explicitly stating "original author owns all fixes."
