@@ -59,6 +59,7 @@ namespace DgrepCli.Commands
                     var queryOptions = BuildQueryOptions(opts, currentFrom);
 
                     QueryResult result;
+                    var nextFrom = DateTime.UtcNow; // Snapshot before dispatch to avoid missing events in the query-execution window
                     try
                     {
                         result = _executor.ExecuteAsync(opts.Query, queryOptions, ct)
@@ -87,8 +88,8 @@ namespace DgrepCli.Commands
                         totalResults += result.Rows.Count;
                     }
 
-                    // Advance the from time to now for the next poll
-                    currentFrom = DateTime.UtcNow.ToString("o");
+                    // Advance the from time using the pre-query snapshot to avoid missing events
+                    currentFrom = nextFrom.ToString("o");
 
                     // Status line on stderr so it doesn't pollute piped stdout
                     _stderr.WriteLine($"Watching... (last check: {DateTime.Now:HH:mm:ss}, {totalResults} results so far)");
@@ -130,7 +131,7 @@ namespace DgrepCli.Commands
                     ["_namespace"] = opts.Namespace ?? "",
                     ["_event"] = opts.Event ?? "",
                     ["_from"] = currentFrom ?? "",
-                    ["_to"] = "now",
+                    ["_to"] = !string.IsNullOrEmpty(opts.To) ? opts.To : "now",
                     ["_queryType"] = opts.QueryType ?? "kql"
                 }
             };

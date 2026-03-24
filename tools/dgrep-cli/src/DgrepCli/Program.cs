@@ -77,21 +77,15 @@ namespace DgrepCli
             if (errors.Any())
                 return PrintValidationErrors(errors);
 
-            var configManager = new ConfigManager();
-            var config = configManager.Load();
-            var authProvider = AuthProviderFactory.Create(config);
-            var executor = new KustoQueryExecutor(authProvider);
-            var command = new TailCommand(executor);
-
-            using (var cts = new CancellationTokenSource())
-            {
-                Console.CancelKeyPress += (s, e) =>
-                {
-                    e.Cancel = true;
-                    cts.Cancel();
-                };
-                return command.Execute(opts, cts.Token);
-            }
+            // TODO (#106): Wire to DgrepQueryExecutor when implemented.
+            // KustoQueryExecutor requires a Database parameter that DGrep does not use.
+            // Until DgrepQueryExecutor exists, every invocation would crash with a
+            // confusing ArgumentException before the first poll. Gate the command here
+            // with a clear, user-readable message instead.
+            Console.Error.WriteLine("Error: 'dgrep tail' is not yet available in this build.");
+            Console.Error.WriteLine("The DGrep SDK executor required for real-time polling has not been implemented.");
+            Console.Error.WriteLine("Use 'dgrep search' for one-shot DGrep queries in the meantime.");
+            return 1;
         }
 
         static int RunConfig(ConfigOptions opts)
