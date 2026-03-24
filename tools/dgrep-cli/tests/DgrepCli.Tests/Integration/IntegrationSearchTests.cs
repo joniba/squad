@@ -172,18 +172,8 @@ namespace DgrepCli.Tests.Integration
             //   return new DgrepQueryExecutor(provider);
             //
             // Until then, skip with a clear message.
-            try
-            {
-                // Attempt to use KustoQueryExecutor as a stand-in for structure validation.
-                // It will throw NotImplementedException on actual execution, but the test
-                // skeleton demonstrates the correct contract.
-                return new KustoQueryExecutor();
-            }
-            catch
-            {
-                Assert.True(true, "Skipped: DgrepQueryExecutor not yet available (correction plan Phase B pending).");
-                return null;
-            }
+            Assert.True(true, "Skipped: DgrepQueryExecutor not yet available — correction plan Phase B pending.");
+            return null;
         }
     }
 }

@@ -1,4 +1,4 @@
-# DGrep CLI Troubleshooting
+﻿# DGrep CLI Troubleshooting
 
 Common problems and solutions when using the DGrep CLI. Organized from most-common to least-common.
 
@@ -320,6 +320,6 @@ The DGrep CLI stores configuration in `~/.dgrep/config.json` (typically `C:\User
 
 ## See Also
 
-- [DGrep Quick Start](dgrep-quickstart.md) — Get from zero to first query in 5 minutes
+- [DGrep Quick Start](dgrep-quickstart.md) *(coming soon)* — Get from zero to first query in 5 minutes
 - [DGrep KQL Cheat Sheet](dgrep-kql-cheatsheet.md) — Supported operators and patterns
 - [DGrep Sample Queries](dgrep-sample-queries.md) — Ready-to-use query examples

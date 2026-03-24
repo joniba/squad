@@ -1,8 +1,8 @@
-# DGrep KQL Cheat Sheet
+﻿# DGrep KQL Cheat Sheet
 
 Quick reference for writing KQL queries against Geneva DGrep. DGrep supports a **subset** of Kusto Query Language — this guide covers what works, what doesn't, and the patterns you'll use most during ICM investigations.
 
-> **Prerequisite:** You should already have the CLI configured. See the [Quick Start](dgrep-quickstart.md) if not.
+> **Prerequisite:** You should already have the CLI configured. See the [Quick Start](dgrep-quickstart.md) *(coming soon)* if not.
 
 ---
 
@@ -34,15 +34,15 @@ Geneva Logs typically use a `Level` column where lower numbers mean higher sever
 
 ```powershell
 # Critical and error events (Level 0-1)
-dgrep search --event MyEvent --from -1h \
+dgrep search --event MyEvent --from -1h `
   --query "source | where Level <= 1 | project PreciseTimeStamp, Level, Message"
 
 # Warnings and above
-dgrep search --event MyEvent --from -1h \
+dgrep search --event MyEvent --from -1h `
   --query "source | where Level <= 2"
 
 # Only errors (exact match)
-dgrep search --event MyEvent --from -1h \
+dgrep search --event MyEvent --from -1h `
   --query "source | where Level == 1"
 ```
 
@@ -60,8 +60,8 @@ dgrep search --event MyEvent --from -30m --query "source | where Level <= 2"
 dgrep search --event MyEvent --from -4h --query "source | where Level <= 2"
 
 # Specific time window (UTC)
-dgrep search --event MyEvent \
-  --from "2026-03-23T10:00:00Z" --to "2026-03-23T11:00:00Z" \
+dgrep search --event MyEvent `
+  --from "2026-03-23T10:00:00Z" --to "2026-03-23T11:00:00Z" `
   --query "source | where Level <= 2"
 ```
 
@@ -75,13 +75,13 @@ Identity columns (e.g., `Tenant`, `Role`, `Environment`, `RoleInstance`) filter 
 
 ```powershell
 # Scope to a specific tenant and role
-dgrep search --event MyEvent --from -1h \
-  --identity "Tenant=WUS" --identity "Role=Frontend" \
+dgrep search --event MyEvent --from -1h `
+  --identity "Tenant=WUS" --identity "Role=Frontend" `
   --query "source | where Level <= 2"
 
 # Multiple values for one identity dimension
-dgrep search --event MyEvent --from -1h \
-  --identity "Tenant=WUS" --identity "Tenant=EUS" \
+dgrep search --event MyEvent --from -1h `
+  --identity "Tenant=WUS" --identity "Tenant=EUS" `
   --query "source | where Level <= 2"
 ```
 
@@ -98,16 +98,16 @@ source | where Tenant == "WUS" and Role == "Frontend"
 ## Aggregate Counts by Field
 
 ```kql
--- Count events per level
+// Count events per level
 source | summarize count() by Level
 
--- Count distinct tenants with errors
+// Count distinct tenants with errors
 source | where Level <= 2 | summarize dcount(Tenant)
 
--- Count errors per role instance
+// Count errors per role instance
 source | where Level <= 1 | summarize count() by RoleInstance | order by count_ desc
 
--- Count with a condition
+// Count with a condition
 source | summarize ErrorCount = countif(Level <= 1), TotalCount = count() by Tenant
 ```
 
@@ -118,8 +118,8 @@ source | summarize ErrorCount = countif(Level <= 1), TotalCount = count() by Ten
 To get correct totals, you need a client query that re-aggregates the server results. This is the CLI's `--client-query` flag (when SDK integration is complete). For now, pipe to `jq` for post-processing:
 
 ```powershell
-dgrep search --event MyEvent --from -1h \
-  --query "source | summarize count() by Level" --output json \
+dgrep search --event MyEvent --from -1h `
+  --query "source | summarize count() by Level" --output json `
   | jq 'group_by(.Level) | map({Level: .[0].Level, TotalCount: (map(.count_) | add)})'
 ```
 
@@ -157,16 +157,16 @@ source | where CorrelationId matches regex "[0-9a-f]{8}-[0-9a-f]{4}"
 ### String comparisons
 
 ```kql
--- Case-insensitive equals
+// Case-insensitive equals
 source | where Status =~ "failed"
 
--- Case-sensitive equals
+// Case-sensitive equals
 source | where Status == "Failed"
 
--- Not equals
+// Not equals
 source | where Status != "Success"
 
--- In list
+// In list
 source | where Status in ("Failed", "Timeout", "Cancelled")
 ```
 
@@ -205,13 +205,13 @@ source | parse Message with "Request " RequestId " took " DurationMs " ms"
 ## Sorting and Limiting
 
 ```kql
--- Most recent first
+// Most recent first
 source | order by PreciseTimeStamp desc
 
--- Top 100 errors
+// Top 100 errors
 source | where Level <= 1 | take 100
 
--- Top 10 noisiest role instances
+// Top 10 noisiest role instances
 source | summarize count() by RoleInstance | order by count_ desc | take 10
 ```
 
@@ -261,33 +261,33 @@ These work: `==`, `!=`, `=~`, `!~`, `contains`/`!contains`, `contains_cs`/`!cont
 ### ICM Error Investigation Starter
 
 ```powershell
-dgrep search --event MyEvent --from -1h \
-  --identity "Tenant=WUS" \
-  --query "source | where Level <= 1 | project PreciseTimeStamp, Level, Message, CorrelationId" \
+dgrep search --event MyEvent --from -1h `
+  --identity "Tenant=WUS" `
+  --query "source | where Level <= 1 | project PreciseTimeStamp, Level, Message, CorrelationId" `
   --output table
 ```
 
 ### Count Errors by Type
 
 ```powershell
-dgrep search --event MyEvent --from -4h \
-  --query "source | where Level <= 1 | extend ErrorType = substring(Message, 0, 80) | summarize count() by ErrorType | order by count_ desc | take 20" \
+dgrep search --event MyEvent --from -4h `
+  --query "source | where Level <= 1 | extend ErrorType = substring(Message, 0, 80) | summarize count() by ErrorType | order by count_ desc | take 20" `
   --output table
 ```
 
 ### Find Specific Correlation ID
 
 ```powershell
-dgrep search --event MyEvent --from -6h \
-  --query "source | where CorrelationId == 'abc-123-def-456' | order by PreciseTimeStamp asc" \
+dgrep search --event MyEvent --from -6h `
+  --query "source | where CorrelationId == 'abc-123-def-456' | order by PreciseTimeStamp asc" `
   --output table
 ```
 
 ### Regex Search for Stack Traces
 
 ```powershell
-dgrep search --event MyEvent --from -2h \
-  --query "source | where Message matches regex 'System\\..*Exception' | project PreciseTimeStamp, Message | take 50" \
+dgrep search --event MyEvent --from -2h `
+  --query "source | where Message matches regex 'System\\..*Exception' | project PreciseTimeStamp, Message | take 50" `
   --output table
 ```
 
@@ -295,7 +295,7 @@ dgrep search --event MyEvent --from -2h \
 
 ## See Also
 
-- [DGrep Quick Start](dgrep-quickstart.md) — Get from zero to first query in 5 minutes
+- [DGrep Quick Start](dgrep-quickstart.md) *(coming soon)* — Get from zero to first query in 5 minutes
 - [DGrep Troubleshooting](dgrep-troubleshooting.md) — Common errors and fixes
 - [DGrep Sample Queries](dgrep-sample-queries.md) — Ready-to-use query examples
 - [Geneva DGrep KQL Reference](https://eng.ms/docs/products/geneva/logs/references/dgrepquerylanguage/kql) — Official supported-operator list
