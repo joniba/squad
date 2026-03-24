@@ -57,6 +57,34 @@
 
 **Deliverable Location**: `docs/investigations/icm-764634026/icm-764634026-investigation.md` (updated with Follow-up Q&A + Inventory sections)
 
+### 2025-07-22: ICM 764634026 — DEFINITIVE LOCAL INVESTIGATION (Corrects Prior Findings)
+
+**Context**: Jonathan flagged that two prior investigations relied on ADO code search instead of the local clone at `C:\dev\ti\SecEng-Augusta`. Requested definitive local-file investigation answering: (1) What code path uses `ClientCertCredential`? (2) What cert? (3) Does SecEng-Augusta actually need client auth migration?
+
+**CRITICAL CORRECTION — Prior findings were WRONG:**
+- **Previous claim:** "CRITICAL mTLS Client Auth Blocker" in TAXIIRequestSender.cs (lines 55-56, 97-98)
+- **Actual finding:** `ClientCertCredential` is **DEAD CODE**. The class exists in the TAXII.NET library but `new ClientCertCredential(` has **ZERO instantiations** in the entire SecEng-Augusta codebase.
+- **Production credential selection** (`TAXIIActor.cs:919-935`): Creates ONLY `ManagedIdentityTaxiiCredential` (internal TAXII, Bearer tokens) or `BasicAuthCredential` (external TAXII, username/password from KeyVault). No code path ever constructs `ClientCertCredential`.
+- **SR17 TAXII mTLS flag is a FALSE POSITIVE** — no client auth migration needed for TAXII paths.
+
+**Two Different "ClientCert" Classes (Previous Confusion Source):**
+1. `ClientCertCredential` (namespace `TAXII.NET.Credentials`) — custom library class for mTLS. **DEAD CODE — never instantiated.**
+2. `ClientCertificateCredential` (namespace `Azure.Identity`) — Azure SDK class for AAD token acquisition via cert assertion. **ACTIVE** — used in KeyVaultClient.cs, AugustaRuleProcessor.cs (3 variants), MstiConnectorsProcessor.cs. This is NOT mTLS; it signs JWT assertions for OAuth tokens.
+
+**Certificate:** `dakotakvreader` (subject name) — used by Azure SDK `ClientCertificateCredential` for AAD auth. This is service identity cert for Key Vault and Sentinel API access. NOT for TAXII mTLS. May need routine G1→G2 rotation but Azure SDK handles this transparently.
+
+**Root Cause of Prior Error:** ADO code search returned grep-like line matches showing `handler.ClientCertificates.Add()` in TAXIIRequestSender.cs, but never traced the **call chain** to determine if `ClientCertCredential` was actually instantiated. Reading the full `TAXIIActor.cs` (64KB) locally revealed the dead code nature.
+
+**METHODOLOGY LESSON — Evidence Source Priority:**
+- **LOCAL REPO FIRST** — always grep/read the local clone to trace full call chains
+- **ADO code search** returns pattern matches without context — it cannot distinguish live code from dead code
+- **For "is this code used?" questions:** search for constructor calls (`new ClassName(`), not class definitions or references
+- **For auth patterns:** trace from the entry point (e.g., Actor initialization) DOWN to credential creation, not from the library class UP
+
+**Deliverables:**
+- `docs/investigations/icm-764634026/taxii-net-local-investigation.md` — full investigation with 5 sections
+- `.squad/decisions/inbox/aragorn-local-taxii-final.md` — decision document superseding decision #4
+
 ### 2026-03-22: ICM 766712513 — ARM WATCHLISTS 5xx Errors (West Europe)
 - **Incident type:** LiveSite — ARM detected increased HTTP 5xx error rates. Severity 2, ACTIVE, Public cloud West Europe.
 - **Owning team:** Threat Intelligence (USX Threat Intelligence)

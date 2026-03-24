@@ -2217,3 +2217,98 @@ et472 project and add Microsoft.Geneva.DGrep.SDK without errors?
 
 **Reference:** Full analysis in docs/research/geneva-dgrep-research.md → "Approach Comparison: REST API vs .NET Framework SDK" section.
 
+
+---
+
+## 2026-03-24: Aragorn — TAXII.NET Investigation Corrections
+
+**Type:** Correction to prior investigation  
+**Date:** 2025-07-07  
+**Agent:** Aragorn  
+**Related incident:** ICM 764634026  
+**Full investigation:** \docs/investigations/icm-764634026/taxii-net-deep-investigation.md\
+
+### Corrections
+
+#### Correction 1: \CertStoreAadAppCertificateProvider\ repo attribution was wrong
+
+**Prior claim:** "\CertStoreAadAppCertificateProvider\ is part of SecEng-Augusta's cert flow into \TAXIIRequestSender\"
+
+**Correction:** This class does not exist in SecEng-Augusta. ADO search finds it only in \Sentinel-Common\ at \/src/Common/ServiceToServiceTokenProvider/Providers/CertStoreAadAppCertificateProvider.cs\. It is a service-to-service token provider unrelated to TAXII authentication.
+
+**Evidence:** ADO code search for \CertStoreAadAppCertificateProvider\ — 1 result, repo \Sentinel-Common\, zero results in \SecEng-Augusta\.
+
+#### Correction 2: Wrong file was cited as SecEng-Augusta's \TAXIIRequestSender.cs\
+
+**Prior claim:** "SecEng-Augusta's \TAXIIRequestSender.cs\ (lines 55-56, 97-98) contains \ClientCertificateOption.Manual\ as the mTLS blocker"
+
+**Correction:** The file that contains \ClientCertificateOption.Manual\ is in **SecEng-Interflow**, not SecEng-Augusta. SecEng-Augusta's version of \TAXIIRequestSender.cs\ (objectId \916297c4456542d2487bf2a6a199bc95844e14c\) uses \AntiSSRFPolicy\/\AntiSSRFHandler\ with \SslClientAuthenticationOptions.ClientCertificates\ — a different HTTP handler implementation without \ClientCertificateOption.Manual\. The prior investigation conflated two files from two different repos.
+
+**Evidence:** ADO search for \TAXIIRequestSender ClientCertificateOption\ — results only in \SecEng-Interflow\. Content of Augusta's file retrieved and confirmed: \AntiSSRFHandler\, no \ClientCertificateOption\.
+
+#### Correction 3: \ClientCertCredential\ is not used in production
+
+**Prior claim:** "The production auth flow routes through \ClientCertCredential\ → mTLS configuration is the current mechanism and the blocker for mTLS support"
+
+**Correction:** \TAXIIActor.TryInitializeTaxiiClient\ contains the only production credential selection logic and it has exactly two branches:
+- \IsInternalTaxii = true\ → \ManagedIdentityTaxiiCredential\ (Azure MI Bearer token, not mTLS)
+- \IsInternalTaxii = false\ → \BasicAuthCredential\ (password from Key Vault, not mTLS)
+
+\ClientCertCredential\ exists as a class but no production code instantiates it. It is dead code from a production-callpath perspective.
+
+**Evidence:** \TAXIIActor.cs\ content retrieved from SecEng-Augusta; \TryInitializeTaxiiClient\ method text confirmed — two branches only, no \ClientCertCredential\ branch.
+
+### Root Cause of Prior Investigation Errors
+
+The prior investigation appears to have relied on local file system access (\C:\dev\ti\SecEng-Augusta\...\) to read code, and may have had a stale or mismatched checkout. Two repos (\SecEng-Augusta\ and \SecEng-Interflow\) share the \TAXII.NET\ library namespace and similar file structures; the \ClientCertificateOption.Manual\ code was in the Interflow copy but was cited as Augusta code. Additionally, \CertStoreAadAppCertificateProvider\ was likely found through a workspace-wide IDE search that crossed repo boundaries.
+
+### What This Means for ICM 764634026
+
+The prior investigation's framing — that mTLS is the current auth mechanism and the blocker — appears to be incorrect. The actual TAXII auth uses:
+- **Bearer tokens** (Managed Identity) for internal TAXII servers
+- **Basic Auth** (Key Vault password) for external TAXII servers
+
+If the ICM was about mTLS, the root cause is likely that mTLS was never implemented in SecEng-Augusta in the first place (no production code path reaches \ClientCertCredential\), rather than being blocked by \ClientCertificateOption.Manual\ configuration.
+
+### Recommended Actions
+
+1. Re-examine ICM 764634026 with the corrected understanding of the actual auth flow
+2. If mTLS *is* the desired goal, the path forward is to add a \ClientCertCredential\ instantiation branch in \TryInitializeTaxiiClient\ — the lower layers (\TAXIIRequestSender\, \ClientCertCredential\) already exist and work
+3. Discard the \CertStoreAadAppCertificateProvider\ analysis — it is irrelevant to SecEng-Augusta TAXII
+
+---
+
+## 2026-03-24: Decision — SR17 TAXII mTLS False Positive — No Client Auth Migration Needed
+
+**ID:** aragorn-local-taxii-final  
+**Date:** 2025-07-22  
+**Author:** Aragorn (Operator)  
+**ICM:** 764634026  
+**Status:** PROPOSED  
+
+### Context
+
+SR17 flagged SecEng-Augusta's TAXII.NET library as requiring client auth migration because \TAXIIRequestSender.cs\ contains code that configures mTLS (\handler.ClientCertificates.Add()\). Two prior investigations (ADO search-based) classified this as a CRITICAL mTLS blocker requiring 5-8 weeks of dev work.
+
+### Decision
+
+**SR17 TAXII mTLS flag is a FALSE POSITIVE.** No code changes are needed.
+
+### Evidence
+
+1. \ClientCertCredential\ (TAXII.NET) is never instantiated — \
+ew ClientCertCredential(\ has ZERO matches across the entire SecEng-Augusta codebase
+2. \TAXIIActor.cs:919-935\ shows the only credential creation site creates \ManagedIdentityTaxiiCredential\ (internal) or \BasicAuthCredential\ (external)
+3. The mTLS handler configuration in \TAXIIRequestSender.cs:50-57,87-101\ is reachable library code but is dead code in the context of SecEng-Augusta deployment
+4. Full evidence chain documented in \docs/investigations/icm-764634026/taxii-net-local-investigation.md\
+
+### Recommended Actions
+
+1. Close the SR17 TAXII mTLS flag as false positive
+2. Verify \dakotakvreader\ cert issuer for standard MSPKI G1→G2 rotation (routine, no code changes)
+3. Optionally remove dead \ClientCertCredential\ code for hygiene
+
+### What Changed
+
+- Previous decision #4 ("TAXII Client Auth Remediation as separate task") is SUPERSEDED — no remediation needed
+- Priority for ICM-764634026 TAXII component drops to P3 (low — routine cert rotation only)
