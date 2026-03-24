@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using CommandLine;
 using CommandLine.Text;
 using DgrepCli.Auth;
@@ -75,18 +76,15 @@ namespace DgrepCli
             if (errors.Any())
                 return PrintValidationErrors(errors);
 
-            Console.WriteLine("Tail command parsed successfully.");
-            Console.WriteLine($"  Endpoint:   {opts.Endpoint}");
-            Console.WriteLine($"  Namespace:  {opts.Namespace}");
-            Console.WriteLine($"  Event:      {opts.Event}");
-            Console.WriteLine($"  From:       {opts.From}");
-            Console.WriteLine($"  To:         {opts.To}");
-            Console.WriteLine($"  Query:      {opts.Query}");
-            Console.WriteLine($"  Interval:   {opts.Interval}s");
-            Console.WriteLine($"  Output:     {opts.Output}");
-
-            Console.Error.WriteLine("\nNote: Streaming not yet implemented (Phase 2).");
-            return 0;
+            // TODO (#106): Wire to DgrepQueryExecutor when implemented.
+            // KustoQueryExecutor requires a Database parameter that DGrep does not use.
+            // Until DgrepQueryExecutor exists, every invocation would crash with a
+            // confusing ArgumentException before the first poll. Gate the command here
+            // with a clear, user-readable message instead.
+            Console.Error.WriteLine("Error: 'dgrep tail' is not yet available in this build.");
+            Console.Error.WriteLine("The DGrep SDK executor required for real-time polling has not been implemented.");
+            Console.Error.WriteLine("Use 'dgrep search' for one-shot DGrep queries in the meantime.");
+            return 1;
         }
 
         static int RunConfig(ConfigOptions opts)

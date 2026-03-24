@@ -7,12 +7,15 @@ namespace DgrepCli.Execution
 {
     /// <summary>
     /// Mock query executor for testing. Returns canned results or throws configured exceptions.
+    /// Supports single-result mode (WithResult) and sequential-results mode (WithResults).
     /// </summary>
     public class MockQueryExecutor : IQueryExecutor
     {
         private QueryResult _result;
         private Exception _exception;
         private TimeSpan _delay = TimeSpan.Zero;
+        private Queue<QueryResult> _resultQueue;
+        private Func<int, QueryResult> _resultFactory;
 
         /// <summary>
         /// Captured arguments from the last ExecuteAsync call.
@@ -22,12 +25,49 @@ namespace DgrepCli.Execution
         public int ExecutionCount { get; private set; }
 
         /// <summary>
+        /// All queries captured across every ExecuteAsync call (for tail/polling tests).
+        /// </summary>
+        public List<string> AllQueries { get; } = new List<string>();
+
+        /// <summary>
+        /// All options captured across every ExecuteAsync call (for tail/polling tests).
+        /// </summary>
+        public List<QueryOptions> AllOptions { get; } = new List<QueryOptions>();
+
+        /// <summary>
         /// Configure the result to return on next execution.
         /// </summary>
         public MockQueryExecutor WithResult(QueryResult result)
         {
             _result = result;
             _exception = null;
+            _resultQueue = null;
+            _resultFactory = null;
+            return this;
+        }
+
+        /// <summary>
+        /// Configure a sequence of results. Each call to ExecuteAsync pops the next result.
+        /// After exhaustion, returns an empty QueryResult.
+        /// </summary>
+        public MockQueryExecutor WithResults(params QueryResult[] results)
+        {
+            _resultQueue = new Queue<QueryResult>(results);
+            _result = null;
+            _exception = null;
+            _resultFactory = null;
+            return this;
+        }
+
+        /// <summary>
+        /// Configure a factory that receives the 0-based call index and returns a result.
+        /// </summary>
+        public MockQueryExecutor WithResultFactory(Func<int, QueryResult> factory)
+        {
+            _resultFactory = factory;
+            _result = null;
+            _exception = null;
+            _resultQueue = null;
             return this;
         }
 
@@ -38,6 +78,8 @@ namespace DgrepCli.Execution
         {
             _exception = ex;
             _result = null;
+            _resultQueue = null;
+            _resultFactory = null;
             return this;
         }
 
@@ -74,6 +116,8 @@ namespace DgrepCli.Execution
         {
             LastQuery = query;
             LastOptions = options;
+            AllQueries.Add(query);
+            AllOptions.Add(options);
             ExecutionCount++;
 
             if (_delay > TimeSpan.Zero)
@@ -85,6 +129,12 @@ namespace DgrepCli.Execution
 
             if (_exception != null)
                 throw _exception;
+
+            if (_resultFactory != null)
+                return _resultFactory(ExecutionCount - 1);
+
+            if (_resultQueue != null && _resultQueue.Count > 0)
+                return _resultQueue.Dequeue();
 
             return _result ?? new QueryResult();
         }
