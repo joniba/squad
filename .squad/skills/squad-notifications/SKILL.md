@@ -64,7 +64,15 @@ Teams webhooks accept **Adaptive Card** payloads. All squad notifications MUST u
 
 ## How to Send a Notification
 
-Use the reusable script at `scripts/send-teams-notification.ps1`:
+There are TWO notification systems. The old system is active; the new system is built but has no callers yet.
+
+### Old System (ACTIVE — 2 callers)
+
+`scripts/send-teams-notification.ps1` — simple Title+Body notification sender.
+
+**Callers:**
+- `scripts/icm-scan.ps1` (line 286) — ICM incident alerts
+- `scripts/squad-daily-summary.ps1` (line 56) — daily summary
 
 ```powershell
 # Basic usage (reads webhook URL from default location)
@@ -74,7 +82,32 @@ Use the reusable script at `scripts/send-teams-notification.ps1`:
 .\scripts\send-teams-notification.ps1 -Title "Daily Summary" -Body "3 blocked, 1 stale PR" -WebhookFile "C:\path\to\webhook.url"
 ```
 
-For the daily summary specifically, use `scripts/squad-daily-summary.ps1` which queries GitHub and calls `send-teams-notification.ps1` automatically.
+> ⚠️ **Do NOT remove or replace the old system until the new system's MVP callers are validated end-to-end.**
+
+### New System (BUILT — 0 callers yet)
+
+`scripts/notify.ps1` — structured notification router with event schemas, deduplication, and recovery.
+
+**Supporting scripts:**
+- `scripts/notification-recovery.ps1` — retry/recovery for failed deliveries
+- `scripts/notification-scheduler.ps1` — scheduled/batched notification delivery
+
+**Planned MVP callers (not yet built — see issues #132–#135):**
+- `scripts/notify-feature-complete.ps1` — batched hourly, concise summary of big completed features
+- `scripts/notify-blocked.ps1` — immediate notification when anything requires Jonathan's urgent attention
+
+```powershell
+# New system dry-run example
+.\scripts\notify.ps1 -Type "urgent" -Event @{
+    eventId = "test:$(Get-Date -Format 'yyyy-MM-ddTHH-mm-ss')"
+    title = "🔴 Blocked — agent needs human input"
+    reason = "Elrond can't find solution"
+    actionUrl = "https://github.com/jbenami_microsoft/ms-pa/issues/999"
+    actionLabel = "View Issue"
+} -DryRun
+```
+
+For the daily summary specifically, use `scripts/squad-daily-summary.ps1` which queries GitHub and calls `send-teams-notification.ps1` (old system) automatically.
 
 ## Security Rules
 

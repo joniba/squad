@@ -66,7 +66,11 @@
 | Fix implemented but retry still fails | ✅ **Yes** — the fix didn't work |
 | **Aragorn fails during an active livesite incident** | ✅ **Yes** — operational urgency overrides the pipeline. Don't wait for Elrond. |
 
-**How to notify:** Post to Teams webhook (`~/.squad/teams-webhook.url`) with a brief summary. Tag the GitHub issue `needs-human`. Include: what failed, what was tried, what's needed from Jonathan.
+**How to notify:**
+- **Current (old system):** Call `scripts/send-teams-notification.ps1` with a brief summary. This is the active system with proven delivery.
+- **Target (once MVP is validated):** Call `scripts/notify-blocked.ps1` which invokes `notify.ps1` with Type='urgent' and structured event data. This provides deduplication, retry, and richer Adaptive Card formatting.
+- **Migration plan:** Switch to `notify-blocked.ps1` ONLY after end-to-end validation (issue #135). Until then, use the old system.
+- Tag the GitHub issue `needs-human`. Include: what failed, what was tried, what's needed from Jonathan.
 
 ## Failure Report Format
 
