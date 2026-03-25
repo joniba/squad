@@ -117,3 +117,11 @@ Failed Agent → Gandalf (triage) → Elrond (research, opus) → Gandalf (revie
     - Any file outside .squad/ (project artifacts)
     
     The coordinator MUST NOT include out-of-scope files in Scribe's git add. If an agent produced files outside Scribe's scope, those files stay uncommitted until a proper PR is created.
+
+27. **GitHub account auto-recovery** — when any `gh` CLI command fails with a permissions or repository-not-found error (e.g., "Could not resolve to a Repository"), the coordinator MUST:
+    1. Run `gh auth status` to identify the active account
+    2. Extract the expected owner from the git remote: `git remote get-url origin`
+    3. If the active account doesn't match the remote owner, switch: `gh auth switch --hostname github.com --user {correct_user}`
+    4. Retry the failed command once
+    5. If it still fails after switching, THEN fire a Rule 25 infrastructure notification and inform the user
+    The coordinator MUST NOT silently skip GitHub operations due to account mismatches. Automatic recovery is attempted before escalation.
