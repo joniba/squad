@@ -217,7 +217,7 @@ SentinelLogEntry
 - Measuring API latency percentiles
 - Identifying which API components are failing (StixController, StixStore, etc.)
 - Tracking API success rates by data center
-- Cross-referencing API errors with ARM ARM watchlist incidents
+- Cross-referencing API errors with ARM watchlist incidents
 
 **Key columns:**
 
@@ -765,6 +765,39 @@ Use these baselines to calibrate monitoring and alerting:
 - **RP-side queries:** `securityinsights.kusto.windows.net` / `SecurityInsightsProd` (for Watchlist RP data)
 - **IcM data warehouse:** `icmcluster.kusto.windows.net` / `IcMDataWarehouse` (for incident history)
 - **Watchlist incidents:** ICM 767815474, 767416366 (ARM watchlist errors — cross-reference with this cluster)
+
+### ICM Incident Lookup via Kusto
+
+⚠️ These queries target `icmcluster.kusto.windows.net` / `IcMDataWarehouse`. **Table and field names are templates — verify against the actual schema before first use.** Connect with: `az account get-access-token --resource https://kusto.kusto.windows.net`
+
+**ICM Incident Lookup by ID (verify table/field names)**
+
+```kql
+IncidentHistory
+| where IncidentId == <INCIDENT_ID>
+| project IncidentId, Title, Severity, Status, CreateDate, OwningTeamId
+| order by CreateDate desc
+```
+
+**Recent High-Severity Incidents for a Team**
+
+```kql
+IncidentHistory
+| where CreateDate > ago(7d)
+| where Severity <= 2
+| where OwningTeamName contains "ThreatIntelligence"
+| summarize count() by Severity, Status
+| order by Severity asc
+```
+
+**Incident Trend (daily counts by severity)**
+
+```kql
+IncidentHistory
+| where CreateDate > ago(30d)
+| summarize DailyCount=count() by bin(CreateDate, 1d), Severity
+| order by CreateDate desc
+```
 
 **Contact:**
 
