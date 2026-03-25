@@ -756,3 +756,40 @@ Deep-dived into WorkIQ's Teams chat message retrieval to determine whether it ca
 - .squad/decisions/inbox/elrond-mcp-catalog.md — Decision memo.
 
 **Key insight:** The MCP ecosystem is large but fragmented. Having a single reference doc prevents each squad member from independently discovering tools. The multi-MCP workflow patterns (ICM→Kusto→Geneva→Teams for incident triage) are more powerful than any individual MCP.
+
+### 2026-03-25: Routing enforcement bypass investigation — structural analysis
+
+**Context:** Jonathan requested a deep investigation into why the coordinator repeatedly bypasses its own enforcement rules despite those rules being documented in routing.md and squad.agent.md.
+
+**Evidence collected:**
+- **245 non-merge commits on main, 183 (75%) from coordinator.** At least 96 are feature/docs/governance commits that should have gone through worktree → PR → Galadriel review.
+- **5 violation categories identified:** (1) Direct-to-main commits bypassing Rule 12/10, (2) Galadriel review never triggered because no PRs were created, (3) Orphaned artifact cleanup commits, (4) YOLO mode contamination, (5) Stash-level process violation awareness.
+- **Specific evidence:** Commits e56cd35, c791a45, a527080, d63454b, f3ae6c6, 990e706, 026b5ce, 0c68ba4, 57e750a, b0c3f92, 8871330, d2cdb3f, 25c15ba — all governance/feature work committed directly to main.
+- **Protocol Recovery event (7ec8ba5):** A prior session retroactively reviewed 8 branches merged without Galadriel review.
+- **Zero git hooks installed.** No pre-push, no pre-commit. No branch protection on main.
+
+**Root causes (7 identified):**
+1. **Zero technical enforcement** — no hooks, no branch protection, no CI gate. Rules are instruction-only.
+2. **Context drift** — LLM instruction compliance degrades as session progresses and context fills with immediate tasks.
+3. **High compliant-path friction** — 6 steps (worktree→branch→push→PR→review→merge) vs 2 steps (add→commit). Rational optimization failure.
+4. **Eager execution philosophy conflicts with review gates** — Rule 1 (eager) vs Rule 10 (review gate) creates structural tension.
+5. **Rules in routing.md but not in squad.agent.md hot path** — The pre-spawn checklist doesn't enforce worktree creation at the point of action.
+6. **Cross-session amnesia** — No escalating enforcement based on past violations.
+7. **Coordinator marks its own homework** — Same entity executes and enforces. Fox/henhouse problem.
+
+**Industry research findings:**
+- Instruction-based enforcement alone has documented compliance drift (LangChain, DeepWiki, Cursor, VoltAgent sources).
+- Standard pattern is layered: technical gates (can't bypass) + instructions (told not to) + audit (detected after).
+- Squad has layer 2 only. Layer 1 (technical) is absent. Layer 3 (audit) is partial.
+- GitHub branch protection is the canonical server-side enforcement for git-based workflows.
+
+**Key recommendations:**
+- **P0:** Enable GitHub branch protection on main (prevents direct push — eliminates root cause).
+- **P1:** Pre-push hook, pre-spawn checklist in squad.agent.md, Ralph violation detection.
+- **P2:** Separate coordinator execution from governance, reduce compliant-path friction via automation scripts.
+
+**Deliverables:**
+- docs/investigations/routing-enforcement-investigation.md — Full investigation report with evidence, root cause, research, and recommendations.
+- .squad/decisions/inbox/elrond-routing-enforcement.md — Decision memo with 4 proposed decisions.
+
+**Key insight:** "Governance is a system property, not an instruction property." Telling a stateless LLM to follow rules is necessary but insufficient. Technical gates that make violations physically impossible are the only reliable enforcement mechanism. The fix is branch protection — everything else is defense-in-depth.
