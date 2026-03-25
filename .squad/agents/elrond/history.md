@@ -736,3 +736,23 @@ Deep-dived into WorkIQ's Teams chat message retrieval to determine whether it ca
 - .squad/decisions/inbox/elrond-dgrep-approach.md — Decision memo recommending SDK wrapper approach.
 
 **Key insight:** The original research defaulted to "build from scratch" because it assumed cross-platform was needed. Once that assumption was removed, the analysis flipped completely. Always challenge requirements before choosing the harder path.
+
+### 2026-03-24: MCP ecosystem catalog — comprehensive reference
+
+**Context:** Jonathan requested a complete catalog of all MCP servers available in the Agency ecosystem and local environment. Created `docs/mcp-catalog.md`.
+
+**Key findings:**
+- **28 MCPs identified** across Agency (22), Standalone (7 in mcp-config.json), and Platform-provided (2). Currently 13 active providing ~200+ tools.
+- **Azure MCP (@azure/mcp) is the single largest MCP** — 100+ tools across 30+ Azure service domains, from AKS to Well-Architected Framework. It subsumes several standalone tools (Kusto, Monitor, Storage, etc.).
+- **Three ADO instances configured** with different organizations (msazure/One, microsoft/WDATP, and a third azure-devops instance), each providing 80+ tools. Tool names are prefixed with the config key to disambiguate.
+- **Agency acts as both a launcher and a proxy.** For some MCPs (like ICM), Agency runs as an HTTP proxy to Microsoft internal services with automatic EntraID token injection. For stdio-based MCPs, it spawns processes.
+- **Geneva MCP best practice:** Always call `list_metric_preaggregations` before complex metric queries — unsupported dimension combinations cause silent failures.
+- **WorkIQ rate limiting:** One query per agent cycle. Poll-based with indexing delay — designed for batch summaries, not real-time.
+- **Bluebird (Engineering Copilot Mini)** is an underutilized semantic code search MCP that goes beyond grep — understands code semantics, finds implementations, traces call chains across ADO repos.
+- **EngHub docs for MCPs are scattered** — no single canonical reference. Best sources: GEAR-Core training page and Agency MCP docs.
+
+**Deliverables:**
+- docs/mcp-catalog.md — Comprehensive catalog with quick reference table, detailed sections for all 28 MCPs, configuration guide, and squad integration notes.
+- .squad/decisions/inbox/elrond-mcp-catalog.md — Decision memo.
+
+**Key insight:** The MCP ecosystem is large but fragmented. Having a single reference doc prevents each squad member from independently discovering tools. The multi-MCP workflow patterns (ICM→Kusto→Geneva→Teams for incident triage) are more powerful than any individual MCP.

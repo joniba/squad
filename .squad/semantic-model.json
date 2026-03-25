@@ -50,9 +50,27 @@
     },
     {
       "type": "agent",
+      "charter_path": ".squad/agents/ralph/charter.md",
+      "role": "Work Monitor",
+      "id": "agent:ralph"
+    },
+    {
+      "type": "agent",
       "charter_path": ".squad/agents/scribe/charter.md",
       "role": "Session Logger",
       "id": "agent:scribe"
+    },
+    {
+      "type": "decision",
+      "title": "2026-03-24: DGrep Auth & SDK Findings (Gimli)",
+      "author": "Gimli (Tool Builder)",
+      "id": "decision:2026-03-24-dgrep-auth-sdk-findings-gimli"
+    },
+    {
+      "type": "decision",
+      "title": "2026-03-24: Galadriel Hiring Process Audit & Fix (Coordinator)",
+      "author": "Squad (Coordinator)",
+      "id": "decision:2026-03-24-galadriel-hiring-process-audit-fix-coordinator"
     },
     {
       "type": "decision",
@@ -333,6 +351,27 @@
     {
       "status": "**",
       "type": "doc",
+      "title": "🔵 Feature Complete: X",
+      "tags": [],
+      "id": "doc:docs/designs/human-attention-notifications.md"
+    },
+    {
+      "status": "**",
+      "type": "doc",
+      "title": "issue-hygiene",
+      "tags": [],
+      "id": "doc:docs/designs/issue-hygiene.md"
+    },
+    {
+      "status": "**",
+      "type": "doc",
+      "title": "milestone-feature-lifecycle",
+      "tags": [],
+      "id": "doc:docs/designs/milestone-feature-lifecycle.md"
+    },
+    {
+      "status": "**",
+      "type": "doc",
       "title": "...",
       "tags": [],
       "id": "doc:docs/designs/notifications-mvp-plan.md"
@@ -352,11 +391,11 @@
       "id": "doc:docs/designs/notifications-tamir-xref.md"
     },
     {
-      "status": "**",
+      "status": "unknown",
       "type": "doc",
-      "title": "🔵 Feature Complete: X",
+      "title": "notifications-task-plan",
       "tags": [],
-      "id": "doc:docs/designs/proactive-notifications.md"
+      "id": "doc:docs/designs/notifications-task-plan.md"
     },
     {
       "status": "final",
@@ -371,6 +410,34 @@
         "final"
       ],
       "id": "doc:docs/guides/agent-dashboard-setup.md"
+    },
+    {
+      "status": "**",
+      "type": "doc",
+      "title": "dgrep-integration-testing",
+      "tags": [],
+      "id": "doc:docs/guides/dgrep-integration-testing.md"
+    },
+    {
+      "status": "unknown",
+      "type": "doc",
+      "title": "dgrep-kql-cheatsheet",
+      "tags": [],
+      "id": "doc:docs/guides/dgrep-kql-cheatsheet.md"
+    },
+    {
+      "status": "unknown",
+      "type": "doc",
+      "title": "dgrep-sample-queries",
+      "tags": [],
+      "id": "doc:docs/guides/dgrep-sample-queries.md"
+    },
+    {
+      "status": "unknown",
+      "type": "doc",
+      "title": "dgrep-troubleshooting",
+      "tags": [],
+      "id": "doc:docs/guides/dgrep-troubleshooting.md"
     },
     {
       "status": "final",
@@ -413,6 +480,19 @@
         "troubleshooting"
       ],
       "id": "doc:docs/guides/notifications-guide.md"
+    },
+    {
+      "status": "published",
+      "type": "doc",
+      "title": "Teams Notification System — Runbook & Integration Guide",
+      "tags": [
+        "notifications",
+        "teams",
+        "integration",
+        "runbook",
+        "operations"
+      ],
+      "id": "doc:docs/guides/notifications-runbook.md"
     },
     {
       "status": "unknown",
@@ -540,6 +620,13 @@
       "id": "doc:docs/investigations/112-pre-design-scan.md"
     },
     {
+      "status": "unknown",
+      "type": "doc",
+      "title": "135-e2e-validation-results",
+      "tags": [],
+      "id": "doc:docs/investigations/135-e2e-validation-results.md"
+    },
+    {
       "status": "final",
       "type": "doc",
       "title": "Aragorn ICM Investigation — Capability Upgrade Analysis",
@@ -636,6 +723,41 @@
       "title": "ICM 764634026 — MSPKI G1→G2 Root CA Migration Resolution Walkthrough",
       "tags": [],
       "id": "doc:docs/investigations/icm-764634026/icm-764634026-resolution.md"
+    },
+    {
+      "status": "unknown",
+      "type": "doc",
+      "title": "mtls-check-amba-situationalawareness",
+      "tags": [],
+      "id": "doc:docs/investigations/icm-764634026/mtls-check-amba-situationalawareness.md"
+    },
+    {
+      "status": "unknown",
+      "type": "doc",
+      "title": "mtls-check-sentinel-tiautomation",
+      "tags": [],
+      "id": "doc:docs/investigations/icm-764634026/mtls-check-sentinel-tiautomation.md"
+    },
+    {
+      "status": "unknown",
+      "type": "doc",
+      "title": "mtls-validation-guide",
+      "tags": [],
+      "id": "doc:docs/investigations/icm-764634026/mtls-validation-guide.md"
+    },
+    {
+      "status": "unknown",
+      "type": "doc",
+      "title": "taxii-net-deep-investigation",
+      "tags": [],
+      "id": "doc:docs/investigations/icm-764634026/taxii-net-deep-investigation.md"
+    },
+    {
+      "status": "**",
+      "type": "doc",
+      "title": "taxii-net-local-investigation",
+      "tags": [],
+      "id": "doc:docs/investigations/icm-764634026/taxii-net-local-investigation.md"
     },
     {
       "status": "complete",
@@ -824,6 +946,13 @@
       "id": "doc:docs/research/worktrees/worktree-parallelism-research.md"
     },
     {
+      "status": "**",
+      "type": "doc",
+      "title": "pr-150-governance-review",
+      "tags": [],
+      "id": "doc:docs/reviews/pr-150-governance-review.md"
+    },
+    {
       "status": "unknown",
       "type": "doc",
       "title": "TiExpert - agent skills and scripts",
@@ -843,184 +972,344 @@
       "id": "doc:docs/reviews/pr-review-15064785.md"
     },
     {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "Scribe: Process manifest ΓÇö log 4 agent completions, 6 issues closed, Boromir hired",
-      "id": "commit:4e3112b"
+      "status": "unknown",
+      "type": "doc",
+      "title": "review-105-dgrep-sdk-executor",
+      "tags": [],
+      "id": "doc:docs/reviews/review-105-dgrep-sdk-executor.md"
+    },
+    {
+      "status": "✅",
+      "type": "doc",
+      "title": "review-106-dgrep-tail-command",
+      "tags": [],
+      "id": "doc:docs/reviews/review-106-dgrep-tail-command.md"
+    },
+    {
+      "status": "429\"`.",
+      "type": "doc",
+      "title": "review-108-dgrep-error-handling",
+      "tags": [],
+      "id": "doc:docs/reviews/review-108-dgrep-error-handling.md"
+    },
+    {
+      "status": "unknown",
+      "type": "doc",
+      "title": "review-112-notifications-cleanup",
+      "tags": [],
+      "id": "doc:docs/reviews/review-112-notifications-cleanup.md"
+    },
+    {
+      "status": "CHANGES_REQUESTED**",
+      "type": "doc",
+      "title": "review-119-dgrep-docs-gaps",
+      "tags": [],
+      "id": "doc:docs/reviews/review-119-dgrep-docs-gaps.md"
+    },
+    {
+      "status": "unknown",
+      "type": "doc",
+      "title": "review-132-notifications-mvp-scripts",
+      "tags": [],
+      "id": "doc:docs/reviews/review-132-notifications-mvp-scripts.md"
+    },
+    {
+      "status": "unknown",
+      "type": "doc",
+      "title": "review-134-notifications-coordinator-wiring",
+      "tags": [],
+      "id": "doc:docs/reviews/review-134-notifications-coordinator-wiring.md"
+    },
+    {
+      "status": "unknown",
+      "type": "doc",
+      "title": "review-135-notifications-e2e-validation",
+      "tags": [],
+      "id": "doc:docs/reviews/review-135-notifications-e2e-validation.md"
+    },
+    {
+      "status": "unknown",
+      "type": "doc",
+      "title": "Galadriel PR Review #143: Teams Notification System Runbook",
+      "tags": [],
+      "id": "doc:docs/reviews/review-pr143-notifications-docs.md"
+    },
+    {
+      "status": "unknown",
+      "type": "doc",
+      "title": "review-pr144-ti-skillmd",
+      "tags": [],
+      "id": "doc:docs/reviews/review-pr144-ti-skillmd.md"
     },
     {
       "type": "commit",
       "author": "Jonathan Ben Ami",
-      "message": "Scribe: Manifest processing ΓÇö notifications MVP + DGrep docs (issues #132, #133, #109)",
-      "id": "commit:112fe4e"
+      "message": "decision: coordinator must verify tool availability before declaring blocked",
+      "id": "commit:55963dc"
     },
     {
       "type": "commit",
       "author": "Jonathan Ben Ami",
-      "message": "feat(.squad): hire Boromir as adversarial design reviewer",
-      "id": "commit:7327f63"
-    },
-    {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "Scribe: Orchestration logs, session consolidation, decision merge",
-      "id": "commit:a420f13"
-    },
-    {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "docs: gandalf history update + dgrep kusto audit decision",
-      "id": "commit:792a0cf"
-    },
-    {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "Scribe: Process Gandalf #112 scan task ΓÇö orchestration log, session log, decision inbox merge, agent history updates",
-      "id": "commit:dd7ea19"
-    },
-    {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "docs(.squad): worktree enforcement design record",
-      "id": "commit:38fdf53"
-    },
-    {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "fix(squad): enforce worktree isolation in coordinator spawn template",
-      "id": "commit:7fa27e3"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "chore(.squad): Scribe merge ΓÇö decisions, gandalf history, semantic model update",
-      "id": "commit:ba8d49d"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "fix(squad): repair UTF-8 mojibake in Galadriel charter & history",
-      "id": "commit:ead83f1"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "fix(squad): restore Galadriel to roster",
-      "id": "commit:0dfabe0"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "Merge branch 'main' of https://github.com/jbenami_microsoft/ms-pa",
-      "id": "commit:4d354d6"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "docs: DGrep correction plan ΓÇö wrong SDK, full reflection + action items",
-      "id": "commit:74f25fc"
+      "message": "chore: commit orphaned agent artifacts (design doc, reviews, SKILL.md update)",
+      "id": "commit:026b5ce"
     },
     {
       "type": "commit",
       "author": "Yoni Ben-Ami",
-      "message": "[squad] Frodo charter v2 ΓÇö proper TI domain charter (#131)",
-      "id": "commit:35666e3"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "docs: notification MVP plan ΓÇö feature complete + blocked on human",
-      "id": "commit:247b2b5"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "docs: TI domain research for Frodo charter redesign",
-      "id": "commit:0dc45bc"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "fix(dgrep): Windows process runner for az.cmd invocation (#110)",
-      "id": "commit:e333d9c"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "docs: notifications status assessment ΓÇö honest gap analysis",
-      "id": "commit:78c049b"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "Merge branch 'main' of https://github.com/jbenami_microsoft/ms-pa",
-      "id": "commit:5345926"
+      "message": "Remove Rule 15: governance through PR review (#150)",
+      "id": "commit:6d5108c"
     },
     {
       "type": "commit",
       "author": "Yoni Ben-Ami",
-      "message": "[dgrep-cli] Phase 2.2: Saved queries (#105) (#130)",
-      "id": "commit:f01518a"
+      "message": "feat: improve blocked notification card with per-issue links and details (#148) (#149)",
+      "id": "commit:16dd435"
     },
     {
       "type": "commit",
-      "author": "Elrond",
-      "message": "Merge branch 'main' of https://github.com/jbenami_microsoft/ms-pa",
-      "id": "commit:2d1c369"
+      "author": "Jonathan Ben Ami",
+      "message": "refactor: merge Rule 27 (blocked notifications) into Rule 16 ΓÇö reduce rule sprawl",
+      "id": "commit:25c15ba"
     },
     {
       "type": "commit",
-      "author": "Yoni Ben-Ami",
-      "message": "[dgrep-cli] Phase 2.1: Authentication integration (#104) (#129)",
-      "id": "commit:f28aebd"
-    },
-    {
-      "type": "commit",
-      "author": "Elrond",
-      "message": "Merge branch 'main' of https://github.com/jbenami_microsoft/ms-pa",
-      "id": "commit:72c4cca"
+      "author": "Jonathan Ben Ami",
+      "message": "feat: add Rule 27 blocked notification enforcement (#145)",
+      "id": "commit:8871330"
     },
     {
       "type": "commit",
       "author": "Yoni Ben-Ami",
-      "message": "[dgrep-cli] Phase 1.3: Query execution engine (#103) (#128)",
-      "id": "commit:7646597"
+      "message": "[docs] Notifications runbook (#143)",
+      "id": "commit:6680471"
     },
     {
       "type": "commit",
-      "author": "Elrond",
-      "message": "docs: notifications system guide (#120)",
-      "id": "commit:dbe50ee"
+      "author": "Jonathan Ben Ami",
+      "message": "Fix #140: Make reviewer verdicts binary and mutually exclusive",
+      "id": "commit:d2cdb3f"
     },
     {
       "type": "commit",
-      "author": "Yoni Ben-Ami",
-      "message": "[notifications] Phase 1.3: Scheduler integration (#117) (#127)",
-      "id": "commit:50f22c1"
+      "author": "Jonathan Ben Ami",
+      "message": "governance: issue hygiene and worktree cleanup rules (#142)",
+      "id": "commit:d63454b"
     },
     {
       "type": "commit",
-      "author": "Elrond",
-      "message": "Merge branch 'main' of https://github.com/jbenami_microsoft/ms-pa",
-      "id": "commit:2c74e5e"
+      "author": "Jonathan Ben Ami",
+      "message": "governance: implement milestone-based feature lifecycle (#141)",
+      "id": "commit:f3ae6c6"
     },
     {
       "type": "commit",
-      "author": "Yoni Ben-Ami",
-      "message": "[squad] Clean up Frodo's charter ΓÇö TI Domain Backend Engineer (#126)",
-      "id": "commit:31f5e5b"
+      "author": "Jonathan Ben Ami",
+      "message": "feat(governance): add Rule 17 issue-tracked work + update Gandalf charter",
+      "id": "commit:990e706"
     },
     {
       "type": "commit",
-      "author": "Elrond",
-      "message": "Merge branch 'main' of https://github.com/jbenami_microsoft/ms-pa",
-      "id": "commit:d0f34d0"
+      "author": "Jonathan Ben Ami",
+      "message": "fix(routing): correct Rule 16 params + add notifications task plan",
+      "id": "commit:33e9e3d"
     },
     {
       "type": "commit",
-      "author": "Yoni Ben-Ami",
-      "message": "[dgrep-cli] Phase 1.2: Config file management (#102) (#124)",
-      "id": "commit:fbe279d"
+      "author": "Jonathan Ben Ami",
+      "message": "feat(routing): add notification rule for significant completions",
+      "id": "commit:1b5af79"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "Scribe: Merge inbox decisions, mark SR17 TAXII mTLS as false positive",
+      "id": "commit:917fbf0"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "docs: definitive TAXII.NET investigation using local files",
+      "id": "commit:ed33872"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "fix(charter): make local TI repos primary evidence source for Aragorn",
+      "id": "commit:49e2f0e"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "docs: add TAXII.NET deep investigation with corrected evidence chains",
+      "id": "commit:c006eb2"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "Session Log: 2026-03-24 TAXII Deep Investigation Corrections",
+      "id": "commit:0209f71"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "Protocol recovery completion: 8-branch retroactive review cycle documented. Galadriel review cycle completed (Cycle 1: 18 findings, authors fixed, Cycle 2: all APPROVED). Merge sequence: 105ΓåÆ106ΓåÆ108ΓåÆ119ΓåÆ132ΓåÆ134 (2 conflicts resolved, 298+ tests pass). Cross-agent learnings captured in history.md files (5 agents: Galadriel, Gimli, Bilbo, Gandalf, Aragorn). Enforcement wiring active (routing.md Rule 10: Galadriel PR gate). TAXII remediation task escalated separately. Decision inbox consolidated.",
+      "id": "commit:7ec8ba5"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "Merge squad/134-notifications-coordinator-wiring (resolved failure-recovery.md: use dispatcher version)",
+      "id": "commit:9953bdf"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "Merge branch 'squad/132-notifications-mvp-scripts'",
+      "id": "commit:36e66b1"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "Merge branch 'squad/119-dgrep-docs-gaps'",
+      "id": "commit:a0a9da2"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "Merge squad/108-dgrep-error-handling (resolved conflicts: use DgrepQueryExecutor with RetryingQueryExecutor, remove re-added QueryCommand)",
+      "id": "commit:5f0fb93"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "Merge branch 'squad/106-dgrep-tail-command'",
+      "id": "commit:e621e87"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "Merge branch 'squad/105-dgrep-sdk-executor'",
+      "id": "commit:ea390fe"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "review: Galadriel Cycle 2 re-review of #108 dgrep error handling ΓÇö APPROVED",
+      "id": "commit:4a3457f"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "fix: address Galadriel review findings for #119",
+      "id": "commit:53764d2"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "fix: address Galadriel review findings for #106",
+      "id": "commit:f59d9fe"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "fix: address Galadriel review findings for #108",
+      "id": "commit:b7eea10"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "fix: address Galadriel review findings for #134",
+      "id": "commit:3b75209"
+    },
+    {
+      "labels": [
+        "squad",
+        "squad:gandalf"
+      ],
+      "type": "issue",
+      "title": "Rule: coordinator must attempt work before declaring blocked",
+      "state": "OPEN",
+      "id": "issue:152"
+    },
+    {
+      "labels": [
+        "squad",
+        "squad:gandalf"
+      ],
+      "type": "issue",
+      "title": "Wire Teams notification for investigation completion",
+      "state": "OPEN",
+      "id": "issue:151"
+    },
+    {
+      "labels": [
+        "squad",
+        "squad:gandalf"
+      ],
+      "type": "issue",
+      "title": "Improve blocked notification card: add links and per-issue details",
+      "state": "CLOSED",
+      "id": "issue:148"
+    },
+    {
+      "labels": [
+        "squad",
+        "squad:gandalf"
+      ],
+      "type": "issue",
+      "title": "Remove Rule 15: governance must go through PR review",
+      "state": "CLOSED",
+      "id": "issue:147"
+    },
+    {
+      "labels": [
+        "squad",
+        "squad:aragorn"
+      ],
+      "type": "issue",
+      "title": "ICM 767815474: ARM has detected that customers making requests to [MICROSOFT.SECURITYINSIGHTS/WATCHLISTS] (prd-weu-402.sentinel.microsoft.com) through ARM are experiencing increased error rates",
+      "state": "OPEN",
+      "id": "issue:146"
+    },
+    {
+      "labels": [
+        "squad",
+        "squad:gandalf"
+      ],
+      "type": "issue",
+      "title": "Wire blocked-on-human notification as enforced rule",
+      "state": "CLOSED",
+      "id": "issue:145"
+    },
+    {
+      "labels": [
+        "squad",
+        "squad:gandalf"
+      ],
+      "type": "issue",
+      "title": "Design: Issue hygiene and worktree cleanup procedures",
+      "state": "CLOSED",
+      "id": "issue:142"
+    },
+    {
+      "labels": [
+        "squad",
+        "squad:gandalf"
+      ],
+      "type": "issue",
+      "title": "Design milestone-based feature lifecycle",
+      "state": "CLOSED",
+      "id": "issue:141"
+    },
+    {
+      "labels": [
+        "squad",
+        "squad:gandalf"
+      ],
+      "type": "issue",
+      "title": "Fix reviewer charters: APPROVE and REJECT must be mutually exclusive",
+      "state": "CLOSED",
+      "id": "issue:140"
     },
     {
       "labels": [
@@ -1028,7 +1317,7 @@
       ],
       "type": "issue",
       "title": "Upstream: Squad needs a 'how to wire up workflows' guide",
-      "state": "OPEN",
+      "state": "CLOSED",
       "id": "issue:139"
     },
     {
@@ -1037,7 +1326,7 @@
       ],
       "type": "issue",
       "title": "Upstream: issue-lifecycle.md referenced but never generated",
-      "state": "OPEN",
+      "state": "CLOSED",
       "id": "issue:138"
     },
     {
@@ -1048,7 +1337,7 @@
       ],
       "type": "issue",
       "title": "≡ƒö┤ CRITICAL: Wire PR-review-merge lifecycle into squad routing",
-      "state": "OPEN",
+      "state": "CLOSED",
       "id": "issue:137"
     },
     {
@@ -1068,7 +1357,7 @@
       ],
       "type": "issue",
       "title": "[notifications-mvp] End-to-end dry-run validation",
-      "state": "OPEN",
+      "state": "CLOSED",
       "id": "issue:135"
     },
     {
@@ -1078,7 +1367,7 @@
       ],
       "type": "issue",
       "title": "[notifications-mvp] Wire coordinator to call notification scripts",
-      "state": "OPEN",
+      "state": "CLOSED",
       "id": "issue:134"
     },
     {
@@ -1088,7 +1377,7 @@
       ],
       "type": "issue",
       "title": "[notifications-mvp] Create notify-blocked.ps1",
-      "state": "OPEN",
+      "state": "CLOSED",
       "id": "issue:133"
     },
     {
@@ -1098,7 +1387,7 @@
       ],
       "type": "issue",
       "title": "[notifications-mvp] Create notify-feature-complete.ps1",
-      "state": "OPEN",
+      "state": "CLOSED",
       "id": "issue:132"
     },
     {
@@ -1129,7 +1418,7 @@
       ],
       "type": "issue",
       "title": "[dgrep-cli] Documentation & samples",
-      "state": "OPEN",
+      "state": "CLOSED",
       "id": "issue:119"
     },
     {
@@ -1181,7 +1470,7 @@
       ],
       "type": "issue",
       "title": "Design: Proactive Teams notifications for human-required actions",
-      "state": "OPEN",
+      "state": "CLOSED",
       "id": "issue:112"
     },
     {
@@ -1202,7 +1491,7 @@
       ],
       "type": "issue",
       "title": "Phase 0: DGrep SDK POC ΓÇö validate viability",
-      "state": "OPEN",
+      "state": "CLOSED",
       "id": "issue:110"
     },
     {
@@ -1212,7 +1501,7 @@
       ],
       "type": "issue",
       "title": "[dgrep-cli] Phase 3.3: Documentation (README, KQL cheat sheet, troubleshooting)",
-      "state": "OPEN",
+      "state": "CLOSED",
       "id": "issue:109"
     },
     {
@@ -1222,7 +1511,7 @@
       ],
       "type": "issue",
       "title": "[dgrep-cli] Phase 3.2: Error handling and retry logic",
-      "state": "OPEN",
+      "state": "CLOSED",
       "id": "issue:108"
     },
     {
@@ -1242,7 +1531,7 @@
       ],
       "type": "issue",
       "title": "[dgrep-cli] Phase 2.3: Tail command (streaming results)",
-      "state": "OPEN",
+      "state": "CLOSED",
       "id": "issue:106"
     },
     {
@@ -1252,7 +1541,7 @@
       ],
       "type": "issue",
       "title": "[dgrep-cli] Phase 2.2: Search command (end-to-end SDK wrapper)",
-      "state": "OPEN",
+      "state": "CLOSED",
       "id": "issue:105"
     },
     {
@@ -1393,7 +1682,7 @@
       ],
       "type": "issue",
       "title": "Add TI SKILL.md API references to investigation prompts",
-      "state": "OPEN",
+      "state": "CLOSED",
       "id": "issue:91"
     },
     {
@@ -1433,112 +1722,38 @@
       ],
       "type": "issue",
       "title": "Failure recovery pipeline ΓÇö all agents wired",
-      "state": "OPEN",
+      "state": "CLOSED",
       "id": "issue:87"
     },
     {
-      "labels": [
-        "squad",
-        "squad:elrond",
-        "P0-critical"
-      ],
-      "type": "issue",
-      "title": "CRITICAL: ICM scan doesn't work ΓÇö needs end-to-end solution",
-      "state": "CLOSED",
-      "id": "issue:86"
+      "type": "pr",
+      "title": "[notifications] Investigation completion event",
+      "state": "OPEN",
+      "id": "pr:153"
     },
     {
-      "labels": [
-        "squad",
-        "squad:gimli",
-        "P1-high"
-      ],
-      "type": "issue",
-      "title": "Implement WorkIQ workarounds for Teams chat retrieval",
-      "state": "CLOSED",
-      "id": "issue:85"
+      "type": "pr",
+      "title": "Remove Rule 15: governance through PR review",
+      "state": "MERGED",
+      "id": "pr:150"
     },
     {
-      "labels": [
-        "squad",
-        "squad:gimli",
-        "P1-high",
-        "design-approved"
-      ],
-      "type": "issue",
-      "title": "Scheduler: support agent-driven tasks (MCP-dependent work)",
-      "state": "CLOSED",
-      "id": "issue:83"
+      "type": "pr",
+      "title": "feat: improve blocked notification card with per-issue links and details",
+      "state": "MERGED",
+      "id": "pr:149"
     },
     {
-      "labels": [
-        "squad",
-        "squad:gimli",
-        "squad:elrond",
-        "P1-high"
-      ],
-      "type": "issue",
-      "title": "Email Watchdog ΓÇö scan Outlook for action items and deliver via Teams",
-      "state": "CLOSED",
-      "id": "issue:81"
+      "type": "pr",
+      "title": "[skills] Threat Intelligence API references for Stage 2 investigations",
+      "state": "MERGED",
+      "id": "pr:144"
     },
     {
-      "labels": [
-        "squad",
-        "squad:bilbo",
-        "squad:gandalf",
-        "P1-high",
-        "design-approved"
-      ],
-      "type": "issue",
-      "title": "Bilbo: Teams Knowledge Library ΓÇö organize watchdog output into navigable knowledge base",
-      "state": "CLOSED",
-      "id": "issue:80"
-    },
-    {
-      "labels": [
-        "squad",
-        "squad:gimli",
-        "P1-high"
-      ],
-      "type": "issue",
-      "title": "Add service-repo context to Aragorn's ICM investigations",
-      "state": "CLOSED",
-      "id": "issue:78"
-    },
-    {
-      "labels": [
-        "squad",
-        "squad:gimli",
-        "P0-critical"
-      ],
-      "type": "issue",
-      "title": "Upgrade all agents to Claude 4.6 models",
-      "state": "CLOSED",
-      "id": "issue:76"
-    },
-    {
-      "labels": [
-        "squad",
-        "squad:gandalf",
-        "P1-high",
-        "design-approved"
-      ],
-      "type": "issue",
-      "title": "Design: Unified Squad Scheduler ΓÇö aggregate all watchdog/cron processes",
-      "state": "CLOSED",
-      "id": "issue:75"
-    },
-    {
-      "labels": [
-        "squad",
-        "squad:aragorn",
-        "P1-high"
-      ],
-      "type": "issue",
-      "title": "ICM 21000000917983: Deleted watchlist items still appear (CRI)",
-      "state": "CLOSED",
-      "id": "issue:74"
+      "type": "pr",
+      "title": "[docs] Notifications runbook",
+      "state": "MERGED",
+      "id": "pr:143"
     },
     {
       "type": "pr",
@@ -1786,6 +2001,21 @@
     },
     {
       "type": "session",
+      "path": ".squad/log/2026-03-24T14-review-recovery.md",
+      "id": "session:2026-03-24T14-review-recovery"
+    },
+    {
+      "type": "session",
+      "path": ".squad/log/2026-03-24T15-taxii-deep-investigation.md",
+      "id": "session:2026-03-24T15-taxii-deep-investigation"
+    },
+    {
+      "type": "session",
+      "path": ".squad/log/2026-03-24T16-local-taxii-investigation.md",
+      "id": "session:2026-03-24T16-local-taxii-investigation"
+    },
+    {
+      "type": "session",
       "path": ".squad/log/20260324-001602-scribe-consolidation.md",
       "id": "session:20260324-001602-scribe-consolidation"
     },
@@ -1911,6 +2141,11 @@
     },
     {
       "type": "session",
+      "path": ".squad/orchestration-log/2026-03-24T14-review-recovery.md",
+      "id": "session:2026-03-24T14-review-recovery"
+    },
+    {
+      "type": "session",
       "path": ".squad/orchestration-log/20260324-001554-coordinator.md",
       "id": "session:20260324-001554-coordinator"
     },
@@ -1951,11 +2186,16 @@
     }
   ],
   "metadata": {
-    "edge_count": 565,
-    "updated": "2026-03-24T13:01:38.7432182+02:00",
-    "node_count": 266
+    "edge_count": 569,
+    "updated": "2026-03-25T01:04:05.6833110+02:00",
+    "node_count": 303
   },
   "edges": [
+    {
+      "source": "agent:gimli",
+      "target": "decision:2026-03-24-dgrep-auth-sdk-findings-gimli",
+      "type": "authored"
+    },
     {
       "source": "agent:gandalf",
       "target": "decision:2026-03-23t14-35-00z-icm-scan-watermark-design-approved",
@@ -2967,6 +3207,56 @@
       "type": "authored"
     },
     {
+      "source": "doc:docs/guides/dgrep-kql-cheatsheet.md",
+      "target": "doc:dgrep-quickstart.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/guides/dgrep-kql-cheatsheet.md",
+      "target": "doc:dgrep-quickstart.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/guides/dgrep-kql-cheatsheet.md",
+      "target": "doc:dgrep-troubleshooting.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/guides/dgrep-kql-cheatsheet.md",
+      "target": "doc:dgrep-sample-queries.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/guides/dgrep-sample-queries.md",
+      "target": "doc:dgrep-quickstart.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/guides/dgrep-sample-queries.md",
+      "target": "doc:dgrep-kql-cheatsheet.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/guides/dgrep-sample-queries.md",
+      "target": "doc:dgrep-troubleshooting.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/guides/dgrep-troubleshooting.md",
+      "target": "doc:dgrep-quickstart.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/guides/dgrep-troubleshooting.md",
+      "target": "doc:dgrep-kql-cheatsheet.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/guides/dgrep-troubleshooting.md",
+      "target": "doc:dgrep-sample-queries.md",
+      "type": "references"
+    },
+    {
       "source": "agent:gimli",
       "target": "doc:docs/guides/email-watchdog-setup.md",
       "type": "authored"
@@ -3079,6 +3369,36 @@
     {
       "source": "agent:bilbo",
       "target": "doc:docs/guides/notifications-guide.md",
+      "type": "authored"
+    },
+    {
+      "source": "doc:docs/guides/notifications-runbook.md",
+      "target": "tag:notifications",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/guides/notifications-runbook.md",
+      "target": "tag:teams",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/guides/notifications-runbook.md",
+      "target": "tag:integration",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/guides/notifications-runbook.md",
+      "target": "tag:runbook",
+      "type": "tagged_with"
+    },
+    {
+      "source": "doc:docs/guides/notifications-runbook.md",
+      "target": "tag:operations",
+      "type": "tagged_with"
+    },
+    {
+      "source": "agent:bilbo",
+      "target": "doc:docs/guides/notifications-runbook.md",
       "type": "authored"
     },
     {
@@ -3652,6 +3972,31 @@
       "type": "authored"
     },
     {
+      "source": "doc:docs/investigations/icm-764634026/mtls-check-amba-situationalawareness.md",
+      "target": "doc:icm-764634026-investigation.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/investigations/icm-764634026/mtls-check-amba-situationalawareness.md",
+      "target": "doc:mtls-validation-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/investigations/icm-764634026/mtls-check-sentinel-tiautomation.md",
+      "target": "doc:icm-764634026-investigation.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/investigations/icm-764634026/mtls-check-sentinel-tiautomation.md",
+      "target": "doc:mtls-validation-guide.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:docs/investigations/icm-764634026/mtls-validation-guide.md",
+      "target": "doc:icm-764634026-investigation.md",
+      "type": "references"
+    },
+    {
       "source": "doc:docs/research/ado-file-access-research.md",
       "target": "tag:ado",
       "type": "tagged_with"
@@ -3902,474 +4247,414 @@
       "type": "authored"
     },
     {
-      "source": "commit:4e3112b",
-      "target": "file:.squad/agents/bilbo/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:4e3112b",
-      "target": "file:.squad/agents/gimli/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:112fe4e",
-      "target": "file:.squad/agents/bilbo/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:112fe4e",
-      "target": "file:.squad/agents/gimli/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7327f63",
-      "target": "file:.squad/agents/boromir/charter.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7327f63",
-      "target": "file:.squad/agents/boromir/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7327f63",
-      "target": "file:.squad/casting/registry.json",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7327f63",
-      "target": "file:.squad/routing.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7327f63",
-      "target": "file:.squad/team.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:a420f13",
-      "target": "file:.squad/agents/gandalf/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:a420f13",
-      "target": "file:.squad/agents/gimli/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:a420f13",
-      "target": "file:.squad/decisions/decisions.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:a420f13",
-      "target": "file:.squad/decisions/inbox/coordinator-worktree-enforcement.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:a420f13",
-      "target": "file:.squad/decisions/inbox/gandalf-dgrep-kusto-audit.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:a420f13",
-      "target": "file:.squad/decisions/inbox/gandalf-dgrep-reflection.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:792a0cf",
-      "target": "file:.squad/agents/gandalf/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:792a0cf",
-      "target": "file:.squad/decisions/inbox/gandalf-dgrep-kusto-audit.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:dd7ea19",
-      "target": "file:.squad/agents/gandalf/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:dd7ea19",
-      "target": "file:.squad/agents/gimli/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:dd7ea19",
-      "target": "file:.squad/decisions.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:dd7ea19",
-      "target": "file:docs/investigations/112-pre-design-scan.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:38fdf53",
-      "target": "file:.squad/decisions/inbox/coordinator-worktree-enforcement.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7fa27e3",
-      "target": "file:.github/agents/squad.agent.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:ba8d49d",
-      "target": "file:.squad/agents/gandalf/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:ba8d49d",
-      "target": "file:.squad/decisions.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:ba8d49d",
-      "target": "file:.squad/semantic-model.json",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:ead83f1",
-      "target": "file:.squad/agents/galadriel/charter.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:ead83f1",
-      "target": "file:.squad/agents/galadriel/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:0dfabe0",
-      "target": "file:.squad/casting/registry.json",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:0dfabe0",
-      "target": "file:.squad/team.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:74f25fc",
-      "target": "file:.squad/decisions/inbox/gandalf-dgrep-reflection.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:74f25fc",
-      "target": "file:docs/designs/dgrep-correction-plan.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:35666e3",
-      "target": "file:.squad/agents/frodo/charter.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:35666e3",
-      "target": "file:docs/designs/notifications-status-assessment.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:35666e3",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Auth/IProcessRunner.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:35666e3",
-      "target": "file:tools/dgrep-cli/tests/DgrepCli.Tests/Auth/DefaultProcessRunnerTests.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:247b2b5",
-      "target": "file:docs/designs/notifications-mvp-plan.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:0dc45bc",
-      "target": "file:docs/research/ti-domain-for-frodo-charter.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:e333d9c",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Auth/IProcessRunner.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:e333d9c",
-      "target": "file:tools/dgrep-cli/tests/DgrepCli.Tests/Auth/DefaultProcessRunnerTests.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:78c049b",
-      "target": "file:docs/designs/notifications-status-assessment.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f01518a",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Commands/BuiltInQueries.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f01518a",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Commands/OptionValidator.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f01518a",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Commands/SavedCommand.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f01518a",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Commands/SavedOptions.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f01518a",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Config/DgrepConfig.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f01518a",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Program.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f01518a",
-      "target": "file:tools/dgrep-cli/tests/DgrepCli.Tests/Commands/OptionValidatorTests.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f01518a",
-      "target": "file:tools/dgrep-cli/tests/DgrepCli.Tests/Commands/SavedCommandTests.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f01518a",
-      "target": "file:tools/dgrep-cli/tests/DgrepCli.Tests/Commands/SavedOptionsTests.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f28aebd",
-      "target": "file:docs/INDEX.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f28aebd",
-      "target": "file:docs/TAGS.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f28aebd",
-      "target": "file:docs/guides/notifications-guide.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f28aebd",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Auth/AuthException.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f28aebd",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Auth/AuthProviderFactory.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f28aebd",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Auth/AzCliAuthProvider.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f28aebd",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Auth/CertificateAuthProvider.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f28aebd",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Auth/IAuthProvider.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f28aebd",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Auth/IProcessRunner.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f28aebd",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Auth/ManagedIdentityAuthProvider.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7646597",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Commands/QueryCommand.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7646597",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Commands/QueryVerbOptions.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7646597",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Execution/IQueryExecutor.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7646597",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Execution/KustoQueryExecutor.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7646597",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Execution/MockQueryExecutor.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7646597",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Execution/QueryException.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7646597",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Execution/QueryOptions.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7646597",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Execution/QueryResult.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7646597",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Formatters/CsvFormatter.cs",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7646597",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Formatters/FormatterFactory.cs",
-      "type": "modifies"
+      "source": "doc:docs/reviews/review-119-dgrep-docs-gaps.md",
+      "target": "doc:dgrep-quickstart.md",
+      "type": "references"
     },
     {
-      "source": "commit:dbe50ee",
-      "target": "file:docs/INDEX.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:dbe50ee",
-      "target": "file:docs/TAGS.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:dbe50ee",
-      "target": "file:docs/guides/notifications-guide.md",
-      "type": "modifies"
+      "source": "doc:docs/reviews/review-119-dgrep-docs-gaps.md",
+      "target": "doc:dgrep-quickstart.md",
+      "type": "references"
     },
     {
-      "source": "commit:50f22c1",
-      "target": "file:.squad/agents/frodo/history.md",
+      "source": "commit:55963dc",
+      "target": "file:.squad/decisions/inbox/copilot-anti-assumption.md",
       "type": "modifies"
     },
     {
-      "source": "commit:50f22c1",
-      "target": "file:scripts/notification-scheduler.ps1",
+      "source": "commit:026b5ce",
+      "target": "file:.squad/skills/icm-investigator/SKILL.md",
       "type": "modifies"
     },
     {
-      "source": "commit:50f22c1",
-      "target": "file:tests/notification-scheduler.Tests.ps1",
+      "source": "commit:026b5ce",
+      "target": "file:docs/designs/milestone-feature-lifecycle.md",
       "type": "modifies"
     },
     {
-      "source": "commit:31f5e5b",
-      "target": "file:.github/agents/squad.agent.md",
+      "source": "commit:026b5ce",
+      "target": "file:docs/reviews/pr-150-governance-review.md",
       "type": "modifies"
     },
     {
-      "source": "commit:31f5e5b",
-      "target": "file:.squad/agents/frodo/charter.md",
+      "source": "commit:026b5ce",
+      "target": "file:docs/reviews/review-pr143-notifications-docs.md",
       "type": "modifies"
     },
     {
-      "source": "commit:31f5e5b",
-      "target": "file:.squad/agents/frodo/history.md",
+      "source": "commit:026b5ce",
+      "target": "file:docs/reviews/review-pr144-ti-skillmd.md",
       "type": "modifies"
     },
     {
-      "source": "commit:31f5e5b",
+      "source": "commit:6d5108c",
       "target": "file:.squad/agents/gandalf/charter.md",
       "type": "modifies"
     },
     {
-      "source": "commit:31f5e5b",
-      "target": "file:.squad/templates/charter.md",
+      "source": "commit:6d5108c",
+      "target": "file:.squad/decisions/inbox/gandalf-issue-hygiene.md",
       "type": "modifies"
     },
     {
-      "source": "commit:31f5e5b",
-      "target": "file:.squad/templates/run-output.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:31f5e5b",
-      "target": "file:.squad/templates/squad.agent.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:31f5e5b",
-      "target": "file:templates/squad-starter/charter-templates/lead.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:fbe279d",
-      "target": "file:.squad/agents/frodo/charter.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:fbe279d",
-      "target": "file:.squad/agents/frodo/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:fbe279d",
-      "target": "file:.squad/casting/registry.json",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:fbe279d",
+      "source": "commit:6d5108c",
       "target": "file:.squad/routing.md",
       "type": "modifies"
     },
     {
-      "source": "commit:fbe279d",
-      "target": "file:.squad/team.md",
+      "source": "commit:6d5108c",
+      "target": "file:.squad/templates/issue-lifecycle.md",
       "type": "modifies"
     },
     {
-      "source": "commit:fbe279d",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Config/ConfigCommand.cs",
+      "source": "commit:6d5108c",
+      "target": "file:docs/designs/issue-hygiene.md",
       "type": "modifies"
     },
     {
-      "source": "commit:fbe279d",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Config/ConfigManager.cs",
+      "source": "commit:16dd435",
+      "target": "file:.squad/routing.md",
       "type": "modifies"
     },
     {
-      "source": "commit:fbe279d",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Config/DgrepConfig.cs",
+      "source": "commit:16dd435",
+      "target": "file:scripts/notify-blocked.ps1",
       "type": "modifies"
     },
     {
-      "source": "commit:fbe279d",
-      "target": "file:tools/dgrep-cli/src/DgrepCli/Config/OptionResolver.cs",
+      "source": "commit:16dd435",
+      "target": "file:scripts/notify-squad-event.ps1",
       "type": "modifies"
     },
     {
-      "source": "commit:fbe279d",
+      "source": "commit:16dd435",
+      "target": "file:scripts/notify.ps1",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:25c15ba",
+      "target": "file:.squad/routing.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:8871330",
+      "target": "file:.squad/routing.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:6680471",
+      "target": "file:docs/guides/notifications-runbook.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:d2cdb3f",
+      "target": "file:.squad/agents/boromir/charter.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:d2cdb3f",
+      "target": "file:.squad/agents/galadriel/charter.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:d63454b",
+      "target": "file:.squad/agents/gandalf/history.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:d63454b",
+      "target": "file:.squad/decisions/inbox/gandalf-issue-hygiene.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:d63454b",
+      "target": "file:.squad/routing.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:d63454b",
+      "target": "file:.squad/templates/issue-lifecycle.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:d63454b",
+      "target": "file:docs/designs/issue-hygiene.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:f3ae6c6",
+      "target": "file:.squad/agents/bilbo/charter.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:f3ae6c6",
+      "target": "file:.squad/agents/galadriel/charter.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:f3ae6c6",
+      "target": "file:.squad/agents/gandalf/charter.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:f3ae6c6",
+      "target": "file:.squad/agents/gandalf/history.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:f3ae6c6",
+      "target": "file:.squad/agents/ralph/charter.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:f3ae6c6",
+      "target": "file:.squad/routing.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:990e706",
+      "target": "file:.squad/agents/gandalf/charter.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:990e706",
+      "target": "file:.squad/decisions/inbox/gandalf-issue-tracked-work.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:990e706",
+      "target": "file:.squad/routing.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:33e9e3d",
+      "target": "file:.squad/routing.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:33e9e3d",
+      "target": "file:docs/designs/notifications-task-plan.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:1b5af79",
+      "target": "file:.squad/routing.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:917fbf0",
+      "target": "file:.squad/agents/aragorn/history.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:917fbf0",
+      "target": "file:.squad/decisions.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:ed33872",
+      "target": "file:docs/investigations/icm-764634026/taxii-net-local-investigation.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:49e2f0e",
+      "target": "file:.squad/agents/aragorn/charter.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:c006eb2",
+      "target": "file:docs/investigations/icm-764634026/taxii-net-deep-investigation.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:0209f71",
+      "target": "file:.squad/agents/aragorn/history.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:7ec8ba5",
+      "target": "file:.squad/agents/aragorn/history.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:7ec8ba5",
+      "target": "file:.squad/agents/bilbo/history.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:7ec8ba5",
+      "target": "file:.squad/agents/galadriel/history.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:7ec8ba5",
+      "target": "file:.squad/agents/gandalf/history.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:7ec8ba5",
+      "target": "file:.squad/agents/gimli/history.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:7ec8ba5",
+      "target": "file:.squad/decisions.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:7ec8ba5",
+      "target": "file:.squad/decisions/inbox/coordinator-galadriel-fix.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:7ec8ba5",
+      "target": "file:.squad/decisions/inbox/gimli-dgrep-auth-findings.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:4a3457f",
+      "target": "file:.squad/agents/aragorn/history.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:4a3457f",
+      "target": "file:docs/investigations/icm-764634026/icm-764634026-investigation.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:4a3457f",
+      "target": "file:docs/reviews/review-108-dgrep-error-handling.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:53764d2",
+      "target": "file:docs/guides/dgrep-kql-cheatsheet.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:53764d2",
+      "target": "file:docs/guides/dgrep-sample-queries.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:53764d2",
+      "target": "file:docs/guides/dgrep-troubleshooting.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:53764d2",
+      "target": "file:tools/dgrep-cli/tests/DgrepCli.Tests/Integration/IntegrationSearchTests.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:f59d9fe",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Commands/TailCommand.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:f59d9fe",
       "target": "file:tools/dgrep-cli/src/DgrepCli/Program.cs",
       "type": "modifies"
+    },
+    {
+      "source": "commit:b7eea10",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Commands/QueryCommand.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:b7eea10",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Commands/SavedCommand.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:b7eea10",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Execution/DgrepExitCodes.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:b7eea10",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Execution/RetryPolicy.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:b7eea10",
+      "target": "file:tools/dgrep-cli/src/DgrepCli/Program.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:b7eea10",
+      "target": "file:tools/dgrep-cli/tests/DgrepCli.Tests/Commands/QueryCommandTests.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:b7eea10",
+      "target": "file:tools/dgrep-cli/tests/DgrepCli.Tests/Commands/SavedCommandTests.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:b7eea10",
+      "target": "file:tools/dgrep-cli/tests/DgrepCli.Tests/Execution/RetryTests.cs",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:3b75209",
+      "target": "file:.squad/temp-commit-msg.txt",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:3b75209",
+      "target": "file:scripts/notify-squad-event.ps1",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:3b75209",
+      "target": "file:tests/notify-squad-event.Tests.ps1",
+      "type": "modifies"
+    },
+    {
+      "source": "agent:gandalf",
+      "target": "issue:152",
+      "type": "owns"
+    },
+    {
+      "source": "agent:gandalf",
+      "target": "issue:151",
+      "type": "owns"
+    },
+    {
+      "source": "agent:gandalf",
+      "target": "issue:148",
+      "type": "owns"
+    },
+    {
+      "source": "agent:gandalf",
+      "target": "issue:147",
+      "type": "owns"
+    },
+    {
+      "source": "agent:aragorn",
+      "target": "issue:146",
+      "type": "owns"
+    },
+    {
+      "source": "agent:gandalf",
+      "target": "issue:145",
+      "type": "owns"
+    },
+    {
+      "source": "agent:gandalf",
+      "target": "issue:142",
+      "type": "owns"
+    },
+    {
+      "source": "agent:gandalf",
+      "target": "issue:141",
+      "type": "owns"
+    },
+    {
+      "source": "agent:gandalf",
+      "target": "issue:140",
+      "type": "owns"
     },
     {
       "source": "agent:gandalf",
@@ -4567,59 +4852,29 @@
       "type": "owns"
     },
     {
-      "source": "agent:elrond",
-      "target": "issue:86",
-      "type": "owns"
+      "source": "pr:153",
+      "target": "issue:151",
+      "type": "implements"
     },
     {
-      "source": "agent:gimli",
-      "target": "issue:85",
-      "type": "owns"
+      "source": "pr:150",
+      "target": "issue:147",
+      "type": "implements"
     },
     {
-      "source": "agent:gimli",
-      "target": "issue:83",
-      "type": "owns"
+      "source": "pr:149",
+      "target": "issue:148",
+      "type": "implements"
     },
     {
-      "source": "agent:gimli",
-      "target": "issue:81",
-      "type": "owns"
+      "source": "pr:144",
+      "target": "issue:91",
+      "type": "implements"
     },
     {
-      "source": "agent:elrond",
-      "target": "issue:81",
-      "type": "owns"
-    },
-    {
-      "source": "agent:bilbo",
-      "target": "issue:80",
-      "type": "owns"
-    },
-    {
-      "source": "agent:gandalf",
-      "target": "issue:80",
-      "type": "owns"
-    },
-    {
-      "source": "agent:gimli",
-      "target": "issue:78",
-      "type": "owns"
-    },
-    {
-      "source": "agent:gimli",
-      "target": "issue:76",
-      "type": "owns"
-    },
-    {
-      "source": "agent:gandalf",
-      "target": "issue:75",
-      "type": "owns"
-    },
-    {
-      "source": "agent:aragorn",
-      "target": "issue:74",
-      "type": "owns"
+      "source": "pr:143",
+      "target": "issue:120",
+      "type": "implements"
     },
     {
       "source": "pr:130",

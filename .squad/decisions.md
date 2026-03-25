@@ -2312,3 +2312,107 @@ ew ClientCertCredential(\ has ZERO matches across the entire SecEng-Augusta code
 
 - Previous decision #4 ("TAXII Client Auth Remediation as separate task") is SUPERSEDED — no remediation needed
 - Priority for ICM-764634026 TAXII component drops to P3 (low — routine cert rotation only)
+
+
+---
+
+### 2026-03-24T22:55:00Z: Coordinator anti-assumption rule
+**By:** Jonathan (directive)
+**What:** The coordinator MUST NOT declare issues "blocked on external access" without first attempting to use the required tools. When Ralph encounters an issue that needs MCP tools (IcM, WorkIQ, Geneva, etc.), the coordinator MUST:
+1. Check if the MCP tool is available in the current session (scan tool list)
+2. If available: spawn the agent immediately — it's NOT blocked
+3. If unavailable: only THEN fire a blocked notification
+Never assume a tool is unavailable. Verify first, report blocked second.
+
+**Root cause:** Coordinator incorrectly blocked #136, #146, #111 for the entire session despite IcM MCP and WorkIQ MCP being available. Three issues sat idle for hours because of an assumption.
+
+**Why:** Prevents the coordinator from inventing blocker states that don't exist. The rule is: try first, block second.
+
+---
+
+### 2026-03-24: Issue-tracked work enforcement (Rule 17)
+**By:** Jonathan (via Copilot)
+**What:** All squad-routed work MUST create a GitHub issue before work starts. Naming a squad member = tracked work = GitHub issue. Exempt: Ralph, Scribe, pure read-only queries. "team, do X" routes to Gandalf who decomposes into sub-issues. Coordinator creates issues; Gandalf creates sub-issues during decomposition.
+**Why:** Squad was doing untracked work — features were being built without GitHub issues, making Ralph's board blind to pending work. The notifications task plan was written to a markdown file instead of GitHub issues. This rule closes that gap.
+
+---
+
+### 2026-03-24: Milestone-Based Feature Lifecycle Design (Issue #141)
+**Author:** Gandalf  
+**Date:** 2026-03-24T20:21:00Z  
+**Status:** DRAFT — pending Boromir review  
+**Design doc:** docs/designs/milestone-feature-lifecycle.md
+
+**Key Architectural Choices:**
+1. **Feature = GitHub Milestone** — Any work with 2+ tasks gets a GitHub milestone. Single-task work is standalone. No exceptions.
+2. **Ralph Owns Completion Detection** — Ralph's work-check cycle scans open milestones. Detection: open_issues == 0 && closed_issues > 0. Ralph closes milestone and writes trigger JSON.
+3. **Four-Step Post-Completion Pipeline (strict sequence)** — Gandalf review → Galadriel E2E → Teams notify → Bilbo docs.
+4. **Won't-Fix Transparency (Rule 23)** — Won't-fix closures don't auto-fail milestones. Require explicit Gandalf acknowledgment. Unacknowledged won't-fix = automatic FAIL.
+5. **Rules 18–23 Are the Enforcement Mechanism** — Six new rules cover full lifecycle: definition, assignment, detection, pipeline, failure handling, and won't-fix transparency.
+6. **Ralph Needs a Charter** — Ralph has no .squad/agents/ralph/charter.md. Creating one is part of the implementation.
+
+**Charter Change Summary:**
+- Gandalf: Addition to "What I Own" — milestone creation + feature review
+- Ralph: New file .squad/agents/ralph/charter.md — milestone scan section required
+- Galadriel: Addition to "✅ I Handle" — E2E feature testing
+- Bilbo: Addition to "Workflow Triggers" — milestone post-completion step
+
+---
+
+### 2026-03-24: Issue Hygiene and Worktree Cleanup (#142)
+**Author:** Gandalf
+**Type:** Governance
+**Issue:** #142
+
+**Decision:** Added three new rules (24–26) to outing.md addressing:
+1. **Rule 24 — Governance issue closure:** After committing governance changes to main (Rule 15), the coordinator closes the tracking issue.
+2. **Rule 25 — Post-merge issue verification:** After any merge to main, the coordinator verifies all related issues are closed.
+3. **Rule 26 — Worktree cleanup:** After a branch merges, remove the worktree (git worktree remove) and delete the local branch.
+
+**Note:** This decision was superseded by PR #147. The governance exception (Rule 24) was NOT implemented. Instead, the team decided to require all work to follow the standard PR lifecycle. What was implemented:
+- Rule 23 (Post-merge issue verification)
+- Rule 24 (Worktree cleanup)
+
+See docs/designs/issue-hygiene.md for final design rationale.
+
+---
+
+### 2026-03-28: Milestone Lifecycle Implementation (Issue #141)
+**Author:** Gandalf  
+**Date:** 2026-03-28  
+**Type:** Governance wiring
+
+**What Was Done:**
+1. **Rules 18–23 added to .squad/routing.md** — exact text from design doc Section 5.
+2. **Gandalf charter updated** — milestone creation and feature lifecycle review added to "What I Own".
+3. **Ralph charter created** — .squad/agents/ralph/charter.md with Identity, Milestone Scan section, boundaries, failure recovery, and collaboration patterns.
+4. **Galadriel charter updated** — milestone E2E testing responsibility added.
+5. **Bilbo charter updated** — milestone post-completion pipeline Step 4 trigger added.
+6. **Routing table verified** — "Significant feature review" row was already adequate.
+
+---
+
+### 2026-03-25: MCP Catalog Reference Document
+**Author:** Elrond (Researcher)
+**Date:** 2026-03-24
+**Status:** Complete
+**Artifact:** docs/mcp-catalog.md
+
+**Context:** The pa-squad operates with multiple AI agents, each needing different MCP servers for their domain. There was no single reference document cataloging what MCPs are available.
+
+**Decision:** Created docs/mcp-catalog.md — a comprehensive catalog of all 28 MCP servers available in the Agency ecosystem and local environment.
+
+**Key Facts:**
+- **28 MCPs identified** across 3 sources (Agency, Standalone, Platform-provided)
+- **13 currently active** providing ~200+ tools
+- **11 configured** in ~/.copilot/mcp-config.json + 2 platform-provided
+- **15 more available** via gency mcp <name> but not yet configured
+
+**Recommendations:**
+1. **Enable Bluebird** (gency mcp bluebird) — underutilized semantic code search for Elrond, Frodo, and Gimli.
+2. **Enable Teams MCP** (gency mcp teams) — needed for squad notification workflows.
+3. **Consider enabling Calendar** (gency mcp calendar) — useful for Gandalf's daily planning.
+4. **Keep this doc updated** — Bilbo should own maintenance.
+
+**Impact:** All squad members now have a single reference for discovering, configuring, and using MCP tools relevant to their domain.
+
