@@ -815,3 +815,35 @@ This is not a code bug. It's a **delivery gap**. We confused "code in the repo" 
 ---
 
 
+
+---
+
+## Decision Record: TI Production Kusto Cluster Research (Issue #156)
+
+**Merged from:** .squad/decisions/inbox/aragorn-kusto-research.md
+**Merge Date:** 2026-03-25
+**Merged by:** Scribe
+
+### Key Findings
+
+1. **Cluster Structure:** TI prod cluster (	i-prod-kusto-cluster.northeurope.kusto.windows.net) contains 4 tables (Log, SentinelLogEntry, StixWebApiLogs, TraceEvent) with ~7-day retention.
+
+2. **Azure MCP Kusto Tool Broken:** Tool fails with FileNotFoundException on all operations. ROOT CAUSE: Not permissions; likely MCP configuration issue. WORKAROUND: Use REST API directly.
+
+3. **Token Resource Gotcha:** Auth requires `https://kusto.kusto.windows.net` (resource ID), NOT cluster URI. Cluster URI returns 401—critical for guide documentation.
+
+4. **ARM Query Gap:** ICM queries using `macro-expand ARMProdEG` target ARM cluster—cannot run on TI cluster. SAW/DGrep remains only path for ARM error investigation.
+
+5. **Baseline Error Rates:** STIX API shows constant ~27–32K failures/hour independent of load. Error COUNT is misleading; error RATE is the health signal.
+
+### Impact & Handoff
+
+- **Aragorn:** REST API workaround enables Kusto queries during ICM investigation. MCP issue tagged for Gimli follow-up.
+- **Bilbo:** Research data (docs/research/kusto-cluster-research.md) integrated into polished Kusto guide (APPROVED for merge).
+- **Gimli:** MCP tool configuration issue flagged (mcp-config.json review recommended).
+
+### Squad Learnings
+
+- Token resource discovery requires manual REST testing—MCP tool config validation gap identified.
+- Cluster-to-cluster query routing limitations must be documented up-front.
+- Baseline error rates are operational context, not health alerts.

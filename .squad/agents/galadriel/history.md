@@ -79,3 +79,26 @@ Galadriel was hired based on Elrond's analysis of the coffee-ratings "Bobbie" ch
 - [HIGH] Track integration points as first-class deliverables — each must be separate issue
 - [MED] Tech stack pivots require design re-review (issue descriptions must be validated against original research)
 - [MED] POC findings must gate feature work, not run in parallel
+
+
+## 2026-03-25: Kusto Guide Issue #156 - Review Quality Gate (2 Cycles)
+
+**Task:** 2-cycle review workflow on Kusto guide documentation (Bilbo-authored, Galadriel review, Bilbo fixes → re-review)
+
+**Cycle 1 Review:** CHANGES_REQUESTED
+- **F1:** Missing ICM queries — guide needs sample queries from past incidents for operational context
+- **F2:** Typo in authentication section — token resource reference should be `https://kusto.kusto.windows.net
+
+**Cycle 2 Review:** APPROVED
+- Bilbo fixed both findings: added sample ICM queries, corrected token resource reference
+- Publication-ready for merge
+
+**Review Pattern Impact:**
+- 2-cycle review on technical documentation caught both functional gaps (F1) and accuracy errors (F2)
+- Operational context (ICM query examples) required for guide credibility — first draft lacked this
+- Review gate prevented merge with functional errors that would have caused reader confusion
+
+**Learnings:**
+- [HIGH] For infrastructure documentation, sample real-world operational queries are mandatory—not optional polish
+- [HIGH] 2-cycle review identifies gaps that single-pass review misses (especially for docs translated from research)
+- [MED] Technical accuracy review (F2 token resource) must be separate concern from completeness review (F1 queries)

@@ -340,3 +340,55 @@ TI services **ARE using client certificates for mTLS at the HTTP transport layer
 **Delivered:**
 - `docs/investigations/icm-764634026/taxii-net-deep-investigation.md` — full corrected investigation
 - `.squad/decisions/inbox/aragorn-taxii-corrections.md` — corrections filed for decisions log
+
+### 2026-03-25: TI Production Kusto Cluster Research
+
+**Context:** Jonathan requested comprehensive research of `ti-prod-kusto-cluster.northeurope.kusto.windows.net` to produce a Kusto guide for the team.
+
+**Cluster Structure:**
+- Single database: `prod`
+- 4 tables: `Log` (~1.93B rows), `SentinelLogEntry` (~1.17B), `StixWebApiLogs` (~104M), `TraceEvent` (~247M)
+- ~7-day retention for most tables; TraceEvent appears ~1-day
+- No stored functions
+
+**Table Purposes:**
+- **Log:** Primary application telemetry — NormalizationService, CosmosDbPublisher, LogAEventHubPublisher, BulkActions
+- **SentinelLogEntry:** Sentinel service logs — ConnectorService, GatewayService, IngestionApi, StixApiService, FileImportsService
+- **StixWebApiLogs:** STIX API request/response logs with structured result types, components, data centers. Best table for API investigation.
+- **TraceEvent:** Low-level TAXII actor traces. Shows external feed polling (Mandiant, SOCRadar, IBM X-Force, Threatview.io). Reveals Service Fabric deployment roles across 10+ regions.
+
+**Access Findings:**
+- **Azure MCP Kusto tool is BROKEN** — returns `FileNotFoundException` for all operations. This is a tool configuration issue.
+- **Workaround:** Kusto REST API via PowerShell (`Invoke-RestMethod` + `az account get-access-token`)
+- **Token resource:** Use `https://kusto.kusto.windows.net` (standard) — NOT the cluster URI (returns 401)
+- **Query endpoint:** `POST {clusterUri}/v1/rest/query` for KQL, `POST {clusterUri}/v1/rest/mgmt` for `.show` commands
+
+**Baseline Metrics:**
+- STIX API error rate: 3–5% (constant ~27–32K failures/hr regardless of load)
+- NormalizationService: highest error volume (~1.9M errors/hr)
+- Top regions by volume: East Asia, Southeast Asia, West Europe
+
+**ICM Query Extraction:**
+- ICM 767815474 and 767416366 both embed `macro-expand ARMProdEG` queries — these CANNOT run on this cluster (require SAW/DGrep)
+- Watchlist TSG queries reference `securityinsights.kusto.windows.net/SecurityInsightsProd` — separate cluster
+- RP-side equivalents CAN be run on this cluster using StixWebApiLogs and Log tables
+
+**Delivered:** `docs/research/kusto-cluster-research.md` (worktree squad-156, branch squad/156-kusto-guide)
+
+
+## 2026-03-25: Kusto Guide Issue #156 - Research Cycle Complete
+
+**Team Outcome:** 3-agent workflow (Aragorn research → Bilbo documentation → Galadriel review) delivered Issue #156 Kusto guide APPROVED for merge after 2-cycle review.
+
+**Key Research Findings:**
+- TI production cluster structure: 4 tables (Log, SentinelLogEntry, StixWebApiLogs, TraceEvent), 7-day retention
+- **Token Resource Gotcha:** Auth requires `https://kusto.kusto.windows.net resource—cluster URI returns 401
+- **MCP Tool Issue:** Azure MCP Kusto tool broken (FileNotFoundException)—REST API workaround documented
+- **ARM Query Gap:** ARM production cluster not accessible from TI cluster—blocks ARM error rate investigation
+- **Error Rate Insight:** STIX API shows constant 27–32K failures/hour; error COUNT alone is misleading
+
+**Learnings:**
+- [HIGH] MCP tool failures may be configuration (not environment) — tag for Gimli follow-up
+- [HIGH] Cluster-to-cluster query routing limitations must be documented up-front for cross-cluster investigations
+- [MED] Baseline error rates are operational context, not health alerts — false positive prevention requires operational context
+- [MED] Token resource discovery requires manual REST testing — worth adding to MCP tool config validation

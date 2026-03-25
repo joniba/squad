@@ -62,6 +62,43 @@
 - Tagged based on cross-cutting concerns (research applies to multiple categories, so both #research and specific tags like #teams-watchdog, #git)
 - No blockers; all documentation accessible and well-organized
 
+### TI Production Kusto Cluster Guide (2026-03-25)
+**Deliverable:** `worktrees/squad-156/docs/kusto-guide.md` (25.4 KB, 780 lines)
+
+**What was synthesized:**
+- **6-section operator guide** transforming Aragorn's research into practical patterns: Quick Start (token + first query), Cluster Overview (4 tables, data sources, architecture), Table Reference (Log, SentinelLogEntry, StixWebApiLogs, TraceEvent with schemas and use cases), Sample Queries by Use Case (6 patterns: API errors, service health, Sentinel ops, feed monitoring, performance analysis, correlation), Known Issues & Workarounds (MCP broken, token resource gotcha, ARM query limitations, TraceEvent retention), Tips & Best Practices (time ranges, perf optimization, pitfalls, baselines)
+- **Copy-paste-ready KQL queries** with all code blocks fenced with `kql` language tag
+- **Expected output descriptions** for each query pattern (e.g., "Error rate per 5-minute window")
+- **Auth prominence:** Quick Start section leads with token command using correct resource (`https://kusto.kusto.windows.net`)
+- **REST API workaround** for broken MCP Kusto tool (full PowerShell examples)
+- **Cross-references** to ARM watchlist incidents (767815474, 767416366), related clusters (securityinsights.kusto.windows.net, icmcluster.kusto.windows.net)
+- **Operational baselines** (STIX API 3–5% baseline, NormalizationService ~1.9M errors/hr, etc.) and alert thresholds
+
+**Key research findings synthesized:**
+1. **Single database, 4 tables** — `prod` DB with Log (1.93B rows, all services), SentinelLogEntry (1.17B rows, Sentinel ops), StixWebApiLogs (104M rows, best for API investigation), TraceEvent (247M rows, 1-day retention, TAXII feeds)
+2. **Auth token resource gotcha** — Must use `https://kusto.kusto.windows.net`, NOT cluster URI
+3. **MCP Kusto tool broken** — Returns `FileNotFoundException`; REST API fully functional
+4. **Baseline error rate** — STIX API 3–5% (constant ~27–32K failures/hr regardless of load volume)
+5. **TAXII feed landscape** — 9+ external feeds (Mandiant, SOCRadar, IBM X-Force, ATIP, etc.) ingesting across 10+ Service Fabric deployment regions
+
+**File reference:**
+- **Output:** `C:\dev\personal\pa-squad\worktrees\squad-156\docs\kusto-guide.md`
+- **Commit:** squad/156-kusto-guide (commit 419aafe)
+- **Related research:** `worktrees/squad-156/docs/research/kusto-cluster-research.md` (Aragorn's 27 KB research)
+
+**Process notes:**
+- Read Aragorn's research in full (two PowerShell reads to work around size limits)
+- Organized 20+ query patterns into 6 use-case groups (API errors, service health, Sentinel ops, feed monitoring, perf analysis, correlation)
+- Verified all KQL syntax and expected outputs match research
+- Made auth token command prominent in Quick Start (solves common 401 Unauthorized blocker)
+- Included cross-references to related Kusto clusters and IcM incidents for operators
+- Provided alert thresholds calibrated to observed baselines for monitoring automation
+
+**Remaining considerations:**
+- MCP Kusto tool should be escalated to MCP team for investigation
+- Guide maintainers should update baselines quarterly as feed volumes and service configurations evolve
+- Optional: Create decision inbox entry for REST API standardization vs. MCP recovery
+
 ### Squad Template Patterns & Role Mapping Documentation (2026-03-23)
 **Deliverables:** 
 - `docs/guides/squad-template-patterns.md` (14,409 chars) — Patterns for charter structure, routing, ceremonies, review gates, role interactions
@@ -431,3 +468,21 @@
 - [HIGH] Documentation-executable sync must be verified during review cycle, not treated as post-implementation polish
 - [HIGH] When docs are generated from code outputs (like Gimli's MVP scripts), documentation reviewer must cross-reference actual production code
 - [MED] Documentation completeness can mask implementation gaps — flag cases where docs describe features not yet delivered to production
+
+## 2026-03-25: Kusto Guide Issue #156 - Documentation & Review Cycle
+
+**Task:** Write Kusto guide from Aragorn's research; incorporate Galadriel review findings through 2-cycle review
+
+**Outcome:** APPROVED for merge (Cycle 2)
+
+**Review Gates:**
+- **Cycle 1:** Galadriel CHANGES_REQUESTED (F1: missing ICM queries, F2: token resource typo)
+- **Cycle 1 Fixes:** Added sample ICM queries, corrected `https://kusto.kusto.windows.net` reference
+- **Cycle 2:** Galadriel APPROVED—publication-ready
+
+**Deliverable:** `docs/kusto-guide.md` (813 lines, production-ready)
+
+**Learnings:**
+- [HIGH] 2-cycle review with operational checks (MCP tool workaround validation) caught integration gaps early
+- [MED] Review cycle iteration on technical writing improves clarity — first-draft guide would have shipped with functional errors
+- [MED] Sample query placement drives reader engagement — queries in guide produced validation feedback
