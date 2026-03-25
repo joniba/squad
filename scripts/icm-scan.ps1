@@ -185,15 +185,15 @@ $scanResult = $lines | Where-Object { $_ -match "^SCAN_RESULT\|" } | Select-Obje
 $incidents  = $lines | Where-Object { $_ -match "^INCIDENT\|" }
 $highlight  = $lines | Where-Object { $_ -match "^HIGHLIGHT\|" } | Select-Object -First 1
 
-# --- Update watermark (always, even on clear result) ---
+# --- Update watermark timestamp (new IDs deferred until issue creation confirmed) ---
 $newScanIds = @($incidents | ForEach-Object {
     $parts = $_ -split "\|"
     if ($parts.Count -ge 2 -and $parts[1]) { $parts[1] }
 })
 
+# Save lastScan now with existing seenIds only — new IDs added after confirmed issue creation
 $mergedIds = [System.Collections.Generic.List[string]]::new()
 foreach ($id in $watermarkSeenIds) { $mergedIds.Add($id) | Out-Null }
-foreach ($id in $newScanIds) { if (-not $mergedIds.Contains($id)) { $mergedIds.Add($id) } }
 while ($mergedIds.Count -gt 200) { $mergedIds.RemoveAt(0) }  # FIFO rotation
 
 $newWatermark = [ordered]@{ version = 1; lastScan = $now.ToString("yyyy-MM-ddTHH:mm:ssZ"); seenIds = @($mergedIds) }
@@ -260,6 +260,8 @@ Write-Host ""
 # Create GitHub issues for new incidents
 $created = 0
 $notifyLines = @()
+$confirmedIds = @()
+$createdIssues = @()
 foreach ($inc in $newIncidents) {
     $issueTitle = "ICM $($inc.IcmId): $($inc.Title)"
     $icmLink    = "https://portal.microsofticm.com/imp/v5/incidents/details/$($inc.IcmId)/home"
@@ -271,10 +273,26 @@ foreach ($inc in $newIncidents) {
         "Aragorn: investigate this incident using the ICM investigator skill.`n" +
         "Follow the pipeline in ``.squad/skills/icm-investigator/SKILL.md``."
 
-    gh issue create --title $issueTitle --body $body --label "squad,squad:aragorn" --repo jbenami_microsoft/ms-pa 2>$null | Out-Null
-    Write-Host "  📋 Created: $issueTitle" -ForegroundColor Green
-    $notifyLines += "• **$($inc.Sev)** [$($inc.Type)] [IcM#$($inc.IcmId)]($icmLink) — $($inc.Title) ⚡ **NEW — Aragorn assigned**"
-    $created++
+    $issueOutput = gh issue create --title $issueTitle --body $body --label "squad,squad:aragorn" --repo jbenami_microsoft/ms-pa 2>&1
+    if ($LASTEXITCODE -eq 0 -and $issueOutput) {
+        $issueNumber = if ("$issueOutput" -match "/issues/(\d+)") { $Matches[1] } else { "" }
+        Write-Host "  📋 Created: $issueTitle (#$issueNumber)" -ForegroundColor Green
+        $notifyLines += "• **$($inc.Sev)** [$($inc.Type)] [IcM#$($inc.IcmId)]($icmLink) — $($inc.Title) ⚡ **NEW — Aragorn assigned**"
+        $confirmedIds += $inc.IcmId
+        $createdIssues += @{ IcmId=$inc.IcmId; Title=$inc.Title; IssueNumber=$issueNumber; Sev=$inc.Sev }
+        $created++
+    } else {
+        Write-Warning "  ❌ Failed to create issue for IcM#$($inc.IcmId): $issueOutput"
+    }
+}
+
+# --- Update watermark with confirmed IDs ---
+if ($confirmedIds.Count -gt 0) {
+    foreach ($id in $confirmedIds) { if (-not $mergedIds.Contains($id)) { $mergedIds.Add($id) } }
+    while ($mergedIds.Count -gt 200) { $mergedIds.RemoveAt(0) }
+    $newWatermark = [ordered]@{ version = 1; lastScan = $now.ToString("yyyy-MM-ddTHH:mm:ssZ"); seenIds = @($mergedIds) }
+    $newWatermark | ConvertTo-Json -Depth 5 | Set-Content $watermarkPath -Encoding UTF8
+    Write-Host "   💾 Watermark updated: $($confirmedIds.Count) confirmed ID(s) added" -ForegroundColor DarkGray
 }
 
 if ($created -gt 0) {
@@ -288,4 +306,41 @@ if ((Test-Path $notifyScript) -and $notifyLines.Count -gt 0) {
     $notifyBody = ($notifyLines -join "`n")
     $notifyBody += "`n`n📋 $created new task(s) → Aragorn investigating"
     & $notifyScript -Title "🚨 IcM Scan: $created new incident(s)" -Body $notifyBody
+}
+
+# --- Trigger Aragorn investigation for each confirmed issue ---
+$notifyCompleteScript = Join-Path $root "scripts\notify-investigation-complete.ps1"
+
+foreach ($issue in $createdIssues) {
+    Write-Host ""
+    Write-Host "🔎 Triggering investigation for IcM#$($issue.IcmId)..." -ForegroundColor Cyan
+
+    $investigationPrompt = "Aragorn, investigate IcM #$($issue.IcmId) — $($issue.Title). " +
+        "Follow the ICM investigator skill pipeline in .squad/skills/icm-investigator/SKILL.md. " +
+        "Write report to docs/investigations/icm-$($issue.IcmId)-investigation.md"
+
+    copilot -p $investigationPrompt --model claude-sonnet-4.6 --yolo --no-ask-user -s 2>&1 | Out-Null
+    $investigationExitCode = $LASTEXITCODE
+
+    if ($investigationExitCode -eq 0) {
+        Write-Host "  ✅ Investigation complete for IcM#$($issue.IcmId)" -ForegroundColor Green
+
+        # Fire investigation-complete notification
+        if (Test-Path $notifyCompleteScript) {
+            $reportUrl = "https://github.com/jbenami_microsoft/ms-pa/blob/main/docs/investigations/icm-$($issue.IcmId)-investigation.md"
+            try {
+                & $notifyCompleteScript `
+                    -IcmNumber $issue.IcmId `
+                    -Title "ICM $($issue.IcmId): $($issue.Title)" `
+                    -Conclusion "Investigation complete — see report" `
+                    -ReportUrl $reportUrl `
+                    -IssueNumber $issue.IssueNumber
+                Write-Host "  📢 Completion notification sent for IcM#$($issue.IcmId)" -ForegroundColor Green
+            } catch {
+                Write-Warning "  ⚠️ Completion notification failed for IcM#$($issue.IcmId): $_"
+            }
+        }
+    } else {
+        Write-Warning "  ❌ Investigation failed for IcM#$($issue.IcmId) (exit $investigationExitCode)"
+    }
 }
