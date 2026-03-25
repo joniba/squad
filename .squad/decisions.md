@@ -2471,3 +2471,86 @@ Adopt https://ti-prod-kusto-cluster.northeurope.kusto.windows.net as the **prima
 Production ICM logs are now available from Kusto instead of Geneva. The production Kusto endpoint is: https://ti-prod-kusto-cluster.northeurope.kusto.windows.net. The Azure MCP Kusto tools (zure-mcp-kusto) work for querying this endpoint. This replaces Geneva for ICM log analysis.
 
 **Impact:** Aragorn (Operator) and all livesite agents should use Kusto for ICM log investigation going forward.
+
+---
+
+### 2026-03-25T11:38Z: Scribe Direct-Commit Scope Enforcement (Rule 26)
+
+**Decision Date:** 2026-03-25  
+**Decision Maker:** Gandalf  
+**Status:** Merged to main
+
+## What Changed
+
+Added **Rule 26** to `.squad/routing.md` and updated Scribe's charter to explicitly define the boundary between Scribe's direct-commit privileges and work requiring the worktree→PR→Galadriel pipeline.
+
+### Rule 26: Scribe Direct-Commit Scope
+
+Scribe may commit directly to main **ONLY** for:
+- `.squad/log/**` (session logs)
+- `.squad/orchestration-log/**` (orchestration entries)
+- `.squad/decisions.md` (inbox merges)
+- `.squad/decisions/inbox/` (cleanup after merge)
+- `.squad/agents/*/history.md` (cross-agent updates)
+- `.squad/agents/*/history-archive.md` (archived history)
+- `.squad/semantic-model.json` (derived state file)
+
+**Everything else** (docs, charters, governance, project artifacts) **requires PR review by Galadriel**.
+
+### Charter Updates
+
+Updated Scribe's `charter.md`:
+- **"What I Own" section:** Added scope clarification that direct commits are **within scope only** per Rule 26
+- **"How I Work" step 6:** Rewritten to specify Rule 26 compliance and explicit path usage (no blind `git add .squad/`)
+
+## Why
+
+**Governance boundary enforcement.** Previous ambiguity allowed Scribe to bypass the PR review gate by committing changes to governance files (charters, routing rules) directly to main. This created risk of:
+- Unvetted changes to decision-making infrastructure
+- No audit trail for governance modifications
+- Potential conflicts with Gandalf's authority over charter/governance files
+
+Rule 26 **explicitly prevents** this bypass by:
+1. **Scope limitation:** Scribe's direct-commit privilege now clearly limited to logs and history artifacts
+2. **Enforcement:** Coordinator will NOT include out-of-scope files in Scribe's commits
+3. **Audit trail:** All governance changes now follow the documented PR→Galadriel pipeline
+4. **Clarity:** Scribe's charter itself now references Rule 26, binding governance document to routing rule
+
+## Rationale
+
+This decision aligns with **squad principles:**
+- **Clear authority boundaries:** Gandalf authors governance via PR; Scribe maintains operational logs
+- **Decentralized review:** Governance changes require explicit Galadriel review before merging
+- **Recovery from past incidents:** Closes the direct-commit escape hatch that allowed previous governance bypasses
+- **Scalability:** As squad gains more agents, clear scope boundaries prevent chaos when agents attempt unvetted governance changes
+
+## Implementation Notes
+
+- Rule 26 added to `.squad/routing.md` (lines 105–120)
+- Scribe's charter updated in worktree (merged via PR from squad/scribe-scope-fix branch)
+- This decision document serves as the audit record for the policy change
+- Galadriel review cycle: 2 (Cycle 1: CHANGES_REQUESTED with 2 findings, Cycle 2: APPROVED after fixes)
+
+---
+
+### 2026-03-25T11:38Z: GitHub Account Auto-Recovery (Rule 27)
+
+**By:** Jonathan (via Copilot)  
+**Type:** User directive  
+**Capture:** Team memory
+
+## What
+
+When the coordinator gets a GitHub permissions error (e.g., `gh issue create` fails with "Could not resolve to a Repository"), check the current `gh` account (`gh auth status`) and switch accounts (`gh auth switch --hostname github.com --user {correct_user}`) if the active account doesn't match the repo remote. Do not just log the error and move on — attempt automatic recovery by switching accounts first.
+
+## Why
+
+**User request** — captured for team memory. Prevents silent failures when multiple GitHub accounts are configured.
+
+## Implementation
+
+- Added as Rule 27 to `.squad/routing.md` (lines 122–128)
+- Coordinator (Scribe) to implement in GitHub CLI interactions
+- Escalate only after auto-recovery attempt fails
+
+---
