@@ -25,8 +25,8 @@
 
 | Access Path | Status | Notes |
 |-------------|--------|-------|
-| Azure MCP Kusto tool | ❌ **BROKEN** | Returns `FileNotFoundException` for all operations. Appears to be an MCP configuration/auth issue, not a cluster permission issue. |
-| Kusto REST API (direct) | ✅ **Works** | Using `az account get-access-token --resource https://kusto.kusto.windows.net` + `Invoke-RestMethod` |
+| Azure MCP Kusto tool | ✅ **Works** | Supports `list_databases`, `list_tables`, `get_table_schema`, `execute_query`. Use the full cluster URI in the `clusterUri` parameter. **Preferred access method.** |
+| Kusto REST API (direct) | ⚠️ **Last resort** | Using `az account get-access-token --resource https://kusto.kusto.windows.net` + `Invoke-RestMethod`. Only use if MCP tool and all other access methods fail. |
 | `.show databases` | ✅ Works | Via mgmt endpoint |
 | `.show tables` | ✅ Works | Via mgmt endpoint |
 | `.show database schema` | ✅ Works | Via mgmt endpoint |
@@ -647,11 +647,15 @@ Based on observed baselines:
 
 ## 9. Access Issues & Workarounds
 
-### Azure MCP Kusto Tool (BROKEN)
+### Azure MCP Kusto Tool (WORKING)
 
-The `azure-mcp-kusto` MCP tool returns `FileNotFoundException` for all operations (query, list databases, list tables, etc.). This is a tool-level configuration issue, not a cluster access issue.
+The `azure-mcp-kusto` MCP tool is operational for this cluster. Use the full cluster URI (`https://ti-prod-kusto-cluster.northeurope.kusto.windows.net`) in the `clusterUri` parameter. Supported commands: `list_databases`, `list_tables`, `get_table_schema`, `execute_query`.
 
-**Workaround:** Use the Kusto REST API directly via PowerShell:
+> **Note:** The tool was previously broken (returning `FileNotFoundException`) but was fixed as of 2026-03-25.
+
+### Kusto REST API (Last Resort)
+
+**Only use the REST API if the MCP Kusto tool and all other access methods fail.** Direct REST API via PowerShell:
 
 ```powershell
 # Get token
@@ -695,6 +699,6 @@ The authentication resource for Kusto tokens is **always** `https://kusto.kusto.
 
 7. **NormalizationService generates the most errors** (~1.9M errors/hr out of ~5.9M total events), warranting dedicated monitoring.
 
-8. **Azure MCP Kusto tool is broken** — use REST API workaround. The tool team should be notified.
+8. **Azure MCP Kusto tool is working** — use it as the preferred access method. The Kusto REST API should only be used as a last resort if all other access methods fail.
 
 9. **ARM-side queries (macro-expand ARMProdEG) cannot be run from this cluster.** They require SAW access or DGrep. This is a fundamental gap for incident investigation.
