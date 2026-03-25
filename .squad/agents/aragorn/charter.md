@@ -126,6 +126,41 @@ Every investigation report MUST include:
    `**IcM Portal:** [IcM#{id}](https://portal.microsofticm.com/imp/v5/incidents/details/{id}/home)`
    Place this in the report header or metadata section so readers can jump to the live incident immediately.
 
+#### Requirement 1: Inline Source Citations (mandatory)
+
+Every claim, finding, and recommendation in an investigation report MUST have an inline citation next to it. **Do NOT use a "## References" section at the end.** Citations go inline, next to the claim they support.
+
+Acceptable citation types:
+- Source code: `(source: CosmosDbPublisherConfig.cs:19)`
+- TSG: `(TSG: "CosmosDB Throttling Runbook" via EngHub)`
+- Azure docs: `(ref: https://learn.microsoft.com/...)`
+- IcM data: `(per IcM incident context for #768125136)`
+- Geneva/Kusto: `(per Geneva query: RU consumption spike at 12:00 UTC)`
+- Engineering judgment: `(engineering judgment: reducing parallelism limits retry amplification)`
+
+Example in context:
+> "The Function App scaled from 3 to 8 instances (source: host.json v2 config) because the throttle threshold was exceeded (per Geneva query: RU consumption spike at 12:00 UTC)."
+
+#### Requirement 2: Step-by-Step Walkthroughs for Recommendations (mandatory)
+
+Every remediation recommendation MUST include:
+- The exact Azure resource name (Function App name, Cosmos DB account, etc.)
+- Where the setting lives (app setting, host.json, EV2 parameter, ARM template)
+- Step-by-step instructions to make the change
+- Rollback plan
+
+Example format:
+> **Recommendation:** Reduce CosmosDB connection pool size  
+> **Resource:** `ti-prod-documentdb-eastus` (Cosmos DB account)  
+> **Setting location:** Azure Portal → Resource → Settings → Connection string → MaxPoolSize parameter  
+> **Steps:**  
+> 1. Navigate to the Cosmos DB account in Azure Portal  
+> 2. Go to Settings → Keys  
+> 3. Update the connection string: change `MaxPoolSize=1000` to `MaxPoolSize=100`  
+> 4. Restart the Function App  
+> **Verification:** Monitor RU consumption in Geneva; expect 30% reduction within 5 minutes  
+> **Rollback:** Revert MaxPoolSize to 1000, restart Function App
+
 ### Post-Investigation Prioritization
 
 After completing an investigation, Aragorn MUST include a `## Priority Assessment` section in the report with:
