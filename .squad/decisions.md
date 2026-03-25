@@ -2685,3 +2685,49 @@ When the coordinator gets a GitHub permissions error (e.g., `gh issue create` fa
 - Escalate only after auto-recovery attempt fails
 
 ---
+
+---
+
+## 2026-03-25T17:32:40Z: Aragorn must cite sources in recommendations
+
+**By:** Jonathan Ben Ami (via Copilot)  
+**Type:** User directive  
+**Capture:** Team memory
+
+### What
+Aragorn must include sources for all recommendations in investigation reports — cite TSGs, docs, code files, or explicitly state when a recommendation is based on general engineering judgment rather than a specific source.
+
+### Why
+User request — captured for team memory. Aragorn's IcM#768125136 report included a recommendation (reduce MaxEventsProcessedInParallel from 70 to 20-30) without citing where the guidance came from.
+
+---
+
+## 2026-03-25: IcM Scan Pipeline — Full Automation
+
+**Author:** Gandalf  
+**Date:** 2026-03-25  
+**Branch:** squad/0-icm-scan-pipeline-fix  
+**Commit:** a294fcb
+
+### Context
+IcM scan detected incidents 768125338 and 768125136 but Aragorn never investigated them. Two bugs: (1) gh issue create errors silently swallowed, watermark advanced prematurely; (2) no automation to trigger investigation or send completion notification.
+
+### Decisions
+
+**D1: gh issue create must check exit code before advancing state**
+- **Rationale:** Silent error swallowing (2>$null | Out-Null) caused the scan to report success while issue creation actually failed. IcMs were marked as "seen" in the watermark, meaning they'd never be retried.
+- **Rule:** All external command invocations in automation scripts MUST check LASTEXITCODE before advancing state (watermark, counters, notifications).
+
+**D2: icm-scan.ps1 owns the full investigation pipeline**
+- **Rationale:** Previously, the scan created issues and sent a "investigating" notification but relied on someone (the coordinator? manual trigger?) to actually start the investigation. This gap caused incidents to be announced but never investigated.
+- **New flow:** scan → create issue → invoke copilot for investigation → fire completion notification
+- **Trade-off:** Each investigation runs serially within the scan. Acceptable for current volume (<5 incidents/scan). If volume grows, revisit with parallel dispatch.
+
+**D3: Watermark only advances on confirmed success**
+- **Rationale:** Writing IcM IDs to seenIds before confirming issue creation means failed creates are permanently lost — the next scan skips them.
+- **Rule:** Watermark timestamp (lastScan) saves immediately; seenIds only includes IDs with confirmed issue creation.
+
+### Impact
+- scripts/icm-scan.ps1 — 61 insertions, 6 deletions
+- No other files changed
+- Backward compatible — DryRun mode still works identically
