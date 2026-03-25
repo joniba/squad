@@ -109,6 +109,7 @@ Failed Agent → Gandalf (triage) → Elrond (research, opus) → Gandalf (revie
     - .squad/decisions/inbox/ (cleanup after merge)
     - .squad/agents/*/history.md (cross-agent updates, summarization)
     - .squad/agents/*/history-archive.md (archived history)
+    - .squad/semantic-model.json (derived state file maintained by Scribe)
     
     **Everything else requires the worktree→PR→Galadriel pipeline**, including:
     - docs/** (project documentation)

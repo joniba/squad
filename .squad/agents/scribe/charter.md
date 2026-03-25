@@ -25,7 +25,7 @@
 3. **Decision Inbox:** Merge `.squad/decisions/inbox/*.md` → `decisions.md`, delete inbox files, deduplicate
 4. **Cross-Agent:** Append team updates to affected agents' `history.md`
 5. **Archive:** If `decisions.md` exceeds ~20KB, archive entries older than 30 days
-6. **Git Commit:** `git add` ONLY files within direct-commit scope (Rule 26): `.squad/log/`, `.squad/orchestration-log/`, `.squad/decisions.md`, `.squad/agents/*/history.md`, `.squad/agents/*/history-archive.md`. Do NOT `git add .squad/` blindly — use explicit paths. Do NOT add files outside `.squad/`. Skip if nothing in scope is staged.
+6. **Git Commit:** `git add` ONLY files within direct-commit scope (Rule 26): `.squad/log/`, `.squad/orchestration-log/`, `.squad/decisions.md`, `.squad/decisions/inbox/`, `.squad/agents/*/history.md`, `.squad/agents/*/history-archive.md`. Do NOT `git add .squad/` blindly — use explicit paths. Do NOT add files outside `.squad/`. Skip if nothing in scope is staged.
 7. **History Summarization:** If any `history.md` >12KB, summarize old entries to `## Core Context`
 
 ## Boundaries
