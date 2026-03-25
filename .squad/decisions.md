@@ -1,5 +1,136 @@
 # Squad Decisions
 
+## Inbox Merges — 2026-03-25T13:30Z (IcM Investigations — CosmosDbPublisher Throttling)
+
+### 2026-03-25: CosmosDbPublisher Recurrence — NorthEurope & WestEurope
+
+**Author:** Aragorn (Operator)  
+**Date:** 2026-03-25  
+**Incidents:** IcM#768125338 (NorthEurope), IcM#768125136 (WestEurope)  
+**Reports:** 
+- `docs/investigations/icm-768125338-investigation.md`
+- `docs/investigations/icm-768125136-investigation.md`
+
+**Pattern Summary:**
+Both incidents share root cause: Cosmos DB RU throttling on burst write operations in the TI pipeline. IcM#768125338 (NE) is the **31st recurrence** of a self-healing pattern (0 customer impact). IcM#768125136 (WEU) is the **2nd occurrence in 9 days** and represents a **production defect** — the infinite retry policy converts transient throttling into sustained multi-hour outage with customer impact.
+
+---
+
+## Consolidated Decisions from IcM#768125338 & IcM#768125136
+
+### Decision 1: CosmosDbPublisher Recurrence Must Require Engineering Work
+
+**Finding:** IcM#768125136 is a recurrence of IcM#763122287 (2026-03-16). Prior incident was closed as "Transient" without shipping a fix. Same root cause (infinite retry policy, 429 batch-fail handling) triggered again 9 days later.
+
+**Action Required:** Any future ICM for `[TiPipeline] [CosmosDbPublisher]` falling behind must reference prior incidents and require at minimum a tracked engineering work item before closure.
+
+**Routing:** Jonathan (policy decision)
+
+---
+
+### Decision 2: Replace Infinite Retry Policy (P0 Fix)
+
+**Finding:** `ExponentialBackoffRetry(-1, ...)` in CosmosDbPublisherAzf.cs is a production defect. Infinite retries convert transient throttling (429) into multi-hour outages. IcM#768125136 demonstrates sustained 91–93% error rate with no recovery — 3h+ duration and still active at investigation time.
+
+**Action Required:** 
+- Replace `-1` (infinite) with bounded retry count (recommend: 5 attempts)
+- Add per-item DLQ handling for TooManyRequests in PublishLegacyIndicatorToCosmos.cs
+- **Priority:** P0
+
+**Routing:** Jonathan (code review), Gimli (implementation)
+
+---
+
+### Decision 3: Handle 429 as Per-Item Failure, Not Batch-Fail
+
+**Finding:** PublishLegacyIndicatorToCosmos.cs treats HTTP 429 TooManyRequests as a batch-terminating Fail status. This is incorrect — throttling is transient, not permanent failure. Correct behavior: skip item, route to DLQ, allow batch to checkpoint.
+
+**Action Required:** Code change to handle 429 as non-terminating per-item failure with DLQ routing.
+
+**Routing:** Jonathan, Gimli
+
+---
+
+### Decision 4: Enable Cosmos Autoscale (IcM#768125338)
+
+**Finding:** RU spike observed in NE incident was 4× baseline (711M → 2.8B RUs/hour). 31 historical recurrences indicate steady-state provisioning too close to burst capacity. Autoscale would eliminate or significantly reduce 429 throttling frequency.
+
+**Action Required:** Enable Cosmos DB autoscale with higher max RU ceiling for TI pipeline accounts (northeurope, westeurope, eastus). Requires cost impact assessment.
+
+**Effort:** Low-Medium, within 1 sprint.
+
+**Recommendation:** APPROVE
+
+**Routing:** Jonathan (cost approval)
+
+---
+
+### Decision 5: Downgrade Monitor to Sev 3 with Escalation (IcM#768125338)
+
+**Finding:** 31 incidents over ~13 months, 0 with customer impact, all transient and self-healing. Filing Sev 2 every time creates unnecessary oncall burden and desensitizes rotation.
+
+**Action Required:** Change TIPipeline Latency Monitor from Sev 2 → Sev 3 for first 2 hours of CosmosDbPublisher pipeline-behind event. Escalate to Sev 2 only if incident persists beyond 2 hours. Alternative: 30-minute suppression window.
+
+**Recommendation:** APPROVE (requires monitor configuration + TSG update)
+
+**Routing:** Jonathan
+
+---
+
+### Decision 6: Rate-Limit Legacy Indicator Batches (IcM#768125338)
+
+**Finding:** Root trigger is batch job generating legacy indicator upsert burst that exceeds provisioned Cosmos DB RU/s. Rate limiting at source would prevent downstream throttling entirely.
+
+**Action Required:** Identify batch job(s) responsible for upsert burst, add per-minute write rate limiting to stay within 80% of provisioned RU/s.
+
+**Recommendation:** INVESTIGATE (requires job ownership analysis)
+
+**Routing:** Jonathan
+
+---
+
+### Decision 7: Kusto REST API Workaround Confirmed Stable (IcM#768125136)
+
+**Finding:** MCP Kusto tool remains broken (FileNotFoundException). REST API workaround (`Invoke-RestMethod` + `az account get-access-token --resource https://kusto.kusto.windows.net`) successfully returned log data. This should be standard approach until MCP fixed.
+
+**Action Required:** Gimli investigate MCP Kusto tool fix. In meantime, Aragorn/Bilbo use REST API workaround for all Kusto queries.
+
+**Routing:** Gimli (tool fix)
+
+---
+
+### Decision 8: Investigate TAXII Connector Surge Trigger (IcM#768125136)
+
+**Finding:** Workspace `b6dfb36f-5727-4e9a-89ae-12df6706e278` (TAXIIConnector) generated >1,900 failures/min during incident. Source of write surge (scheduled sync, new feed, connector restart?) unknown. Root cause incomplete without this data.
+
+**Action Required:** Investigate what triggered TAXII connector surge for this workspace on both March 16 (IcM#763122287) and March 25 (IcM#768125136). Determine if TAXII feed subscription configuration change required.
+
+**Routing:** Aragorn/team lead investigation
+
+---
+
+### Decision 9: Northeurope Kusto Access Path Investigation (IcM#768125338)
+
+**Finding:** REST API workaround returned HTTP 400 for northeurope cluster. WEU cluster worked successfully. Future NE investigations need Kusto log access.
+
+**Action Required:** Verify correct access path for `ti-prod-kusto-cluster.northeurope.kusto.windows.net`. Determine if NE cluster uses different auth model or database name.
+
+**Recommendation:** INVESTIGATE
+
+**Routing:** Gimli (tool builder)
+
+---
+
+### Decision 10: Add FCM Change Data Review to Investigation Checklist (IcM#768125136)
+
+**Finding:** FCM flagged "Change data found" for IcM#768125136. Aragorn did not investigate change data (no FCM query executed). This is a gap — change review could reveal deployment or config change as trigger.
+
+**Action Required:** Add explicit FCM change data review step to Aragorn's ICM investigation checklist (Stage 2).
+
+**Routing:** Jonathan (checklist update)
+
+---
+
 ## Inbox Merges — 2026-03-24T14:42Z (Review Recovery Protocol)
 
 ### 2026-03-24: Protocol Recovery — 8 PR Review Cycle Complete

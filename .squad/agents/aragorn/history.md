@@ -392,3 +392,68 @@ TI services **ARE using client certificates for mTLS at the HTTP transport layer
 - [HIGH] Cluster-to-cluster query routing limitations must be documented up-front for cross-cluster investigations
 - [MED] Baseline error rates are operational context, not health alerts — false positive prevention requires operational context
 - [MED] Token resource discovery requires manual REST testing — worth adding to MCP tool config validation
+
+
+---
+
+## 2026-03-25: IcM#768125338 — CosmosDbPublisher NorthEurope RU Throttling Investigation
+
+**Requested by:** Jonathan Ben Ami  
+**Incident:** [TiPipeline] [CosmosDbPublisher] [Prod] [NorthEurope] Is falling behind  
+**Severity:** 2 | **State:** ACTIVE | **Customer Impact:** None  
+**Report:** docs/investigations/icm-768125338-investigation.md
+
+## Learnings
+
+**[HIGH] CosmosDbPublisher 429/RU-throttling is a known, recurring pattern — 30 incidents since Feb 2025.**
+- Seen across westeurope, eastus, northeurope. All Sev 2. None customer-impacting. All self-heal in 3–4 hours.
+- IcM Copilot auto-enriches the keywords with root cause on every firing — this is a reliable first-triage signal.
+- Mitigation pattern: health manager auto-resolves when watchdog reports healthy 12× over ~55 minutes.
+- Root cause: high-volume batch of indicator upserts (specifically "legacy" upserts) exceeds Cosmos DB provisioned RU/s.
+- Causal chain: write burst → 429 throttling → retry storm → EventHub consumer lag → pipeline "falls behind".
+
+**[HIGH] Geneva CosmosRUUsage is the key diagnostic metric for this incident class.**
+- Account: Augusta_PROD_MDM, Namespace: TIPipeline, Metric: CosmosRUUsage
+- Query without dimension filters to get the total picture; the 4× RU spike is the fingerprint of this failure mode.
+- CosmosOperation total count drops at throttling onset (fewer successful ops) — use as corroborating signal.
+
+**[MED] Northeurope Kusto cluster returns HTTP 400 for REST API queries.**
+- The ti-prod-kusto-cluster.northeurope.kusto.windows.net cluster rejected all REST API queries with 400 BadRequest.
+- Previous research documented this workaround for a different cluster context. Northeurope may require different access.
+- Geneva metrics were sufficient to confirm RCA without Kusto log evidence for this incident class.
+
+**[MED] Dimension-filtered Geneva queries return empty for CosmosOperation by ApplicationName/ResponseCode.**
+- Total (unfiltered) CosmosOperation and CosmosRUUsage return data; dimension-filtered queries return empty.
+- Possible preaggregation mismatch: the pre-agg "By-ApplicationName-Operation-ResponseCode" may not populate for all regions.
+- Always try total (no dimensions) first, then narrow down.
+
+**[LOW] This incident should be downgraded or suppressed.**
+- 30 identical incidents over 13 months, all transient, none customer-impacting — this is Sev 3 / Noise territory.
+- Recommended: add 30-minute suppression window to monitor, or change to Sev 3 for first 2 hours.
+- Formal recommendation written in decisions inbox.
+
+
+### 2026-03-25: ICM #768125136 - CosmosDbPublisher WEU Falling Behind (Full Investigation)
+
+**Context:** Jonathan assigned Aragorn to investigate this Sev2 livesite. Second occurrence of identical failure (prior: ICM #763122287, 2026-03-16). Investigation run at 13:25 UTC while incident still ACTIVE.
+
+**Root Cause Confirmed (HIGH confidence):**
+- Cosmos DB HTTP 429 throttling on legacy indicator upserts (PublishLegacyIndicatorToCosmos)
+- Workspace b6dfb36f-5727-4e9a-89ae-12df6706e278 (TAXIIConnector) generated 1,906+ failures/min at peak
+- Infinite retry policy ExponentialBackoffRetry(-1) in CosmosDbPublisherAzf.cs creates retry storm
+- Batch-terminating Fail on 429 prevents EventHub checkpoint -> queue grows indefinitely
+- Both WEU and NEU affected (91-93% error rate sustained 4+ hours)
+
+**Key Technical Findings:**
+1. Kusto REST API confirmed working - Log table error rates show incident still active at 13:25 UTC
+2. Geneva metrics (Augusta_PROD_MDM / TiPipeline namespace) confirmed accessible
+3. Recurrence pattern: This is EXACTLY ICM #763122287 (March 16) - same title, root cause, region. Prior closed as Transient with no fix.
+4. IcM Copilot Autopilot v2.8.30 ran a pre-investigation with actual metrics tables
+
+**Engineering Fix Required (P0):**
+- Replace infinite retry with finite (5 attempts) in CosmosDbPublisherAzf.cs
+- Change 429 handling to per-item DLQ in PublishLegacyIndicatorToCosmos.cs
+
+**Process Gap:** Prior incident closed Transient without engineering tracking -> direct cause of recurrence
+
+**Delivered:** docs/investigations/icm-768125136-investigation.md, .squad/decisions/inbox/aragorn-icm-768125136.md
