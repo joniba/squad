@@ -2416,3 +2416,58 @@ See docs/designs/issue-hygiene.md for final design rationale.
 
 **Impact:** All squad members now have a single reference for discovering, configuring, and using MCP tools relevant to their domain.
 
+
+---
+
+## 2026-03-25: Production Kusto Endpoint for ICM Logs
+
+**Decision by:** Gandalf (Squad Lead)  
+**Announces:** Jonathan's communication about production Kusto endpoint availability  
+**Date:** 2026-03-25  
+**Source:** .squad/decisions/inbox/gandalf-kusto-endpoint.md
+
+### Decision
+
+Adopt https://ti-prod-kusto-cluster.northeurope.kusto.windows.net as the **primary endpoint** for production ICM log queries during incident investigation. This replaces Geneva as the primary log source.
+
+### Rationale
+
+**Background:** Jonathan announced that production ICM logs are now available via Kusto at a dedicated production endpoint, providing richer telemetry data for incident investigation.
+
+**Impact:** 
+- **Primary use:** ICM incident investigation (Stage 2: Data Enrichment in Aragorn's charter)
+- **Tool:** zure-mcp-kusto MCP with kusto_query, kusto_table_list, kusto_table_schema tools
+- **Backward compatibility:** Geneva remains for metrics queries; no removal of existing tools
+
+**Workflow improvement:** Aragorn can now execute comprehensive KQL queries directly against production logs during livesite response, enabling faster root-cause analysis without relying on Geneva metrics alone.
+
+### Affected Agents
+
+- **Aragorn (Operator)** — Stage 2 of incident investigation workflow now references this primary endpoint
+- **Elrond (Researcher)** — Can use for data-driven research on past incidents
+- **Frodo (Builder)** — Can query TI pipeline health telemetry
+
+### Implementation
+
+1. **Charter Update:** Aragorn's charter.md Stage 2 section updated to specify primary Kusto endpoint and clarify that Geneva is for metrics only
+2. **Learning Record:** Added to Aragorn's history.md Learnings section documenting the transition
+3. **MCP Catalog:** Updated docs/mcp-catalog.md Kusto section with production endpoint URL and ICM investigation context
+
+### References
+
+- **Endpoint:** https://ti-prod-kusto-cluster.northeurope.kusto.windows.net
+- **Aragorn's Charter:** .squad/agents/aragorn/charter.md (Stage 2: Data Enrichment)
+- **MCP Documentation:** docs/mcp-catalog.md (Section 3.3: Kusto)
+- **Tool:** zure-mcp-kusto (Agency MCP or standalone Azure MCP)
+
+---
+
+### 2026-03-25T11:33Z: User directive
+
+**By:** Jonathan (via Copilot)  
+**Type:** User directive  
+**Capture:** Team memory
+
+Production ICM logs are now available from Kusto instead of Geneva. The production Kusto endpoint is: https://ti-prod-kusto-cluster.northeurope.kusto.windows.net. The Azure MCP Kusto tools (zure-mcp-kusto) work for querying this endpoint. This replaces Geneva for ICM log analysis.
+
+**Impact:** Aragorn (Operator) and all livesite agents should use Kusto for ICM log investigation going forward.

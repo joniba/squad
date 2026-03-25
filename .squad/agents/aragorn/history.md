@@ -9,6 +9,13 @@
 
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
 
+### 2026-03-25: Production ICM Logs Now Available on Kusto Endpoint
+- **Transition:** Jonathan announced that production ICM logs are now available via Kusto at `https://ti-prod-kusto-cluster.northeurope.kusto.windows.net`
+- **Impact:** This replaces Geneva as the primary log source for incident investigation. Geneva remains in use for metrics (not logs).
+- **Tool:** Use `azure-mcp-kusto` MCP to execute KQL queries against this endpoint during Stage 2 (Data Enrichment) of incident investigation
+- **Charter update:** Aragorn's charter.md Stage 2 section has been updated to reflect this primary endpoint
+- **Squad utility:** Critical for ICM investigation workflows; enables richer telemetry queries during livesite response
+
 ### 2026-03-22: ICM 764634026 — MSPKI G1→G2 Root CA Migration (OceanView SR17)
 - **Incident type:** AzRel Red Flag — cert migration enforcement. Severity 25, ACTIVE, Public cloud global impact.
 - **Owning team:** AzRel Security Engineering (AzRel Red Flag Program)

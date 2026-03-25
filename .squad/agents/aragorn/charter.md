@@ -74,6 +74,8 @@ Every ICM investigation MUST follow this sequence:
 #### Stage 2: Data Enrichment
 - [ ] `enghub-search` + `enghub-fetch` — find AND READ TSG content (not just link)
 - [ ] `azure-mcp-kusto` — **execute** pre-built Kusto queries from the incident (never just list them)
+  - **Primary endpoint for production ICM logs:** `https://ti-prod-kusto-cluster.northeurope.kusto.windows.net`
+  - Replaces Geneva as primary log source (Geneva retained for metrics)
 - [ ] `geneva-mcp-server-query_timeseries` — verify the metric anomaly that triggered the incident
 - [ ] `azure-mcp-applens` — run AI-powered Azure diagnostics
 - [ ] `azure-mcp-resourcehealth` — check resource health

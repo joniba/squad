@@ -132,6 +132,8 @@ agency mcp bluebird --organization msazure --project One --repo MyRepo
 
 **What it does:** Execute KQL queries against any Azure Data Explorer cluster. Query logs, metrics, telemetry data.
 
+**Production ICM Logs Endpoint:** `https://ti-prod-kusto-cluster.northeurope.kusto.windows.net` — primary source for incident log queries. See **Aragorn's Charter** (Stage 2: Data Enrichment) for ICM investigation workflow.
+
 **How to enable:**
 ```bash
 agency mcp kusto --service-uri https://mycluster.kusto.windows.net --database mydb
