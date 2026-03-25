@@ -101,3 +101,19 @@ Failed Agent → Gandalf (triage) → Elrond (research, opus) → Gandalf (revie
 23. **Post-merge issue verification** — after ANY merge to main — whether via `gh pr merge`, `git merge`, or direct commit — the coordinator MUST verify that all issues whose work was just landed are properly closed. If an issue remains open after its branch merged (e.g., direct `git merge` bypassed auto-close), close it with `gh issue close {N} --comment "Branch merged to main via direct merge. PR auto-close did not fire. Closing per Rule 23."` This catches recovery scenarios, manual conflict resolution, and any non-standard merge path.
 24. **Worktree cleanup** — after a branch merges to main, the coordinator MUST clean up the associated worktree and local branch: (1) `git worktree remove ./worktrees/squad-{N}` to remove the worktree, (2) `git branch -d squad/{N}-{slug}` to delete the merged local branch. If the worktree contains uncommitted changes, the coordinator MUST warn and skip removal (do not use `--force`). **Periodic scan:** during Ralph's work-check cycle, Ralph MUST list worktrees via `git worktree list` and flag any whose branch has already been merged to main (i.e., branch no longer exists on remote or is fully merged). These are stale and should be cleaned up.
 25. **Infrastructure failure notifications** — when ANY infrastructure or tool failure occurs during coordinator operations, the coordinator MUST immediately fire a Teams notification. No silent error swallowing. **Failure categories:** git operations (permissions, auth, push/pull failures), GitHub CLI errors (`gh` command failures), MCP tool disconnections or errors, notification script failures, worktree corruption, branch operations failures, merge conflicts that block automation. **Format:** `.\scripts\notify-squad-event.ps1 -Event "blocked" -What "Infrastructure failure: {category}" -Why "{error message}" -ActionNeeded "Investigate and resolve {category} failure" -Link "{relevant URL if any}" -Agent "coordinator"`. This fires IMMEDIATELY on detection — not batched, not deferred to Ralph's scan cycle. **Meta-failure exception:** if the notification script itself fails, log to console with `[CRITICAL]` prefix — this is the only case where silent handling is permitted (because the notification system itself is broken).
+
+26. **Scribe direct-commit scope** — Scribe may commit directly to main ONLY these file categories:
+    - .squad/log/** (session logs)
+    - .squad/orchestration-log/** (orchestration entries)
+    - .squad/decisions.md (inbox merges)
+    - .squad/decisions/inbox/ (cleanup after merge)
+    - .squad/agents/*/history.md (cross-agent updates, summarization)
+    - .squad/agents/*/history-archive.md (archived history)
+    
+    **Everything else requires the worktree→PR→Galadriel pipeline**, including:
+    - docs/** (project documentation)
+    - .squad/agents/*/charter.md (governance — authored by Gandalf via PR)
+    - .squad/routing.md, .squad/team.md, .squad/ceremonies.md (governance)
+    - Any file outside .squad/ (project artifacts)
+    
+    The coordinator MUST NOT include out-of-scope files in Scribe's git add. If an agent produced files outside Scribe's scope, those files stay uncommitted until a proper PR is created.
