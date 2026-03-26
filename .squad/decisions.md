@@ -2731,3 +2731,182 @@ IcM scan detected incidents 768125338 and 768125136 but Aragorn never investigat
 - scripts/icm-scan.ps1 — 61 insertions, 6 deletions
 - No other files changed
 - Backward compatible — DryRun mode still works identically
+
+
+---
+
+## Inbox Merges — 2026-03-26T16:26Z (Board Audit, G2 Decisions, PR Merge Wiring, IcM Investigation Directives)
+
+### 2026-03-26: Board Audit: 17 Open Squad-Labeled Issues
+
+**Auditor:** Gandalf (Lead)  
+**Date:** 2026-03-28  
+**Requested by:** Jonathan
+
+#### Summary
+
+| # | Title | Assignee | Verdict | Evidence |
+|---|-------|----------|---------|----------|
+| 163 | SecEng-Augusta G2 cert | Aragorn | ✅ CLOSE | PR #165 merged 03/26 |
+| 162 | Sentinel-Synthetics G2 cert | Aragorn | ✅ CLOSE | PR #164 merged 03/26 |
+| 161 | Sentinel-TiAutomation G2 cert | Aragorn | ✅ CLOSE | PR #166 merged 03/26 |
+| 159 | ICM 768706934 NE CosmosDbPublisher | Aragorn | 🔴 OPEN | Investigation on disk but never committed/PR'd |
+| 158 | ICM 768693081 WEU CosmosDbPublisher | Aragorn | ✅ CLOSE | PR #160 merged 03/26, "Closes #158" |
+| 146 | ICM 767815474 ARM/WATCHLISTS | Aragorn | �� STALE | No investigation done; ARM error spikes typically self-mitigate; 4+ days old |
+| 136 | ICM 767416366 ARM/WATCHLISTS | Aragorn | 🟡 STALE | Same pattern as #146; no investigation; likely auto-mitigated |
+| 118 | DGrep integration tests | Aragorn | 🔴 OPEN | Tests written but never PR'd/merged (reopened after premature close) |
+| 117 | Notifications Phase 1.3 PR/review | Gimli | 🔴 OPEN | Deprioritized to P3-low, post-MVP. Genuine future work |
+| 116 | Notifications Phase 1.2 failure recovery | Gimli | 🔴 OPEN | PR #125 merged library code, but issue body updated — integration wiring still needed |
+| 111 | Wire teams-watchdog to WorkIQ | Gimli | 🔴 OPEN | No work started. P2-medium |
+| 107 | DGrep saved query management | Gimli | 🔴 OPEN | Code written but never PR'd/merged (reopened after premature close) |
+| 90 | Update repo-map.json for TiExpert | Gimli | 🔴 OPEN | Blocked on external PR 15064785 merge |
+| 152 | Rule: coordinator attempt before blocked | Gandalf | 🔴 OPEN | Rule never added to routing.md |
+| 123 | Monitor Squad #508 integration | Gandalf | 🔴 OPEN | Long-term strategic tracking, timeline through Sep 2026 |
+| 120 | Notifications documentation | Bilbo | ✅ CLOSE | PR #143 merged 03/24 with "Closes #120", docs delivered |
+| 89 | Monitor PR 15064785 merge | Galadriel | 🔴 OPEN | External PR still pending, blocks #90 |
+
+#### Verdicts Breakdown
+- **✅ CLOSE (5 issues):** #163, #162, #161, #158, #120
+- **🟡 STALE (2 issues):** #146, #136
+- **🔴 OPEN (10 issues):** #159, #118, #117, #116, #111, #107, #90, #152, #123, #89
+
+#### Process Issue Identified
+
+**"Premature close" pattern:** 5 issues were marked done and closed before code went through PR/review/merge. This was caught and corrected (issues reopened), but #159 was missed — its investigation doc is still uncommitted on disk.
+
+---
+
+### 2026-03-26: Decision: SecEng-Augusta G2 Certificate Compatibility — REQUIRES TESTING
+
+**From:** Aragorn (Operator)  
+**Date:** 2026-03-27  
+**Issue:** #163  
+**IcM:** #764634026 (Medium-risk SDK finding)
+
+#### Decision Required
+
+All 6 ClientCertificateCredential usages across SecEng-Augusta and Sentinel-Augusta are **architecturally compatible** with G2 certificates. No code changes needed. However, **production testing is required** before the G2 migration can proceed.
+
+#### Recommended Actions
+1. **Deploy G2 test cert to PPE** — register with service principal App Registration
+2. **Run smoke tests** per processor: ISG, MSFeed Snapshot, MSFeed RealTime, TAXII
+3. **Test Sentinel-Augusta KeyVaultReader** — KeyVault secret read with G2 cert
+4. **Sovereign cloud validation** — FFx and MNC environments separately (different trust stores)
+
+#### Risk Assessment
+- **No BLOCK findings** — code is compatible, no EKU checks
+- **SendCertificateChain=true already set** — G2 chain will be transmitted
+- **Main risk:** Azure AD server-side trust chain validation per cloud
+- **Separate:** TAXII mTLS finding (CRITICAL) tracked independently
+
+---
+
+### 2026-03-26: Decision: Sentinel-Synthetics G2 Certificate Migration Risk
+
+**From:** Aragorn (Operator)  
+**Date:** 2026-03-27  
+**Issue:** #162  
+**Severity:** HIGH
+
+#### Verdict
+
+**REQUIRES TESTING** — with HIGH risk on 3 legacy cross-tenant auth paths, SAFE on newer MSI-based jobs.
+
+#### Decisions Needed
+
+1. **[P0] Contact Geneva Synthetics team re: G2 cert provisioning timeline**
+   - When will Geneva Synthetics platform start provisioning G2 certs for synthetic MSI apps?
+   - This sets the hard deadline for migrating legacy auth paths.
+
+2. **[P1] Prioritize Offboarding + Recommendations synthetics migration to MSI**
+   - Complete migration from TokenCredentialCreator to SyntheticsApplicationTokenCredential (MSI-based)
+   - Affected: SettingsARMClient, OnboardingStatesClient, RecommendationsSyntheticsClientBase
+   - These will break silently when Geneva provisions G2 certs with error AADSTS700027
+
+3. **[P1] Audit Key Vault certificates for EKU profile**
+   - Check dedicated app certs in Key Vault used by CrossTenantTokenCredentialCreator
+   - Determine issuing CA and EKU profile
+
+#### Full Investigation
+See: docs/investigations/g2-cert/sentinel-synthetics-g2-investigation.md
+
+---
+
+### 2026-03-26: Decision: Sentinel-TiAutomation G2 Certificate Compatibility
+
+**From:** Aragorn (Operator)  
+**Date:** 2026-03-27  
+**Issue:** #161  
+**Branch:** squad/161-tiautomation-g2-cert
+
+#### Decision
+
+**Sentinel-TiAutomation is SAFE for MSPKI G2 migration. No code changes required.**
+
+#### Rationale
+
+The ClientCertificateCredential in Program.cs:399 is gated behind EnvironmentName.Local — only on developer laptops. All production, INT, PPE, and canary environments use ManagedIdentityCredential with zero dependency on client certificates.
+
+#### Actions Requested
+1. Close IcM #764634026 finding for Sentinel-TiAutomation as "No Action Required"
+2. Verify Azure VM/container trust stores include DigiCert G2 root
+3. Review investigation: docs/investigations/g2-cert/sentinel-tiautomation-g2-investigation.md
+
+---
+
+### 2026-03-26T13:07:35Z: User directive — IcM investigation reports bypass PR review gate
+
+**By:** Jonathan Ben Ami (via Copilot)
+
+Aragorn's IcM investigation reports do not require Galadriel's PR review. They can merge without the review gate. Galadriel review is for code and feature work, not operational investigations.
+
+**Rationale:** IcM investigations are time-sensitive operational work. Adding a review gate slows down incident response without proportional quality benefit.
+
+---
+
+### 2026-03-26T13:29:41Z: User directive — Investigation PRs auto-merge without confirmation
+
+**By:** Jonathan Ben Ami (via Copilot)
+
+Investigation PRs can be automatically merged from worktrees without waiting for user confirmation. The coordinator should merge them as part of the standard post-investigation flow.
+
+**Rationale:** Investigations are operational work — they don't need human approval to land. Reducing friction on the investigation pipeline.
+
+---
+
+### 2026-03-26T15:31:54Z: User directive — Post-merge local sync required
+
+**By:** Jonathan Ben Ami (via Copilot)
+
+After merging a PR via \gh pr merge\, the coordinator MUST run \git pull origin main\ to sync the local checkout. The scheduler should NOT pull — that's the coordinator's job.
+
+**Rationale:** The icm-scan.ps1 fix was merged via PR but the local copy was stale for hours because nobody pulled. Scripts run from the local filesystem, not from GitHub.
+
+---
+
+### 2026-03-26: Decision: Post-Merge Local Sync Wiring
+
+**Author:** Gandalf (Lead)  
+**Date:** 2026-03-26T17:38:25Z  
+**PR:** #167  
+**Branch:** squad/0-pr-merge-completion-wiring
+
+#### Decision
+
+After every \gh pr merge\, the coordinator MUST run \git pull origin main\ to sync the local checkout. This is now enforced in:
+- Rule 10 (Galadriel PR Gate)
+- Rule 24 (Worktree cleanup)
+- Rule 28 (NEW — Post-merge local sync, standalone rule)
+- Issue lifecycle template (step 6)
+- squad.agent.md coordinator obligation + Ralph actions
+
+#### Rationale
+
+\gh pr merge\ advances origin/main but leaves local HEAD stale. All local-filesystem automation (scripts, scheduler, Scribe) runs from HEAD. Without the pull, merged code doesn't take effect locally until someone manually syncs.
+
+#### Impact
+All squad members and the coordinator. Every merge path is now covered.
+
+#### Status
+Awaiting Jonathan's review on PR #167. Not merged.
+
