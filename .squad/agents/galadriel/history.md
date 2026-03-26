@@ -102,3 +102,26 @@ Galadriel was hired based on Elrond's analysis of the coffee-ratings "Bobbie" ch
 - [HIGH] For infrastructure documentation, sample real-world operational queries are mandatory—not optional polish
 - [HIGH] 2-cycle review identifies gaps that single-pass review misses (especially for docs translated from research)
 - [MED] Technical accuracy review (F2 token resource) must be separate concern from completeness review (F1 queries)
+
+### 2026-03-25 — Routing Enforcement Review (Investigation + Action Plan)
+
+**Task:** Final review of Elrond's routing enforcement investigation and Gandalf's action plan. Verdict: APPROVE WITH CONDITIONS.
+
+**Key Findings:**
+- Investigation evidence is accurate: 173/226 main commits from coordinator, ~135 non-merge non-Scribe violations
+- Root cause analysis (context drift, zero technical enforcement, compliant-path friction) is correct and well-supported by industry research
+- Action plan is practical: branch protection (P0) + pre-push hook + STOP-gate checklist + Ralph audit
+- Gandalf correctly deferred Elrond's over-engineered suggestions (squad-git.ps1 wrapper, separate execution layer)
+
+**Conditions Applied:**
+1. Branch protection must be enabled before "resolved" — analysis without action is documentation, not a fix
+2. Typo-fix exemption must be scoped to docs-only (not governance files)
+3. Action plan date corrected (was "2025-07-24", should be "2026-03-25")
+4. Scribe exemption time-boxed to 2 weeks
+
+**Learnings:**
+- [HIGH] Investigation reviews must verify numbers independently — Elrond's counts were directionally right but inflated by ~10%. Cross-check before approving.
+- [HIGH] When reviewing action plans, check for transition-period gaps — what happens between "now" and "fix deployed"? Neither document addressed this.
+- [HIGH] Exemption categories in governance docs need tight scoping. "Typo fix" is dangerously vague without file-type restrictions. Always ask: "Can this exemption be stretched to cover what it shouldn't?"
+- [MED] Instruction-layer enforcement for LLM agents degrades with distance from action point. Checklists belong at the spawn template, not in separate sections.
+- [MED] The reviewer reviewing the reviewer problem: no quality check on Galadriel's own reviews exists. Flagged for future consideration.

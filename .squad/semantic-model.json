@@ -321,6 +321,13 @@
     {
       "status": "unknown",
       "type": "doc",
+      "title": "kusto-guide",
+      "tags": [],
+      "id": "doc:docs/kusto-guide.md"
+    },
+    {
+      "status": "unknown",
+      "type": "doc",
       "title": "mcp-catalog",
       "tags": [],
       "id": "doc:docs/mcp-catalog.md"
@@ -740,6 +747,20 @@
       "id": "doc:docs/investigations/icm-767184571-investigation.md"
     },
     {
+      "status": "unknown",
+      "type": "doc",
+      "title": "icm-768125136-investigation",
+      "tags": [],
+      "id": "doc:docs/investigations/icm-768125136-investigation.md"
+    },
+    {
+      "status": "unknown",
+      "type": "doc",
+      "title": "** [TiPipeline] [CosmosDbPublisher] [Prod] [NorthEurope] Is falling behind",
+      "tags": [],
+      "id": "doc:docs/investigations/icm-768125338-investigation.md"
+    },
+    {
       "status": "Failed",
       "type": "doc",
       "title": "$($_.title)\\",
@@ -856,6 +877,13 @@
       "title": "IcM Scan End-to-End Research: Bypassing MCP via Direct Kusto REST",
       "tags": [],
       "id": "doc:docs/research/icm-scan-end-to-end-research.md"
+    },
+    {
+      "status": "unknown",
+      "type": "doc",
+      "title": "kusto-cluster-research",
+      "tags": [],
+      "id": "doc:docs/research/kusto-cluster-research.md"
     },
     {
       "status": "\"complete\"",
@@ -989,6 +1017,13 @@
       "id": "doc:docs/research/worktrees/worktree-parallelism-research.md"
     },
     {
+      "status": "unknown",
+      "type": "doc",
+      "title": "kusto-guide-review",
+      "tags": [],
+      "id": "doc:docs/reviews/kusto-guide-review.md"
+    },
+    {
       "status": "**",
       "type": "doc",
       "title": "pr-150-governance-review",
@@ -1092,6 +1127,115 @@
       "id": "doc:docs/reviews/review-pr155-infra-failure-rule.md"
     },
     {
+      "status": "unknown",
+      "type": "doc",
+      "title": "scribe-scope-fix-review",
+      "tags": [],
+      "id": "doc:docs/reviews/scribe-scope-fix-review.md"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "squad(elrond): append routing enforcement investigation learnings to history.md",
+      "id": "commit:d3afacb"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "Merge branch 'squad/0-icm-scan-pipeline-fix'",
+      "id": "commit:b428f83"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "charter(aragorn): add inline citation + walkthrough requirements for investigations",
+      "id": "commit:e56cd35"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "scribe: merge decision inbox + session logs (2026-03-25T17:40)",
+      "id": "commit:5e8ab66"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "fix(icm-scan): fix silent failures, add auto-investigation and completion notification",
+      "id": "commit:a294fcb"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "Add IcM investigation reports + reviews (uncommitted from prior sessions)",
+      "id": "commit:57e750a"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "Scribe: IcM investigations + decision consolidation (NE #768125338, WEU #768125136)",
+      "id": "commit:3097061"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "Record Issue #156 Kusto guide completion (Aragorn research, Bilbo docs, Galadriel review)",
+      "id": "commit:cbcc65a"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "Fix Galadriel's review findings in kusto-guide.md",
+      "id": "commit:0abe7ef"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "Deliver polished TI Production Kusto Cluster Guide",
+      "id": "commit:419aafe"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "docs: TI prod Kusto cluster research for guide (#156)",
+      "id": "commit:ca4756f"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "Clean up commit message temp file",
+      "id": "commit:f5e81ce"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "Post-work: Log wiring fix, merge inbox decisions (Rule 26 enforcement)",
+      "id": "commit:8eb60e3"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "Fix Galadriel's review findings ΓÇö Rules 26/27 Scribe wiring",
+      "id": "commit:b5f74a2"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "Add Rule 27: GitHub account auto-recovery to routing.md",
+      "id": "commit:c791a45"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "Add Rule 26: Scribe direct-commit scope ΓÇö clarify governance boundary",
+      "id": "commit:a527080"
+    },
+    {
+      "type": "commit",
+      "author": "Jonathan Ben Ami",
+      "message": "Update Kusto endpoint knowledge ΓÇö production ICM logs now primary",
+      "id": "commit:9bef8ab"
+    },
+    {
       "type": "commit",
       "author": "Jonathan Ben Ami",
       "message": "Squad: Scribe merge ΓÇö elrond-mcp-catalog + 5 governance decisions",
@@ -1170,108 +1314,6 @@
       "id": "commit:d63454b"
     },
     {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "governance: implement milestone-based feature lifecycle (#141)",
-      "id": "commit:f3ae6c6"
-    },
-    {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "feat(governance): add Rule 17 issue-tracked work + update Gandalf charter",
-      "id": "commit:990e706"
-    },
-    {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "fix(routing): correct Rule 16 params + add notifications task plan",
-      "id": "commit:33e9e3d"
-    },
-    {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "feat(routing): add notification rule for significant completions",
-      "id": "commit:1b5af79"
-    },
-    {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "Scribe: Merge inbox decisions, mark SR17 TAXII mTLS as false positive",
-      "id": "commit:917fbf0"
-    },
-    {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "docs: definitive TAXII.NET investigation using local files",
-      "id": "commit:ed33872"
-    },
-    {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "fix(charter): make local TI repos primary evidence source for Aragorn",
-      "id": "commit:49e2f0e"
-    },
-    {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "docs: add TAXII.NET deep investigation with corrected evidence chains",
-      "id": "commit:c006eb2"
-    },
-    {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "Session Log: 2026-03-24 TAXII Deep Investigation Corrections",
-      "id": "commit:0209f71"
-    },
-    {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "Protocol recovery completion: 8-branch retroactive review cycle documented. Galadriel review cycle completed (Cycle 1: 18 findings, authors fixed, Cycle 2: all APPROVED). Merge sequence: 105ΓåÆ106ΓåÆ108ΓåÆ119ΓåÆ132ΓåÆ134 (2 conflicts resolved, 298+ tests pass). Cross-agent learnings captured in history.md files (5 agents: Galadriel, Gimli, Bilbo, Gandalf, Aragorn). Enforcement wiring active (routing.md Rule 10: Galadriel PR gate). TAXII remediation task escalated separately. Decision inbox consolidated.",
-      "id": "commit:7ec8ba5"
-    },
-    {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "Merge squad/134-notifications-coordinator-wiring (resolved failure-recovery.md: use dispatcher version)",
-      "id": "commit:9953bdf"
-    },
-    {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "Merge branch 'squad/132-notifications-mvp-scripts'",
-      "id": "commit:36e66b1"
-    },
-    {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "Merge branch 'squad/119-dgrep-docs-gaps'",
-      "id": "commit:a0a9da2"
-    },
-    {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "Merge squad/108-dgrep-error-handling (resolved conflicts: use DgrepQueryExecutor with RetryingQueryExecutor, remove re-added QueryCommand)",
-      "id": "commit:5f0fb93"
-    },
-    {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "Merge branch 'squad/106-dgrep-tail-command'",
-      "id": "commit:e621e87"
-    },
-    {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "Merge branch 'squad/105-dgrep-sdk-executor'",
-      "id": "commit:ea390fe"
-    },
-    {
-      "type": "commit",
-      "author": "Jonathan Ben Ami",
-      "message": "review: Galadriel Cycle 2 re-review of #108 dgrep error handling ΓÇö APPROVED",
-      "id": "commit:4a3457f"
-    },
-    {
       "type": "session",
       "path": ".squad/log/2026-03-22T17-30-teams-watchdog-decomp.md",
       "id": "session:2026-03-22T17-30-teams-watchdog-decomp"
@@ -1330,6 +1372,31 @@
       "type": "session",
       "path": ".squad/log/2026-03-25T10-46-mcp-catalog.md",
       "id": "session:2026-03-25T10-46-mcp-catalog"
+    },
+    {
+      "type": "session",
+      "path": ".squad/log/2026-03-25T11-33-kusto-endpoint.md",
+      "id": "session:2026-03-25T11-33-kusto-endpoint"
+    },
+    {
+      "type": "session",
+      "path": ".squad/log/2026-03-25T11-38-wiring-fix.md",
+      "id": "session:2026-03-25T11-38-wiring-fix"
+    },
+    {
+      "type": "session",
+      "path": ".squad/log/2026-03-25T11-59-kusto-guide.md",
+      "id": "session:2026-03-25T11-59-kusto-guide"
+    },
+    {
+      "type": "session",
+      "path": ".squad/log/2026-03-25T13-30-icm-investigations.md",
+      "id": "session:2026-03-25T13-30-icm-investigations"
+    },
+    {
+      "type": "session",
+      "path": ".squad/log/2026-03-25T17-40-icm-pipeline-fixes.md",
+      "id": "session:2026-03-25T17-40-icm-pipeline-fixes"
     },
     {
       "type": "session",
@@ -1468,6 +1535,56 @@
     },
     {
       "type": "session",
+      "path": ".squad/orchestration-log/2026-03-25T11-33-gandalf.md",
+      "id": "session:2026-03-25T11-33-gandalf"
+    },
+    {
+      "type": "session",
+      "path": ".squad/orchestration-log/2026-03-25T11-38-galadriel.md",
+      "id": "session:2026-03-25T11-38-galadriel"
+    },
+    {
+      "type": "session",
+      "path": ".squad/orchestration-log/2026-03-25T11-38-gandalf.md",
+      "id": "session:2026-03-25T11-38-gandalf"
+    },
+    {
+      "type": "session",
+      "path": ".squad/orchestration-log/2026-03-25T11-59-aragorn.md",
+      "id": "session:2026-03-25T11-59-aragorn"
+    },
+    {
+      "type": "session",
+      "path": ".squad/orchestration-log/2026-03-25T11-59-bilbo.md",
+      "id": "session:2026-03-25T11-59-bilbo"
+    },
+    {
+      "type": "session",
+      "path": ".squad/orchestration-log/2026-03-25T11-59-galadriel-kusto.md",
+      "id": "session:2026-03-25T11-59-galadriel-kusto"
+    },
+    {
+      "type": "session",
+      "path": ".squad/orchestration-log/2026-03-25T13-30-aragorn-icm768125136.md",
+      "id": "session:2026-03-25T13-30-aragorn-icm768125136"
+    },
+    {
+      "type": "session",
+      "path": ".squad/orchestration-log/2026-03-25T13-30-aragorn-icm768125338.md",
+      "id": "session:2026-03-25T13-30-aragorn-icm768125338"
+    },
+    {
+      "type": "session",
+      "path": ".squad/orchestration-log/2026-03-25T17-40-aragorn-source-trace.md",
+      "id": "session:2026-03-25T17-40-aragorn-source-trace"
+    },
+    {
+      "type": "session",
+      "path": ".squad/orchestration-log/2026-03-25T17-40-gandalf-pipeline.md",
+      "id": "session:2026-03-25T17-40-gandalf-pipeline"
+    },
+    {
+      "type": "session",
       "path": ".squad/orchestration-log/20260324-001554-coordinator.md",
       "id": "session:20260324-001554-coordinator"
     },
@@ -1508,9 +1625,9 @@
     }
   ],
   "metadata": {
-    "edge_count": 490,
-    "updated": "2026-03-25T13:04:36.3068332+02:00",
-    "node_count": 224
+    "edge_count": 503,
+    "updated": "2026-03-26T13:07:58.2101934+02:00",
+    "node_count": 245
   },
   "edges": [
     {
@@ -3614,6 +3731,216 @@
       "type": "references"
     },
     {
+      "source": "commit:d3afacb",
+      "target": "file:.squad/agents/elrond/history.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:e56cd35",
+      "target": "file:.squad/agents/aragorn/charter.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:5e8ab66",
+      "target": "file:.squad/decisions.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:a294fcb",
+      "target": "file:scripts/icm-scan.ps1",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:57e750a",
+      "target": "file:.gitignore",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:57e750a",
+      "target": "file:docs/investigations/icm-768125136-investigation.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:57e750a",
+      "target": "file:docs/investigations/icm-768125338-investigation.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:57e750a",
+      "target": "file:docs/research/kusto-cluster-research.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:57e750a",
+      "target": "file:docs/reviews/kusto-guide-review.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:57e750a",
+      "target": "file:docs/reviews/scribe-scope-fix-review.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:3097061",
+      "target": "file:.squad/agents/aragorn/history.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:3097061",
+      "target": "file:.squad/decisions.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:3097061",
+      "target": "file:.squad/log/2026-03-25T13-30-icm-investigations.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:3097061",
+      "target": "file:.squad/orchestration-log/2026-03-25T13-30-aragorn-icm768125136.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:3097061",
+      "target": "file:.squad/orchestration-log/2026-03-25T13-30-aragorn-icm768125338.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:cbcc65a",
+      "target": "file:.squad/agents/aragorn/history.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:cbcc65a",
+      "target": "file:.squad/agents/bilbo/history.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:cbcc65a",
+      "target": "file:.squad/agents/galadriel/history.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:cbcc65a",
+      "target": "file:.squad/decisions/decisions.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:cbcc65a",
+      "target": "file:.squad/log/2026-03-25T11-59-kusto-guide.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:cbcc65a",
+      "target": "file:.squad/orchestration-log/2026-03-25T11-59-aragorn.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:cbcc65a",
+      "target": "file:.squad/orchestration-log/2026-03-25T11-59-bilbo.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:cbcc65a",
+      "target": "file:.squad/orchestration-log/2026-03-25T11-59-galadriel-kusto.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:0abe7ef",
+      "target": "file:docs/kusto-guide.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:419aafe",
+      "target": "file:docs/kusto-guide.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:ca4756f",
+      "target": "file:docs/research/kusto-cluster-research.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:f5e81ce",
+      "target": "file:.squad/commit-msg.txt",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:8eb60e3",
+      "target": "file:.squad/decisions.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:8eb60e3",
+      "target": "file:.squad/log/2026-03-25T11-38-wiring-fix.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:8eb60e3",
+      "target": "file:.squad/orchestration-log/2026-03-25T11-38-galadriel.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:8eb60e3",
+      "target": "file:.squad/orchestration-log/2026-03-25T11-38-gandalf.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:b5f74a2",
+      "target": "file:.squad/agents/scribe/charter.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:b5f74a2",
+      "target": "file:.squad/routing.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:c791a45",
+      "target": "file:.squad/routing.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:a527080",
+      "target": "file:.squad/agents/scribe/charter.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:a527080",
+      "target": "file:.squad/routing.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:9bef8ab",
+      "target": "file:.squad/agents/aragorn/charter.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:9bef8ab",
+      "target": "file:.squad/agents/aragorn/history.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:9bef8ab",
+      "target": "file:.squad/commit-msg.txt",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:9bef8ab",
+      "target": "file:.squad/decisions.md",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:9bef8ab",
+      "target": "file:.squad/semantic-model.json",
+      "type": "modifies"
+    },
+    {
+      "source": "commit:9bef8ab",
+      "target": "file:docs/mcp-catalog.md",
+      "type": "modifies"
+    },
+    {
       "source": "commit:1efb44d",
       "target": "file:.squad/agents/elrond/history.md",
       "type": "modifies"
@@ -3816,151 +4143,6 @@
     {
       "source": "commit:d63454b",
       "target": "file:docs/designs/issue-hygiene.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f3ae6c6",
-      "target": "file:.squad/agents/bilbo/charter.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f3ae6c6",
-      "target": "file:.squad/agents/galadriel/charter.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f3ae6c6",
-      "target": "file:.squad/agents/gandalf/charter.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f3ae6c6",
-      "target": "file:.squad/agents/gandalf/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f3ae6c6",
-      "target": "file:.squad/agents/ralph/charter.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:f3ae6c6",
-      "target": "file:.squad/routing.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:990e706",
-      "target": "file:.squad/agents/gandalf/charter.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:990e706",
-      "target": "file:.squad/decisions/inbox/gandalf-issue-tracked-work.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:990e706",
-      "target": "file:.squad/routing.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:33e9e3d",
-      "target": "file:.squad/routing.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:33e9e3d",
-      "target": "file:docs/designs/notifications-task-plan.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:1b5af79",
-      "target": "file:.squad/routing.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:917fbf0",
-      "target": "file:.squad/agents/aragorn/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:917fbf0",
-      "target": "file:.squad/decisions.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:ed33872",
-      "target": "file:docs/investigations/icm-764634026/taxii-net-local-investigation.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:49e2f0e",
-      "target": "file:.squad/agents/aragorn/charter.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:c006eb2",
-      "target": "file:docs/investigations/icm-764634026/taxii-net-deep-investigation.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:0209f71",
-      "target": "file:.squad/agents/aragorn/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7ec8ba5",
-      "target": "file:.squad/agents/aragorn/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7ec8ba5",
-      "target": "file:.squad/agents/bilbo/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7ec8ba5",
-      "target": "file:.squad/agents/galadriel/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7ec8ba5",
-      "target": "file:.squad/agents/gandalf/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7ec8ba5",
-      "target": "file:.squad/agents/gimli/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7ec8ba5",
-      "target": "file:.squad/decisions.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7ec8ba5",
-      "target": "file:.squad/decisions/inbox/coordinator-galadriel-fix.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:7ec8ba5",
-      "target": "file:.squad/decisions/inbox/gimli-dgrep-auth-findings.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:4a3457f",
-      "target": "file:.squad/agents/aragorn/history.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:4a3457f",
-      "target": "file:docs/investigations/icm-764634026/icm-764634026-investigation.md",
-      "type": "modifies"
-    },
-    {
-      "source": "commit:4a3457f",
-      "target": "file:docs/reviews/review-108-dgrep-error-handling.md",
       "type": "modifies"
     }
   ]

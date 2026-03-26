@@ -847,3 +847,390 @@ This is not a code bug. It's a **delivery gap**. We confused "code in the repo" 
 - Token resource discovery requires manual REST testing—MCP tool config validation gap identified.
 - Cluster-to-cluster query routing limitations must be documented up-front.
 - Baseline error rates are operational context, not health alerts.
+
+
+---
+
+## Merged from: aragorn-icm-768693081.md
+
+# Decision: Escalate CosmosDbPublisher WEU to Sev1 Repair Item
+
+**Author:** Aragorn (Operator)
+**Date:** 2026-03-26
+**Incident:** IcM#768693081 (3rd recurrence in 10 days)
+**Related:** IcM#768125136 (2026-03-25), IcM#763122287 (2026-03-16)
+**Report:** `docs/investigations/icm-768693081-investigation.md`
+**GitHub Issue:** #158
+
+---
+
+## Context
+
+IcM#768693081 is the **third occurrence** of `[TiPipeline] [CosmosDbPublisher] [Prod] [westeurope] Is falling behind` in 10 days. The P0 fix recommended in yesterday's investigation (IcM#768125136) — bounded retry and per-item DLQ — has **not been deployed**. The recurrence gap has shrunk from 9 days to 22 hours. Incident duration is increasing (3.7h → 13.6h → still active).
+
+---
+
+## Decision 1: Escalate to Sev1 Repair Item
+
+**Finding:** Three occurrences of the same known defect in 10 days, with accelerating frequency and increasing duration, meets the bar for mandatory repair (engineering judgment: this is not transient noise; it's a worsening systemic defect).
+
+**Action Required:**
+- Create a formal Sev1 repair item tracking the bounded retry fix
+- This is NOT a backlog item — it requires a committed ship date within 5 business days
+- The repair item must reference all three incidents: IcM#763122287, IcM#768125136, IcM#768693081
+
+**Routing:** Jonathan (approval) → Gimli (implementation)
+
+---
+
+## Decision 2: Deploy Emergency Config Change Today
+
+**Finding:** While the code fix is being prepared, reducing `MaxEventsProcessedInParallel` from 70 to 20 on the WEU Function App reduces write concurrency and lowers the probability of 429 throttling. This is a portal-only change (per topology code: `CosmosDbPublisherResourceBuilder.cs:303–311`, setting applied via `CosmosDbPublisherConfig.cs:50–55`).
+
+**Action Required:**
+- Change `MaxEventsProcessedInParallel` to 20 via Azure Portal on `ti-prod-*-westeurope-cosmospub-fa`
+- Monitor pipeline latency for 2 hours to confirm improvement
+- Document the change in the IcM incident timeline
+
+**Routing:** Jonathan (execute or delegate)
+
+---
+
+## Decision 3: Stop Closing CosmosDbPublisher Incidents as "Transient"
+
+**Finding:** IcM#763122287 was closed as "Transient" (per IcM: `howFixed: "Transient"`) without an engineering work item. This directly caused the 2nd and 3rd recurrences. IcM mitigation hints show **18 similar incidents across the fleet** (per IcM `get_mitigation_hints`), suggesting this pattern of close-as-transient is widespread.
+
+**Action Required:**
+- Policy: Any future CosmosDbPublisher "falling behind" incident **must** reference prior incidents and create/update a tracked engineering work item before closure
+- No more `howFixed: "Transient"` for recurring defects with identified root cause
+
+**Routing:** Jonathan (policy decision)
+
+
+
+---
+
+## Merged from: aragorn-inline-citations.md
+
+# Decision: Inline Citation Standard for Investigation Reports
+
+**Author:** Aragorn  
+**Date:** 2026-03-25  
+**Status:** PROPOSED  
+**Scope:** All future ICM investigation reports
+
+## Decision
+
+All investigation reports should use **inline citations** next to the claim they support, rather than end-of-document reference sections. Citation types:
+
+1. **Source code:** `(source: FileName.cs:line–line)` — exact file and line range
+2. **IcM data:** `(per IcM tool_name)` — names the specific IcM MCP tool that produced the evidence
+3. **Kusto queries:** `(per Kusto query against cluster/table)` — identifies the data source
+4. **Geneva metrics:** `(per Geneva metric_name)` — identifies the metric
+5. **Engineering judgment:** `(engineering judgment: brief reasoning)` — explicitly labels claims without a specific source
+
+## Rationale
+
+- Jonathan explicitly rejected the `## References` / `[1]` footnote pattern as disconnected from context
+- Inline citations let the reader immediately verify or challenge any specific claim
+- Labeling engineering judgment explicitly makes it clear where Aragorn is inferring vs citing evidence
+- This was tested on ICM #768125136 report with 48 inline citations — readability was preserved
+
+## Anti-patterns
+
+- ❌ Numbered footnotes (`[1]`, `[2]`) with a References section at the bottom
+- ❌ Unlabeled assumptions presented as facts
+- ❌ Vague citations like "per code review" without file/line specificity
+
+
+
+---
+
+## Merged from: boromir-enforcement-v2.md
+
+# Decision: Enforcement V2 Design — REJECTED
+
+**Author:** Boromir (Adversarial Design Reviewer)  
+**Date:** 2025-07-25  
+**Re:** `docs/designs/enforcement-v2-pre-push-hook.md` (Gandalf)  
+**Review:** `docs/reviews/enforcement-v2-boromir-review.md`
+
+## Verdict: REJECT
+
+The pre-push hook design correctly identifies V1's failure (identity-based branch protection can't do path-based enforcement) and proposes a reasonable mechanism. However, the design has four issues that must be addressed before approval:
+
+1. **Instruction-layer gap not addressed.** No evidence the spawn template was fixed post-Elrond before jumping to tool-layer enforcement. The cheaper intervention may not have been tried.
+
+2. **Overclaims enforcement strength.** The hook is a bypassable client-side guardrail, not "enforcement" — `--no-verify` defeats it trivially. The design's language creates false confidence.
+
+3. **Merge+Scribe trap.** Local merges to main create a state where Scribe's legitimate `.squad/` commits get trapped behind a blocked push. The `reset --hard` recovery is data-destructive.
+
+4. **Alternatives not explored.** Separate push mechanism (Scribe commits locally, controlled push step at session end) and separate `.squad/` branch were not analyzed.
+
+## Required Revisions
+
+- Show evidence of instruction-layer fix attempt, or acknowledge the gap
+- Reframe language from "enforcement" to "guardrail"
+- Solve the merge+Scribe commit trap (prohibition or safe recovery)
+- Genuinely analyze at least two structural alternatives
+
+## Routing
+
+**To:** Gandalf (revision), Jonathan (awareness)
+
+
+
+---
+
+## Merged from: copilot-directive-20260325T174917Z.md
+
+### 2026-03-25T17:49:17Z: User directive
+**By:** Jonathan Ben Ami (via Copilot)
+**What:** Aragorn must cite sources inline within investigation text (not as a "references" section at the end). Every recommendation must include a step-by-step walkthrough: name the Azure resource, explain how to change the setting, where it lives.
+**Why:** User request — Jonathan wants actionable, verifiable reports. Inline citations let the reader validate claims as they read. Step-by-step walkthroughs prevent "what do I actually do with this?" gaps.
+
+
+
+---
+
+## Merged from: copilot-directive-20260326T125920Z.md
+
+### 2026-03-26T12:59:20Z: User directive
+**By:** Jonathan Ben Ami (via Copilot)
+**What:** Always follow protocols. Non-.squad files on main must go through worktrees and PRs. No exceptions, no shortcuts, no interpreting frustration or urgency as permission to bypass.
+**Why:** User request — repeated enforcement failure. This is the final warning on this topic.
+
+
+
+---
+
+## Merged from: elrond-routing-enforcement.md
+
+# Decision Memo: Routing Enforcement Technical Gates
+
+**Author:** Elrond (Researcher)  
+**Date:** 2026-03-25  
+**Issue:** #0 (routing-enforcement-investigation)  
+**Status:** PROPOSED  
+**Urgency:** P0 — the primary enforcement mechanism for the entire Squad pipeline is missing
+
+---
+
+## Problem Statement
+
+The coordinator bypasses routing rules (worktree requirement, PR pipeline, Galadriel review) on ~75% of its commits to main. Root cause: zero technical enforcement. All rules are instruction-only, and LLM instruction compliance degrades under context pressure. This is a documented, well-understood failure mode.
+
+## Proposed Decisions
+
+### Decision 1: Enable GitHub Branch Protection on Main (P0)
+
+**Proposal:** Configure branch protection on `main`:
+- Require pull request before merging
+- Require 1 review approval
+- Disallow bypass for all actors (including admins)
+- Block direct push to main
+
+**Impact:** Eliminates the physical ability to commit directly to main. Resolves 96+ documented violations retroactively.
+
+**Scribe exemption:** Scribe pushes to a `squad-state` branch that auto-merges via GitHub Action.
+
+### Decision 2: Install Pre-Push Hook (P1)
+
+**Proposal:** Create `.githooks/pre-push` that blocks pushes to `refs/heads/main`. Configure via `git config core.hooksPath .githooks`.
+
+**Impact:** Local early-warning guard rail. Bypassable but creates friction toward compliance.
+
+### Decision 3: Add Pre-Spawn Checklist to squad.agent.md (P1)
+
+**Proposal:** Insert mandatory checklist immediately before the spawn template in `squad.agent.md`:
+- Is this file-producing work? → worktree required
+- Did I create the worktree? → STOP if not
+- Am I about to commit to main? → STOP, that's a violation
+
+**Impact:** Puts enforcement at the point of action, not in a separate reference document.
+
+### Decision 4: Ralph Violation Detection (P1)
+
+**Proposal:** Add a post-session scan to Ralph that detects non-Scribe commits to main and files violation reports.
+
+**Impact:** Audit layer catches anything that slips through other gates.
+
+## Evidence
+
+Full investigation with commit SHAs, root cause analysis, and industry research: `docs/investigations/routing-enforcement-investigation.md`
+
+## Requested Action
+
+Jonathan: approve/reject each decision independently. Decision 1 requires GitHub repo settings change (human action). Decisions 2-4 can be implemented by Squad agents.
+
+
+
+---
+
+## Merged from: galadriel-routing-review.md
+
+# Decision: Routing Enforcement Review
+
+**Author:** Galadriel (Reviewer)  
+**Date:** 2026-03-25  
+**Type:** Review Verdict  
+**Documents:** routing-enforcement-investigation.md (Elrond), routing-enforcement-action-plan.md (Gandalf)
+
+## Verdict: APPROVE WITH CONDITIONS
+
+### Conditions
+
+1. **Jonathan must enable GitHub branch protection on main** before this investigation is considered resolved. This is the P0 action — 10 minutes of work that eliminates 90% of violations.
+2. **Typo-fix exemption (Action 7) must be scoped to documentation files only.** Changes to routing.md, squad.agent.md, or charters are never "typo fixes."
+3. **Action plan date corrected** from "2025-07-24" to "2026-03-25."
+4. **Scribe exemption time-boxed** — if unresolved in 2 weeks, escalate to squad-state branch with auto-merge.
+
+### Key Finding
+
+The investigation is accurate and the action plan is practical. The core problem is architectural, not behavioral: zero technical enforcement means every rule is advisory-only. Branch protection is the locked door. Everything else is a better sign on an unlocked door.
+
+### Gaps Identified
+
+- No analysis of Jonathan's own direct-to-main commits (53 of 226)
+- No force-push protection mentioned
+- No merge-method policy defined
+- No transition plan for the period before branch protection is enabled
+- No post-protection smoke test
+
+### Action Required
+
+Jonathan: Enable branch protection on main. That is the fix. Full review at `docs/reviews/routing-enforcement-review.md` on branch `squad/0-routing-enforcement-investigation`.
+
+
+
+---
+
+## Merged from: gandalf-enforcement-v2-revised.md
+
+# Decision: Enforcement V2.1 — Revised Design Re-submitted
+
+**Author:** Gandalf (Lead)  
+**Date:** 2025-07-25  
+**Type:** Design Revision  
+**Status:** Pending Boromir re-review
+
+---
+
+## Summary
+
+Revised `docs/designs/enforcement-v2-pre-push-hook.md` to address all 4 required objections from Boromir's REJECT review, plus both bonus items.
+
+## Changes Made
+
+### Required Items (all addressed)
+
+1. **Instruction-layer gap:** Documented evidence that spawn template fix (commit `7fa27e3`) was deployed AND that 13+ violations continued after. Instruction-layer proven insufficient → hook justified.
+
+2. **Overclaiming strength:** Reframed entire design from "enforcement" to "guardrail." Removed "physically cannot push" language. Design is now honest about `--no-verify` bypass and sets correct expectations.
+
+3. **Merge+Scribe trap:** Added two non-destructive recovery paths (cherry-pick, soft reset) that preserve Scribe commits. Added prevention instruction for spawn template. `reset --hard` is no longer the only recommendation.
+
+4. **Alternatives explored:** Genuine tradeoff analysis of:
+   - **Alt A (controlled push at session end):** Crash recovery is fatal flaw — Scribe's durability contract broken.
+   - **Alt B (separate branch for .squad/):** Breaking change across all agents, charters, and scripts. Wrong cost tradeoff.
+   - **Alt C (post-push audit only):** Prevention > remediation. Allows violations to land on main temporarily.
+
+### Bonus Items (both addressed)
+
+5. **Positive confirmation:** Breadcrumb mechanism — hook writes to `.squad/log/hook-validations.log` on each successful push validation. CI audit checks breadcrumbs.
+
+6. **Minimum viable guardrail:** Hook alone is the MVG. Build order: hook → templates → CI → branch protection.
+
+## Artifacts
+
+- **Revised design:** `docs/designs/enforcement-v2-pre-push-hook.md` (Section 16: V2.1 Revisions)
+- **Commit:** `e39821f` on branch `squad/0-enforcement-design-v2`
+- **Boromir's review:** `docs/reviews/enforcement-v2-boromir-review.md`
+
+## Next Steps
+
+1. Boromir re-reviews the revised design
+2. If approved → proceed with Phase 1 implementation (ship the hook)
+3. If further revisions needed → iterate
+
+## Routing
+
+- **For Boromir:** Re-review required. The 4 required items are addressed with evidence. If the revisions satisfy the objections, approve the design.
+- **For Coordinator:** After Boromir approval, create implementation issues for the 4-phase rollout.
+
+
+
+---
+
+## Merged from: gandalf-enforcement-v2.md
+
+## Enforcement V2: Pre-Push Hook Design — 2025-07-25
+**Author:** Gandalf
+**Requested by:** Jonathan Ben Ami
+
+### Decision
+Adopt a local pre-push git hook as the primary enforcement mechanism for main branch protection, superseding the V1 branch-protection-only approach.
+
+### Key Points
+1. **Mechanism:** Bash pre-push hook at `scripts/hooks/pre-push` inspects all pushes to main, rejects if any files outside `.squad/` are included
+2. **Scribe unblocked:** .squad/-only pushes pass — no PRs needed for operational state
+3. **Agents blocked:** Any non-.squad/ push to main is rejected at the git layer
+4. **Installation:** `core.hooksPath` pointed at `scripts/hooks/` — one config, all worktrees
+5. **Branch protection complement:** Enable with coordinator identity on bypass list + force-push/deletion protection
+6. **Three-layer model:** Technical (hook + branch protection) → Instruction (templates) → Audit (Ralph + CI)
+
+### Rationale
+Branch protection bypass is all-or-nothing with no path exemption. All agents share one GitHub identity. The hook provides path-based filtering at the tool layer — the coordinator physically cannot push non-.squad/ content to main.
+
+### Status
+Design doc at `docs/designs/enforcement-v2-pre-push-hook.md` on branch `squad/0-enforcement-design-v2`.
+**Pending Boromir design review** per routing.md Rule 13.
+
+### Next Actions
+- [ ] Boromir review of design doc
+- [ ] After approval: Gimli implements hook + setup script
+- [ ] Enable branch protection with bypass list
+- [ ] CI audit workflow for non-PR commits on main
+
+
+
+---
+
+## Merged from: gandalf-routing-action-plan.md
+
+# Decision: Routing Enforcement Action Plan
+
+**Author:** Gandalf  
+**Date:** 2025-07-24  
+**Type:** REMEDIATION  
+**Source:** Elrond's routing-enforcement-investigation.md  
+**Branch:** squad/0-routing-enforcement-investigation  
+**Commit:** b1489d4
+
+---
+
+## Decision
+
+Reviewed Elrond's investigation into coordinator routing rule bypasses (75%+ of commits bypass worktree/PR pipeline). Investigation findings are validated as accurate. Distilled an 8-action remediation plan at `docs/investigations/routing-enforcement-action-plan.md`.
+
+## Key Recommendations
+
+1. **P0 — Branch protection on main** (Jonathan action, 10 min): Server-side gate eliminates 90% of violations. The single most important action.
+2. **Today — Pre-push hook + STOP-gate in squad.agent.md**: Local guard rails to create friction before branch protection is enabled.
+3. **This week — Ralph violation scan**: Automated detection of any future direct-to-main commits.
+4. **Deferred — Wrapper scripts, auto-review triggers**: Premature. Branch protection + auto-PR covers the gap.
+
+## Disagreements with Investigation
+
+- Elrond's Priority 5 (`squad-git.ps1` wrapper) is unnecessary if branch protection is enabled. Adds maintenance burden.
+- Elrond's Priority 6 (full automation suite) is good direction but premature. Auto-PR on squad branch push captures 80% of the value.
+
+## Requires Jonathan's Action
+
+- Enable GitHub branch protection on `main` (Settings → Branches → Protection rules)
+- Decide on Scribe exemption approach (recommended: defer, let Scribe use PRs temporarily)
+
+---
+
+*This is a remediation plan, not a design doc. No Boromir review required.*
+

@@ -457,3 +457,48 @@ TI services **ARE using client certificates for mTLS at the HTTP transport layer
 **Process Gap:** Prior incident closed Transient without engineering tracking -> direct cause of recurrence
 
 **Delivered:** docs/investigations/icm-768125136-investigation.md, .squad/decisions/inbox/aragorn-icm-768125136.md
+
+### 2026-03-25: ICM #768125136 Report Enrichment — Inline Citations + MaxEventsProcessedInParallel Walkthrough
+
+**Context:** Jonathan requested two enrichments to the investigation report: (1) a step-by-step walkthrough for the MaxEventsProcessedInParallel recommendation, and (2) inline source citations throughout the entire report.
+
+**Source Code Findings (Sentinel-TiPublishers repo):**
+- **Function App naming:** `ti-prod-{geo}{index}-{region}-cosmospub-fa` (source: `CosmosDbPublisherResourceBuilder.cs:303–311`)
+- **MaxEventsProcessedInParallel:** App setting, not host.json. Set to `70` via `.AddCustomAppSetting()` in topology code, read by `CosmosDbPublisherConfig.cs:50–55` from env var, fallback `DefaultMaxParallelism=70` at line 19
+- **Deployment mechanism:** EV2 rollout → ARM templates → generated parameter files. Portal override possible for emergency but overwritten on next EV2 deploy
+- **host.json:** Contains EventHub trigger tuning (maxEventBatchSize=2000, prefetchCount=20000) but NOT MaxEventsProcessedInParallel
+- **Error handling:** `PublishLegacyIndicatorToCosmos.cs:171–180` throws `CreateFail()` on non-success (including 429). Only CMK errors (lines 160–169) get `CreateSkip()` treatment
+
+**Citation Strategy Applied:**
+- 48 inline citations added across all sections
+- Citation types: `(source: file.cs:line)`, `(per IcM tool_name)`, `(per Kusto query)`, `(per Geneva metric)`, `(engineering judgment: reasoning)`
+- No `## References` section added (Jonathan explicitly rejected that pattern)
+- Walkthrough covers: what the app is, where the setting lives, two change paths (portal vs EV2 PR), recommended value with reasoning, rollback plan
+
+**Key Learning:** Always search deployment topology code (not just runtime code) to find where config values originate. App settings flow: topology C# → EV2 ARM params → Azure Function env vars → runtime config class.
+### 2026-03-26: ICM #768693081 — CosmosDbPublisher WEU Falling Behind (3rd Recurrence)
+
+**Context:** Jonathan assigned Aragorn to investigate this Sev2 livesite. Third occurrence of identical failure in 10 days (prior: IcM#763122287 2026-03-16, IcM#768125136 2026-03-25). Confirmed recurrence, not new investigation.
+
+**Key Findings:**
+1. **Identical root cause confirmed** — same title, monitor, region, correlation pattern across all three incidents
+2. **P0 fix NOT deployed** — bounded retry + per-item DLQ recommended yesterday was not shipped. Only 9 hours between previous mitigation and this recurrence.
+3. **Accelerating frequency** — gap shrank from 9 days to 22 hours. Duration increasing: 3.7h → 13.6h → still active at investigation time.
+4. **Fleet-wide scope** — IcM mitigation hints reveal 18 similar incidents across 10+ regions (westus, eastus2, eastasia, canadaeast, etc.)
+5. **Recommended Sev1 escalation** — 3 occurrences of known defect with known fix meets mandatory repair bar
+
+**Learnings:**
+
+**[HIGH] Recurrence investigation should be fast — reuse prior analysis, don't re-investigate from scratch.**
+- Prior investigation (IcM#768125136) already identified root cause with full source code citations. This investigation confirmed recurrence in ~15 minutes vs ~2 hours for the original.
+- Key technique: cross-reference IcM timestamps (mitigateTime of prior vs impactStartTime of current) to prove gap and acceleration pattern.
+
+**[HIGH] Closing IcMs as "Transient" without tracking engineering work creates predictable recurrence.**
+- IcM#763122287 closed as "Transient" on March 16 → recurred March 25 → recurred March 26.
+- Policy decision written: no more "Transient" closures for recurring defects with identified root cause.
+
+**[MED] IcM mitigation hints reveal fleet-wide scope that individual incident investigation misses.**
+- The `get_mitigation_hints` tool returned 18 similar incidents across 10+ regions — critical for escalation justification.
+- Always check mitigation hints even on confirmed recurrences to assess blast radius.
+
+**Delivered:** docs/investigations/icm-768693081-investigation.md, .squad/decisions/inbox/aragorn-icm-768693081.md
