@@ -3,6 +3,25 @@
 Archived history from gimli. Preserved core metadata and most recent activity entry below. For full history, refer to git log.
 
 ---
+
+## 2026-03-26T18:56:25Z — Agency Teams MCP Research Findings
+
+**Context:** Elrond completed deep research on Teams automation tooling landscape for teams-watchdog integration work (issue #111).
+
+**Key Finding:** Agency Teams MCP and WorkIQ are complementary, not competing:
+- **Agency Teams MCP** (~26 Graph operations): Deterministic automation for chat/channel management, message posting, member ops. Use for teams-watchdog scanning and notification delivery.
+- **WorkIQ**: Natural language M365 Copilot layer (email, meetings, files, calendar awareness). Use for intelligence/cross-M365 queries.
+
+**Recommendation:** Add `agency mcp teams` to MCP config for teams-watchdog automation. Keep WorkIQ for context awareness.
+
+**Decision:** Filed in `.squad/decisions.md` (merged from inbox). Routing to Jonathan for MCP config decision.
+
+**Relevance:** This resolves Agency vs WorkIQ uncertainty for teams-watchdog implementation. Gimli can proceed with Agency Teams MCP design for deterministic notification delivery and chat scanning.
+
+**Reference:** `.squad/decisions.md` — "Teams MCP Landscape — Agency Teams MCP vs WorkIQ"
+
+---
+
 ## 2026-03-24T01:01:43Z — Notifications MVP Completion Batch
 - **Tasks:** #106 (DGrep tail command), #108 (DGrep error handling), #135 (E2E validation)
 - **Status:** ✅ COMPLETED — MVP VALIDATED, dry-run passed, real webhook delivered
