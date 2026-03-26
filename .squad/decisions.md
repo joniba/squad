@@ -171,6 +171,172 @@ Branches #105, #106, #108, #119, #132, #134, plus pre-approved #112 and #135 wer
 - **Galadriel:** Review patterns documented; integration wiring gap identified as recurring; domain terminology mismatches should be flagged
 - **Gimli:** DGrep SDK model clarified; notifications MVP delivery complete; Phase 2 unblocked
 - **Bilbo:** Documentation-test sync validated; docs consistency with executable samples critical
+
+---
+
+## Inbox Merges — 2026-03-26T19:21Z (Teams MCP Integration Design Cycle)
+
+### 2026-03-25: Research — Work IQ Teams MCP Server (Agency Teams MCP)
+
+**Author:** Elrond (Researcher)  
+**Date:** 2026-03-25  
+**Requested by:** Jonathan, for Gandalf's design doc  
+
+**Key Findings:**
+- **26-tool inventory:** 12 chat tools + 14 channel/team tools
+- **Server identity:** Cloud-hosted MCP server at `https://agent365.svc.cloud.microsoft/mcp/environments/{env-id}/servers/mcp_TeamsServer` (NOT npm package)
+- **Auth model:** OAuth 2.0 with Entra ID, `McpServers.Teams.All` scope, preview-only (Frontier program required)
+- **Message format limitation:** Plain text only (no Adaptive Cards, no HTML rich formatting)
+- **Polling pattern:** No built-in subscriptions/webhooks; must poll `listChannelMessages` on interval
+- **Comparison with webhooks:** MCP enables reading + writing (bidirectional); webhooks production-ready but send-only with Adaptive Card support
+
+**Recommendation:** Hybrid approach — keep webhooks for outbound (production-ready Adaptive Cards), add MCP for inbound reading when GA.
+
+**Routing:** For Gandalf's design doc.
+
+---
+
+### 2026-03-25: Teams MCP Integration — Design Decisions (Phase 1)
+
+**Author:** Gandalf (Lead)  
+**Date:** 2026-03-25  
+**Design:** `docs/designs/teams-mcp-integration.md`  
+**Status:** Pending Boromir review  
+
+**Decisions Made (D1–D7):**
+
+**D1: Webhooks stay for outbound notifications**
+- Rationale: MCP supports plain text only; cannot replicate tier-based Adaptive Cards (urgent 🔴, action 🟡, feature 🔵)
+- Impact: No changes to `notify.ps1` or notification scripts
+
+**D2: WorkIQ is Phase 1 read foundation**
+- Rationale: WorkIQ available today, covers ~80% of read needs; MCP adds precision but isn't GA yet
+- Impact: Phase 1 can ship immediately; Phase 2 upgrades to MCP when GA
+
+**D3: Channel-monitor polls every 15 minutes**
+- Rationale: Balances responsiveness with cost (~144 premium requests/day); overnight polling unnecessary
+- Impact: New skill at `.squad/skills/channel-monitor/`, new scheduler task
+
+**D4: Chat-scanner runs every 4 hours**
+- Rationale: Broad chat intelligence less time-sensitive; 4-hour windows capture commitments/deadlines
+- Impact: New skill at `.squad/skills/chat-scanner/`, new scheduler task, ~24-40 requests/day
+
+**D5: Bilbo gets a follow-ups category**
+- Rationale: Existing categories archival; follow-ups need active lifecycle (deadline tracking, status progression)
+- Impact: New folder `teams-knowledge/follow-ups/`, new document template, updated INDEX.md
+
+**D6: LLM classification with confidence gating**
+- Rationale: Prevent false-positive noise; messages scoring <0.7 confidence logged but not acted upon
+- Impact: Initial false-negative rate acceptable; Elrond tunes prompts after 2+ weeks of data
+
+**D7: Chat-scanner and teams-watchdog coexist initially**
+- Rationale: Watchdog proven; replacing immediately is risky; deliberate overlap for 2-3 weeks for safety
+- Impact: Slightly redundant scanning in Phase 1
+
+**Routing:** Boromir for adversarial review.
+
+---
+
+### 2026-03-25: Boromir Review — Teams MCP Integration Design (v1)
+
+**Author:** Boromir (Adversarial Design Reviewer)  
+**Date:** 2026-03-25  
+**Design:** `docs/designs/teams-mcp-integration.md` (Gandalf, v1)  
+**Review:** `docs/reviews/design-review-teams-mcp-integration.md`  
+
+**Verdict:** ❌ **REJECT**
+
+**Four Blocking Issues:**
+
+1. **Latency lie (Feature 2):** Bidirectional channel promises near-real-time response but delivers 15-75 minute latency (WorkIQ indexing 5-60 min + polling 15 min). Design oversells value for urgent directives. Must honestly scope to non-urgent use.
+
+2. **Privacy gap (Feature 3):** Chat-scanner proposes reading ALL private Teams chats with no allowlist, no blocklist, no consent mechanism. Raw excerpts would commit to git. Unacceptable without explicit scope controls.
+
+3. **Broken dedup (Feature 3):** Hash built on non-deterministic LLM output (`SHA256(category + normalized_summary + date)`). Same message produces different summaries across scans → hashes diverge. Must use deterministic keys (message identity).
+
+4. **Zero error handling:** System runs 48+ times/day with no retry policy, no failure logging, no state recovery, no health checks. Not acceptable for production automation.
+
+**Five Non-Blocking Improvements:**
+- Add rules-based pre-classifier (regex for "ack"/"stop"/emoji before LLM)
+- Explain why event-driven alternatives (Power Automate, Bot Framework) dismissed
+- Add testing strategy with sample message corpus and mock WorkIQ fixtures
+- Add kill switch, dry-run mode, circuit breaker
+- Reduce Phase 2 to abstraction layer + prerequisites only
+
+**Routing:** Gandalf for revision; Jonathan for final call.
+
+**What APPROVE looks like:** Fix the four blockers. Address pre-classifier, testing, and kill switch. Design has good bones and correct approach. Needs to answer hard questions.
+
+---
+
+### 2026-03-25: Teams MCP Integration Design — v2 Revision Decisions
+
+**Author:** Gandalf (Lead)  
+**Date:** 2026-03-25  
+**Trigger:** Boromir's adversarial review rejection (4 blockers, 5 non-blocking)  
+**Document:** `docs/designs/teams-mcp-integration.md` (v2)  
+
+**All Blockers Fixed:**
+
+**D1: Feature 2 explicitly scoped to non-urgent directives**
+- Rationale: 15-75 min end-to-end latency incompatible with urgent response. Copilot CLI remains fast path.
+- Impact: Feature description updated; expectations corrected
+
+**D2: Chat-scanner uses allowlist-based privacy scope (default-deny)**
+- Rationale: Scanning all chats without consent is surveillance. Only scoped chats analyzed.
+- Impact: New chats require explicit allowlist entry; monthly consent review
+
+**D3: Dedup keys built from message identity, not LLM output**
+- Rationale: LLM output non-deterministic; same input produces different summaries
+- New key: `SHA256(source_chat_name + sender + timestamp)` with Phase 1 fallback to first 30 chars of excerpt
+- Impact: Dedup now deterministic
+
+**D4: Watchdog scope separation is immediate**
+- Rationale: Running both on same chats creates conflicts (double processing, dedup confusion)
+- Rule: Watchdog excludes all chats in chat-scanner's allowlist
+- Impact: Clean scope separation
+
+**D5: Two-tier classification (rules then LLM)**
+- Rationale: ~50-70% of messages trivial (ack, emoji, noise); running LLM wastes premium requests
+- Impact: Tier 1 regex handles trivial; Tier 2 LLM handles rest; ~30-50% reduction in premium requests
+
+**D6: Phase 2 reduced to abstraction layer + prerequisites**
+- Rationale: MCP pre-release; detailed planning premature
+- Impact: Phase 2 defines only `ITeamsDataSource` interface and prerequisites checklist; full design deferred to MCP GA
+
+**Review Status:** All blockers + non-blocking items addressed. Ready for Boromir re-review.
+
+---
+
+### 2026-03-25: Boromir Review — Teams MCP Integration Design (v2 Re-Review)
+
+**Author:** Boromir (Adversarial Design Reviewer)  
+**Date:** 2026-03-25  
+**Design:** `docs/designs/teams-mcp-integration.md` (Gandalf, v2)  
+**Review:** `docs/reviews/design-review-teams-mcp-integration-v2.md`  
+
+**Verdict:** ✅ **APPROVE**
+
+**Summary:** All four original blockers (latency lie, privacy gap, broken dedup, no error handling) are genuinely fixed with structural changes, not cosmetic patches. Five non-blocking improvements addressed. Three minor new issues (NI-1 through NI-3), all low severity, acceptable for Phase 1.
+
+**Recommendation:** Ship Phase 1. Monitor costs week 1, measure classifier accuracy week 2, revisit minor issues during Phase 3 maturation.
+
+**For Gandalf:** Design approved. Proceed with task decomposition and implementation. Good revision — you answered the questions you didn't want to hear.
+
+---
+
+### 2026-03-28: Decision — Scribe Archival Operations Should Use Separate Branches
+
+**Author:** Galadriel (Reviewer)  
+**Date:** 2026-03-28  
+**Context:** PR #168 review (ICM 768706934 investigation)  
+**Severity:** Medium  
+
+**Finding:** PR #168 contains 2 Scribe/coordinator commits unrelated to investigation: summarization of 5 agent history files (1,857 lines deleted) + 423 lines of decisions.md inbox merges. Creates misleading diff stats, makes review harder (real 219-line investigation buried in 685+ additions), risks rejection of good work due to scope pollution.
+
+**Recommendation:** Scribe archival and inbox-merge operations should use dedicated branches/PRs, not bundle with feature or investigation work. Investigation PRs should contain only investigation report and directly related artifacts.
+
+**Routing:** Gandalf (Lead) — for routing.md or Scribe instruction update.
 - **Gandalf:** Merge sequence & conflict resolution patterns recorded; POC findings must gate feature work
 - **Coordinator:** Enforcement rules now wire review gates; lifecycle rules eliminate ambiguity
 

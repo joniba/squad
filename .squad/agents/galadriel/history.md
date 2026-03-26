@@ -140,3 +140,16 @@ Galadriel was hired based on Elrond's analysis of the coffee-ratings "Bobbie" ch
 - [HIGH] When a PR contains a prior Galadriel review doc, verify that review's conditions were actually addressed before new commits were added. In this case, Condition 3 (date fix) was not applied.
 - [MED] Self-review GitHub API limitation: `gh pr review --approve` fails when PR author matches the authenticated account. Use `gh pr comment` as fallback for verdict documentation.
 - [MED] Docs-only investigation PRs that don't change routing.md or code should still be checked for issue resolution claims — documentation of a problem is not a fix.
+
+### 2026-03-28 — PR #168 Review (ICM 768706934 NorthEurope CosmosDbPublisher Investigation)
+
+**Task:** Review Aragorn's investigation of Sev2 IcM — CosmosDbPublisher NorthEurope falling behind. Verdict: APPROVE.
+
+**Key Findings:**
+1. **Investigation quality is high** — correctly differentiates NorthEurope root cause (upstream traffic surge, 2× baseline, fixed-capacity fleet) from sister WestEurope incidents (infinite retry storm from 429 throttling). Three hypotheses tested with evidence. Full remediation roadmap.
+2. **Scope creep in PR** — 2 unrelated Scribe/coordinator commits bundled with the investigation: 1,857 lines of history file truncations across 5 agents + 423 lines of unrelated decisions.md additions. Non-blocking but flagged for future branch hygiene.
+
+**Learnings:**
+- [HIGH] When comparing sister investigations in the same pipeline, verify root cause differentiation — same component can fail for entirely different reasons. NE was capacity-constrained (no autoscale), WEU was code-defective (infinite retry). Approving one doesn't mean the other has the same fix path.
+- [MED] Scribe archival operations (history summarization) should not ride on investigation branches. They create misleading diff stats (685 additions but 1,857 deletions) and make the PR appear to do far more than it actually does.
+- [MED] Self-review API limitation persists — `gh pr review --approve` fails when PR author matches authenticated account. `gh pr comment` remains the fallback for verdict documentation.

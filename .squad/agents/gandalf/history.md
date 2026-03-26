@@ -128,6 +128,56 @@ Archived history from gandalf. Preserved core metadata and most recent activity 
 - [HIGH] "Was the instruction fix tried?" is a necessary question before adding tool-layer controls. Evidence-based justification (13 post-fix violations) is stronger than assumption-based justification
 - [MED] Alternative analysis is valuable even when alternatives are clearly worse — the analysis itself documents the decision rationale for future readers
 
+### 2025-07-25 — Teams MCP Integration Design v2 (Adversarial Review Response)
+
+**Context:** Boromir rejected the v1 design with 4 blockers (latency lie, privacy gap, broken dedup, no error handling) and 5 non-blocking issues. This was the squad's first adversarial design review.
+
+**Actions:**
+- Performed surgical revision of `docs/designs/teams-mcp-integration.md` addressing all 4 blockers + all 5 non-blocking items
+- B1: Replaced misleading "quick response" framing with honest 15/30/75 min latency model; scoped Feature 2 to non-urgent directives
+- B2: Added explicit privacy scope model — allowlist in `scope.json`, default-deny, raw excerpts never committed to git
+- B3: Changed dedup key from LLM output hash (non-deterministic) to message identity hash (deterministic)
+- B4: Added full §10 Error Handling — retry policies, circuit breakers, state recovery, kill switch, dry-run mode
+- N1: Added two-tier classifier (rules for trivial messages, LLM for complex)
+- N2: Added §11 Alternatives Analysis with comparative table
+- N3: Added §12 Testing Strategy with 22-item test corpus, mock fixtures, accuracy metrics
+- N5: Reduced Phase 2 to abstraction layer interface + prerequisites checklist
+
+**Decisions written to:** `.squad/decisions/inbox/gandalf-teams-design-v2.md`
+
+## Learnings
+- [HIGH] Adversarial reviews catch fundamental design flaws that collaborative reviews miss — Boromir's B3 (hashing LLM output is non-deterministic) was a genuine correctness bug that would have caused production duplicates
+- [HIGH] Honest latency modeling prevents misaligned expectations — "15-75 min" scoped to non-urgent is a better design than "fast" scoped to everything
+- [HIGH] Privacy requires an explicit scope model (allowlist + default-deny), not just intent ("we'll be careful") — this applies to any system that reads private data
+- [MED] Dedup keys must be built from deterministic inputs (message identity: chat + sender + timestamp), never from LLM outputs (summaries, categories)
+- [MED] Error handling for automated pipelines isn't optional — 48 runs/day × no error handling = guaranteed undetected failures
+- [LOW] Test corpora should cover both the rules tier and the LLM tier, with explicit tier labels, so you know which path each test exercises
+### 2025-07-25 — Teams MCP Integration Design Document
+**Context:** Jonathan requested an in-depth architectural design for three major Teams integration features: hybrid notification routing, bidirectional notification channel, and Teams chat intelligence. Built on Elrond's deep research into Agency Teams MCP (preview-only, 26 tools, cloud-hosted SSE/OAuth).
+
+**Design Delivered:** `docs/designs/teams-mcp-integration.md` — comprehensive design covering:
+1. **Hybrid routing:** Webhooks stay for outbound (Adaptive Cards), WorkIQ for inbound reads now, MCP for deterministic reads at GA
+2. **Channel monitor:** 15-minute polling of squad notification channel, Jonathan-only filtering, LLM classification (directive/acknowledgment/redirect/question/noise), routing to decision inbox
+3. **Chat intelligence:** 4-hour scanning of all Jonathan's chats, 8-category signal extraction, dedup via hashing, Bilbo outbox processing into teams-knowledge/ library with new follow-ups category
+4. **Phased rollout:** Phase 1 (NOW, WorkIQ), Phase 2 (MCP GA), Phase 3 (maturation)
+5. **15 decomposed issues** across 3 phases
+
+**Key design decisions:**
+- Webhooks NOT replaced by MCP — Adaptive Cards are strictly better for outbound; MCP is plain-text only
+- WorkIQ is the Phase 1 foundation — available now, no additional setup, covers 80% of read needs
+- Channel-monitor and chat-scanner are separate skills — different cadence (15m vs 4h), different scope (one channel vs all chats), different routing (directives vs knowledge items)
+- Bilbo's teams-knowledge/ library gets a new `follow-ups/` category with deadline tracking
+- LLM classification with confidence threshold (0.7) — uncertain items logged, not acted upon
+
+**Status:** Pending Boromir adversarial review
+
+**Learnings:**
+- [HIGH] Design for the upgrade path, not just the target state — Phase 1 must be fully functional without MCP; Phase 2 is an upgrade, not a requirement
+- [HIGH] Separate polling cadences for different signal types — directives need 15m responsiveness, broad intelligence can tolerate 4h
+- [HIGH] Deduplication across scan cycles is a first-class concern — without it, repeated WorkIQ queries create duplicate knowledge items
+- [MED] Cost modeling matters for LLM-heavy polling — ~184 premium requests/day is the Phase 1 budget; monitor and adjust
+- [MED] WorkIQ's non-deterministic NL responses mean identical queries may return different results — dedup hashing and confidence thresholds are defense-in-depth
+
 ### 2025-07-25 — Issue Triage (10 Open Issues)
 **Context:** Jonathan requested triage of 10 open issues to separate stale from actionable. GitHub CLI was unreachable (underscore in org name `jbenami_microsoft/ms-pa`), so dependency status was inferred from project history and decisions.md.
 
