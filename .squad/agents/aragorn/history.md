@@ -137,3 +137,6 @@ Archived history from aragorn. Preserved core metadata and most recent activity 
 
 **Delivered:** PR #168, docs/investigations/icm-768706934-investigation.md
 
+**Delivered:** docs/investigations/icm-768693081-investigation.md, .squad/decisions/inbox/aragorn-icm-768693081.md
+
+

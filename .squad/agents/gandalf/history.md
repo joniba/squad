@@ -144,3 +144,5 @@ Archived history from gandalf. Preserved core metadata and most recent activity 
 - [MED] GitHub CLI failures due to repo naming (underscores vs hyphens) should be flagged for Jonathan to fix the remote — it blocks all automated issue management
 - [MED] Dependency chain staleness is transitive — if a blocker is stale, everything blocked on it is also stale
 
+- [MED] Alternative analysis is valuable even when alternatives are clearly worse — the analysis itself documents the decision rationale for future readers
+
