@@ -1,7 +1,7 @@
 <#
 .SYNOPSIS
     Pester tests for scripts/notify-blocked.ps1 — blocked-on-human caller.
-    Tests parameter validation, message formatting, and notify.ps1 integration.
+    Tests parameter validation, message formatting, dedup, and notify.ps1 integration.
 #>
 
 BeforeAll {
@@ -20,11 +20,11 @@ Describe "notify-blocked.ps1 — Parameter Validation" {
             Should -Not -BeNullOrEmpty
     }
 
-    It "declares Reason as mandatory" {
+    It "Reason is optional (multi-issue mode uses -Issues instead)" {
         $cmd = Get-Command $script:ScriptPath
-        $cmd.Parameters['Reason'].Attributes |
-            Where-Object { $_ -is [System.Management.Automation.ParameterAttribute] -and $_.Mandatory } |
-            Should -Not -BeNullOrEmpty
+        $mandatoryAttr = $cmd.Parameters['Reason'].Attributes |
+            Where-Object { $_ -is [System.Management.Automation.ParameterAttribute] -and $_.Mandatory }
+        $mandatoryAttr | Should -BeNullOrEmpty
     }
 
     It "declares ActionNeeded as mandatory" {
@@ -32,6 +32,11 @@ Describe "notify-blocked.ps1 — Parameter Validation" {
         $cmd.Parameters['ActionNeeded'].Attributes |
             Where-Object { $_ -is [System.Management.Automation.ParameterAttribute] -and $_.Mandatory } |
             Should -Not -BeNullOrEmpty
+    }
+
+    It "requires either -Reason or -Issues" {
+        { & $script:ScriptPath -Title "No reason" -ActionNeeded "Fix" -DryRun -Force } |
+            Should -Throw "*Either*Issues*Reason*"
     }
 
     It "validates Severity with ValidateSet" {
@@ -82,7 +87,7 @@ Describe "notify-blocked.ps1 — Message Formatting (DryRun)" {
         $output | Should -Match "Auth requires VPN access"
     }
 
-    It "includes reason with Why, Action needed, Agent, and Severity" {
+    It "includes reason, action needed, agent, and severity in the card" {
         $output = & $script:ScriptPath `
             -Title "Test blocker" `
             -Reason "Something is broken." `
@@ -91,10 +96,15 @@ Describe "notify-blocked.ps1 — Message Formatting (DryRun)" {
             -Severity "blocking-feature" `
             -DryRun -Force *>&1 | Out-String
 
-        $output | Should -Match "Why.*Something is broken"
+        # Reason appears as a text block in the card body
+        $output | Should -Match "Something is broken"
+        # Action needed appears with bold prefix
         $output | Should -Match "Action needed.*Fix the thing"
-        $output | Should -Match "Agent.*Gimli"
-        $output | Should -Match "Severity.*blocking-feature"
+        # Agent and Severity appear in FactSet rows
+        $output | Should -Match '"title":\s*"Agent"'
+        $output | Should -Match '"value":\s*"Gimli"'
+        $output | Should -Match '"title":\s*"Severity"'
+        $output | Should -Match '"value":\s*"blocking-feature"'
     }
 
     It "includes action URL button when BlockerUrl is provided" {
@@ -120,7 +130,8 @@ Describe "notify-blocked.ps1 — Message Formatting (DryRun)" {
 
         $output | Should -Match "Minimal blocker"
         $output | Should -Match "Just the basics"
-        $output | Should -Match "Agent.*unknown"
+        # Agent defaults to "unknown" in FactSet
+        $output | Should -Match '"value":\s*"unknown"'
     }
 
     It "uses custom BlockerLabel on the action button" {
@@ -144,8 +155,45 @@ Describe "notify-blocked.ps1 — Message Formatting (DryRun)" {
             -Severity "livesite" `
             -DryRun -Force *>&1 | Out-String
 
-        $output | Should -Match "Severity.*livesite"
+        $output | Should -Match '"value":\s*"livesite"'
         $output | Should -Match "Aragorn"
+    }
+}
+
+Describe "notify-blocked.ps1 — Multi-Issue Mode" {
+
+    It "sends a card with per-issue rows" {
+        $issues = @(
+            @{ Number = 89; Title = "Credential setup"; Url = "https://github.com/org/repo/issues/89"; Reason = "dSTS creds not configured" },
+            @{ Number = 90; Title = "VPN config"; Url = "https://github.com/org/repo/issues/90"; Reason = "VPN access needed" }
+        )
+        $output = & $script:ScriptPath `
+            -Title "3 issues need credentials" `
+            -ActionNeeded "Provide access credentials." `
+            -Issues $issues `
+            -Agent "Gimli" `
+            -DryRun -Force *>&1 | Out-String
+
+        $output | Should -Match "DRY RUN.*urgent"
+        $output | Should -Match "#89"
+        $output | Should -Match "#90"
+        $output | Should -Match "dSTS creds not configured"
+        $output | Should -Match "VPN access needed"
+    }
+
+    It "ignores -Reason when -Issues is provided" {
+        $issues = @(
+            @{ Number = 1; Title = "Test"; Url = "https://example.com/1"; Reason = "Issue reason" }
+        )
+        $output = & $script:ScriptPath `
+            -Title "Multi-issue" `
+            -Reason "This should be ignored" `
+            -ActionNeeded "Fix." `
+            -Issues $issues `
+            -DryRun -Force *>&1 | Out-String
+
+        # The per-issue reason appears, not the top-level Reason
+        $output | Should -Match "Issue reason"
     }
 }
 
@@ -170,7 +218,117 @@ Describe "notify-blocked.ps1 — Integration with notify.ps1" {
             -Agent "Elrond" `
             -DryRun -Force *>&1 | Out-String
 
-        # Agent name appears in the reason body
-        $output | Should -Match "Agent.*Elrond"
+        $output | Should -Match '"value":\s*"Elrond"'
+    }
+}
+
+Describe "notify-blocked.ps1 — Dedup (No Duplicate Notifications)" {
+
+    It "each call produces a card (timestamp-based eventId ensures uniqueness)" {
+        # Each call generates a unique eventId (blocked:Agent:timestamp)
+        # so separate calls don't collide in dedup state
+        $output = & $script:ScriptPath `
+            -Title "Unique event" `
+            -Reason "Testing uniqueness." `
+            -ActionNeeded "None." `
+            -Agent "Gimli" `
+            -DryRun -Force *>&1 | Out-String
+
+        $output | Should -Match "DRY RUN.*urgent"
+        $output | Should -Match "Unique event"
+    }
+
+    It "-Force bypasses any dedup state" {
+        $output = & $script:ScriptPath `
+            -Title "Force send" `
+            -Reason "Must go through." `
+            -ActionNeeded "Act now." `
+            -Agent "Aragorn" `
+            -DryRun -Force *>&1 | Out-String
+
+        $output | Should -Match "DRY RUN.*urgent"
+    }
+
+    It "notify.ps1 suppresses re-send of same eventId without -Force" {
+        # Call notify.ps1 directly with a fixed eventId to test dedup
+        $notifyScript = Join-Path $PSScriptRoot "..\scripts\notify.ps1"
+        $stateFile = Join-Path $TestDrive "dedup-state-$(New-Guid).json"
+        $fixedEvent = @{
+            eventId      = "blocked:TestAgent:fixed-id-for-dedup"
+            errorType    = "needs-human"
+            title        = "Dedup test"
+            reason       = "Same blocker twice"
+            actionNeeded = "Fix."
+            agent        = "TestAgent"
+            severity     = "blocking-feature"
+        }
+
+        # First send (with -Force to guarantee it goes, establishes state)
+        $out1 = & $notifyScript -Type "urgent" -Event $fixedEvent `
+            -StateFile $stateFile -DryRun -Force *>&1 | Out-String
+        $out1 | Should -Match "DRY RUN.*urgent"
+
+        # Second send without -Force — should be suppressed (dedup)
+        $out2 = & $notifyScript -Type "urgent" -Event $fixedEvent `
+            -StateFile $stateFile -DryRun *>&1 | Out-String
+        $out2 | Should -Match "suppressed.*dedup"
+    }
+}
+
+Describe "notify-blocked.ps1 — Escalation Scenario Tests" {
+
+    It "Elrond exhausts research → notification includes research context" {
+        $output = & $script:ScriptPath `
+            -Title "Failure recovery exhausted: DGrep auth" `
+            -Reason "Elrond found no viable solution after researching dSTS auth." `
+            -ActionNeeded "Review research doc and provide guidance." `
+            -BlockerUrl "https://github.com/org/repo/issues/42" `
+            -BlockerLabel "View Issue" `
+            -Agent "Elrond" `
+            -Severity "decision-needed" `
+            -DryRun -Force *>&1 | Out-String
+
+        $output | Should -Match "DRY RUN.*urgent"
+        $output | Should -Match "Failure recovery exhausted"
+        $output | Should -Match '"value":\s*"Elrond"'
+        $output | Should -Match '"value":\s*"decision-needed"'
+        $output | Should -Match "dSTS auth"
+        $output | Should -Match "github.com/org/repo/issues/42"
+    }
+
+    It "Aragorn blocked during livesite → immediate notification" {
+        $output = & $script:ScriptPath `
+            -Title "LIVESITE: Aragorn blocked on IcM investigation" `
+            -Reason "Cannot query IcM API — auth token expired." `
+            -ActionNeeded "Refresh IcM service principal credentials." `
+            -BlockerUrl "https://github.com/org/repo/issues/99" `
+            -Agent "Aragorn" `
+            -Severity "livesite" `
+            -DryRun -Force *>&1 | Out-String
+
+        $output | Should -Match "DRY RUN.*urgent"
+        $output | Should -Match "LIVESITE"
+        $output | Should -Match '"value":\s*"Aragorn"'
+        $output | Should -Match '"value":\s*"livesite"'
+    }
+
+    It "Gandalf double-rejection → escalation with multiple issues" {
+        $issues = @(
+            @{ Number = 42; Title = "Auth flow broken"; Url = "https://github.com/org/repo/issues/42"; Reason = "Gandalf rejected Elrond fix twice" },
+            @{ Number = 43; Title = "Retry still fails"; Url = "https://github.com/org/repo/issues/43"; Reason = "Fix applied but original task still errors" }
+        )
+        $output = & $script:ScriptPath `
+            -Title "Escalation: 2 blockers need human review" `
+            -ActionNeeded "Review both issues and provide direction." `
+            -Issues $issues `
+            -Agent "Gandalf" `
+            -Severity "blocking-feature" `
+            -DryRun -Force *>&1 | Out-String
+
+        $output | Should -Match "DRY RUN.*urgent"
+        $output | Should -Match "#42"
+        $output | Should -Match "#43"
+        $output | Should -Match "Gandalf rejected"
+        $output | Should -Match "still errors"
     }
 }
