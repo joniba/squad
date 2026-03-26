@@ -2731,3 +2731,426 @@ IcM scan detected incidents 768125338 and 768125136 but Aragorn never investigat
 - scripts/icm-scan.ps1 — 61 insertions, 6 deletions
 - No other files changed
 - Backward compatible — DryRun mode still works identically
+
+
+---
+
+## Inbox Merges — 2026-03-26T16:26Z (Board Audit, G2 Decisions, PR Merge Wiring, IcM Investigation Directives)
+
+### 2026-03-26: Board Audit: 17 Open Squad-Labeled Issues
+
+**Auditor:** Gandalf (Lead)  
+**Date:** 2026-03-28  
+**Requested by:** Jonathan
+
+#### Summary
+
+| # | Title | Assignee | Verdict | Evidence |
+|---|-------|----------|---------|----------|
+| 163 | SecEng-Augusta G2 cert | Aragorn | ✅ CLOSE | PR #165 merged 03/26 |
+| 162 | Sentinel-Synthetics G2 cert | Aragorn | ✅ CLOSE | PR #164 merged 03/26 |
+| 161 | Sentinel-TiAutomation G2 cert | Aragorn | ✅ CLOSE | PR #166 merged 03/26 |
+| 159 | ICM 768706934 NE CosmosDbPublisher | Aragorn | 🔴 OPEN | Investigation on disk but never committed/PR'd |
+| 158 | ICM 768693081 WEU CosmosDbPublisher | Aragorn | ✅ CLOSE | PR #160 merged 03/26, "Closes #158" |
+| 146 | ICM 767815474 ARM/WATCHLISTS | Aragorn | �� STALE | No investigation done; ARM error spikes typically self-mitigate; 4+ days old |
+| 136 | ICM 767416366 ARM/WATCHLISTS | Aragorn | 🟡 STALE | Same pattern as #146; no investigation; likely auto-mitigated |
+| 118 | DGrep integration tests | Aragorn | 🔴 OPEN | Tests written but never PR'd/merged (reopened after premature close) |
+| 117 | Notifications Phase 1.3 PR/review | Gimli | 🔴 OPEN | Deprioritized to P3-low, post-MVP. Genuine future work |
+| 116 | Notifications Phase 1.2 failure recovery | Gimli | 🔴 OPEN | PR #125 merged library code, but issue body updated — integration wiring still needed |
+| 111 | Wire teams-watchdog to WorkIQ | Gimli | 🔴 OPEN | No work started. P2-medium |
+| 107 | DGrep saved query management | Gimli | 🔴 OPEN | Code written but never PR'd/merged (reopened after premature close) |
+| 90 | Update repo-map.json for TiExpert | Gimli | 🔴 OPEN | Blocked on external PR 15064785 merge |
+| 152 | Rule: coordinator attempt before blocked | Gandalf | 🔴 OPEN | Rule never added to routing.md |
+| 123 | Monitor Squad #508 integration | Gandalf | 🔴 OPEN | Long-term strategic tracking, timeline through Sep 2026 |
+| 120 | Notifications documentation | Bilbo | ✅ CLOSE | PR #143 merged 03/24 with "Closes #120", docs delivered |
+| 89 | Monitor PR 15064785 merge | Galadriel | 🔴 OPEN | External PR still pending, blocks #90 |
+
+#### Verdicts Breakdown
+- **✅ CLOSE (5 issues):** #163, #162, #161, #158, #120
+- **🟡 STALE (2 issues):** #146, #136
+- **🔴 OPEN (10 issues):** #159, #118, #117, #116, #111, #107, #90, #152, #123, #89
+
+#### Process Issue Identified
+
+**"Premature close" pattern:** 5 issues were marked done and closed before code went through PR/review/merge. This was caught and corrected (issues reopened), but #159 was missed — its investigation doc is still uncommitted on disk.
+
+---
+
+### 2026-03-26: Decision: SecEng-Augusta G2 Certificate Compatibility — REQUIRES TESTING
+
+**From:** Aragorn (Operator)  
+**Date:** 2026-03-27  
+**Issue:** #163  
+**IcM:** #764634026 (Medium-risk SDK finding)
+
+#### Decision Required
+
+All 6 ClientCertificateCredential usages across SecEng-Augusta and Sentinel-Augusta are **architecturally compatible** with G2 certificates. No code changes needed. However, **production testing is required** before the G2 migration can proceed.
+
+#### Recommended Actions
+1. **Deploy G2 test cert to PPE** — register with service principal App Registration
+2. **Run smoke tests** per processor: ISG, MSFeed Snapshot, MSFeed RealTime, TAXII
+3. **Test Sentinel-Augusta KeyVaultReader** — KeyVault secret read with G2 cert
+4. **Sovereign cloud validation** — FFx and MNC environments separately (different trust stores)
+
+#### Risk Assessment
+- **No BLOCK findings** — code is compatible, no EKU checks
+- **SendCertificateChain=true already set** — G2 chain will be transmitted
+- **Main risk:** Azure AD server-side trust chain validation per cloud
+- **Separate:** TAXII mTLS finding (CRITICAL) tracked independently
+
+---
+
+### 2026-03-26: Decision: Sentinel-Synthetics G2 Certificate Migration Risk
+
+**From:** Aragorn (Operator)  
+**Date:** 2026-03-27  
+**Issue:** #162  
+**Severity:** HIGH
+
+#### Verdict
+
+**REQUIRES TESTING** — with HIGH risk on 3 legacy cross-tenant auth paths, SAFE on newer MSI-based jobs.
+
+#### Decisions Needed
+
+1. **[P0] Contact Geneva Synthetics team re: G2 cert provisioning timeline**
+   - When will Geneva Synthetics platform start provisioning G2 certs for synthetic MSI apps?
+   - This sets the hard deadline for migrating legacy auth paths.
+
+2. **[P1] Prioritize Offboarding + Recommendations synthetics migration to MSI**
+   - Complete migration from TokenCredentialCreator to SyntheticsApplicationTokenCredential (MSI-based)
+   - Affected: SettingsARMClient, OnboardingStatesClient, RecommendationsSyntheticsClientBase
+   - These will break silently when Geneva provisions G2 certs with error AADSTS700027
+
+3. **[P1] Audit Key Vault certificates for EKU profile**
+   - Check dedicated app certs in Key Vault used by CrossTenantTokenCredentialCreator
+   - Determine issuing CA and EKU profile
+
+#### Full Investigation
+See: docs/investigations/g2-cert/sentinel-synthetics-g2-investigation.md
+
+---
+
+### 2026-03-26: Decision: Sentinel-TiAutomation G2 Certificate Compatibility
+
+**From:** Aragorn (Operator)  
+**Date:** 2026-03-27  
+**Issue:** #161  
+**Branch:** squad/161-tiautomation-g2-cert
+
+#### Decision
+
+**Sentinel-TiAutomation is SAFE for MSPKI G2 migration. No code changes required.**
+
+#### Rationale
+
+The ClientCertificateCredential in Program.cs:399 is gated behind EnvironmentName.Local — only on developer laptops. All production, INT, PPE, and canary environments use ManagedIdentityCredential with zero dependency on client certificates.
+
+#### Actions Requested
+1. Close IcM #764634026 finding for Sentinel-TiAutomation as "No Action Required"
+2. Verify Azure VM/container trust stores include DigiCert G2 root
+3. Review investigation: docs/investigations/g2-cert/sentinel-tiautomation-g2-investigation.md
+
+---
+
+### 2026-03-26T13:07:35Z: User directive — IcM investigation reports bypass PR review gate
+
+**By:** Jonathan Ben Ami (via Copilot)
+
+Aragorn's IcM investigation reports do not require Galadriel's PR review. They can merge without the review gate. Galadriel review is for code and feature work, not operational investigations.
+
+**Rationale:** IcM investigations are time-sensitive operational work. Adding a review gate slows down incident response without proportional quality benefit.
+
+---
+
+### 2026-03-26T13:29:41Z: User directive — Investigation PRs auto-merge without confirmation
+
+**By:** Jonathan Ben Ami (via Copilot)
+
+Investigation PRs can be automatically merged from worktrees without waiting for user confirmation. The coordinator should merge them as part of the standard post-investigation flow.
+
+**Rationale:** Investigations are operational work — they don't need human approval to land. Reducing friction on the investigation pipeline.
+
+---
+
+### 2026-03-26T15:31:54Z: User directive — Post-merge local sync required
+
+**By:** Jonathan Ben Ami (via Copilot)
+
+After merging a PR via \gh pr merge\, the coordinator MUST run \git pull origin main\ to sync the local checkout. The scheduler should NOT pull — that's the coordinator's job.
+
+**Rationale:** The icm-scan.ps1 fix was merged via PR but the local copy was stale for hours because nobody pulled. Scripts run from the local filesystem, not from GitHub.
+
+---
+
+### 2026-03-26: Decision: Post-Merge Local Sync Wiring
+
+**Author:** Gandalf (Lead)  
+**Date:** 2026-03-26T17:38:25Z  
+**PR:** #167  
+**Branch:** squad/0-pr-merge-completion-wiring
+
+#### Decision
+
+After every \gh pr merge\, the coordinator MUST run \git pull origin main\ to sync the local checkout. This is now enforced in:
+- Rule 10 (Galadriel PR Gate)
+- Rule 24 (Worktree cleanup)
+- Rule 28 (NEW — Post-merge local sync, standalone rule)
+- Issue lifecycle template (step 6)
+- squad.agent.md coordinator obligation + Ralph actions
+
+#### Rationale
+
+\gh pr merge\ advances origin/main but leaves local HEAD stale. All local-filesystem automation (scripts, scheduler, Scribe) runs from HEAD. Without the pull, merged code doesn't take effect locally until someone manually syncs.
+
+#### Impact
+All squad members and the coordinator. Every merge path is now covered.
+
+#### Status
+Awaiting Jonathan's review on PR #167. Not merged.
+
+
+
+---
+
+# Issue Triage — Gandalf (2026-07-25)
+
+**Author:** Gandalf (Lead)  
+**Scope:** 10 open issues (#159, #152, #123, #118, #117, #116, #111, #107, #89, #90)  
+**Method:** Context review against history, decisions.md, dependency status, and priority alignment.
+
+---
+
+## Verdicts Summary
+
+| Issue | Title | Verdict | Reason |
+|-------|-------|---------|--------|
+| #159 | ICM 768706934 CosmosDbPublisher NorthEurope | **KEEP** | Aragorn has investigation doc ready for PR — finish and close |
+| #152 | Coordinator routing rule bypass fix | **KEEP** | PR #157 is open, active work in progress |
+| #123 | Strategic: Squad #508 integration tracking | **KEEP** | Long-running strategic issue, milestones through Sep 2026 |
+| #118 | dgrep-cli integration tests with real Geneva | **KEEP** | Dependencies (#105, #106) completed, valid testing work |
+| #117 | teams-notifications Phase 1.3 PR workflows | **CLOSE** | P3-low, unknown #113 dep status, notification architecture redesigned (#132-135) |
+| #116 | teams-notifications Phase 1.2 failure recovery | **KEEP** | Library code exists (PR #125 merged), concrete integration work remains |
+| #111 | Wire teams-watchdog to WorkIQ | **KEEP** | WorkIQ skill exists, implementation is concrete and relevant |
+| #107 | dgrep-cli Phase 3.1 saved queries | **KEEP** | Dependencies (#102, #105) completed in merge sequence, valid feature |
+| #89 | Monitor PR 15064785 merge | **CLOSE** | External repo unreachable, monitoring task stale and unactionable |
+| #90 | Update repo-map.json for TiExpert tools | **CLOSE** | Blocked on stale #89 — both are dead-ended |
+
+**Result:** 3 CLOSE, 7 KEEP.
+
+---
+
+## Detailed Reasoning
+
+### CLOSE: #89 — Monitor PR 15064785 merge
+- **Why stale:** The external repo (microsoft/Sentinel-TiPipeline) is unreachable — we cannot access it to check PR status.
+- **The monitoring task itself is the problem:** Sitting on an issue that says "watch this PR" with no access to the PR is pure waste.
+- **Recovery path:** If the upstream PR merges, we will discover it through other channels and can create a fresh issue with current context.
+
+### CLOSE: #90 — Update repo-map.json for TiExpert tools
+- **Why stale:** Hard-blocked on #89 with no path forward. If #89 is dead, this is dead.
+- **Recovery path:** Same as #89 — new issue when/if upstream work lands.
+
+### CLOSE: #117 — teams-notifications Phase 1.3 (P3-low)
+- **Why stale:** Three compounding factors:
+  1. P3-low priority — bottom of the stack by design.
+  2. Depends on #113 whose completion status is unverifiable.
+  3. The notification architecture was redesigned during the cleanup session (MVP issues #132-135 created). The Phase 1.x numbering scheme is from the old architecture.
+- **Recovery path:** If PR-review notifications become a priority under the new architecture, create a fresh issue scoped to the current system design.
+
+### KEEP: #159 — ICM 768706934 NorthEurope
+- Aragorn has uncommitted investigation doc on disk, ready for PR. The work is done, just needs to be submitted. Even though CosmosDbPublisher throttling is a well-documented pattern (31+ recurrences, root cause in decisions.md), completing the investigation PR closes the loop properly.
+- **Next action:** Aragorn → submit PR with investigation doc.
+
+### KEEP: #152 — Coordinator routing rule fix
+- PR #157 is open and addresses the specific problem (coordinator blocking without attempting work). Active development, needs review and merge.
+- **Next action:** Review PR #157.
+
+### KEEP: #123 — Strategic Squad #508 tracking
+- This is a long-running strategic tracking issue with milestones through September 2026. First checkpoint is April 15. The integration strategy doc exists. This is intentionally slow-burning — it's tracking, not execution.
+- **Next action:** Review at April 15 checkpoint.
+
+### KEEP: #118 — dgrep-cli integration tests
+- Dependencies (#105 search, #106 tail/streaming) were completed and merged during the 8-branch merge sequence. The integration testing scope (real Geneva queries, output formats, streaming, error handling, cross-platform) is valid and unstarted.
+- **Next action:** Prioritize against other work. This is P2-ish.
+
+### KEEP: #116 — teams-notifications Phase 1.2 failure recovery
+- Unlike #117 (P3-low, superseded), this has concrete work: notify.ps1 and notification-recovery.ps1 already exist, PR #125 merged the library code. Remaining work is wiring + tests. Was explicitly updated during the cleanup session and kept open intentionally.
+- **Next action:** Wire notify-blocked.ps1 into escalation path, add tests.
+
+### KEEP: #111 — Wire teams-watchdog to WorkIQ
+- P2-medium priority. WorkIQ MCP tool exists and is available. Implementation is straightforward: update the watchdog pipeline to call WorkIQ, scan for actionable items, send notifications. No blockers.
+- **Next action:** Gimli implementation.
+
+### KEEP: #107 — dgrep-cli Phase 3.1 saved queries
+- Dependencies (#102 config, #105 search) were completed and merged. The saved query feature (save, run, list, delete, show) is a legitimate Phase 3 deliverable. Lower priority but not stale.
+- **Next action:** Prioritize in next planning cycle.
+
+---
+
+## Commands to Close Stale Issues
+
+⚠️ GitHub CLI commands failed due to repo remote being unreachable (`jbenami_microsoft/ms-pa` — underscore in org name). Jonathan should run these manually or fix the remote:
+
+```bash
+gh issue close 89 --reason "not planned" --comment "Closing as stale: External dependency (PR 15064785 in microsoft/Sentinel-TiPipeline) is unreachable. If the upstream PR merges, a new issue can be created with current context."
+
+gh issue close 90 --reason "not planned" --comment "Closing as stale: Blocked on #89 (stale external dependency). If upstream work lands, a new issue can be created with current repo-map context."
+
+gh issue close 117 --reason "not planned" --comment "Closing as stale: P3-low, depends on unverified #113, and notification architecture redesigned (MVP issues #132-135). Create a fresh issue if PR-review notifications become priority under new architecture."
+```
+
+---
+
+**Routing:** Jonathan for approval and manual execution of close commands.
+
+
+---
+
+### Decision: Teams MCP Landscape — Agency Teams MCP vs WorkIQ
+**Author:** Elrond (Researcher)  
+**Date:** 2025-07-24  
+**Requested by:** Jonathan  
+**Status:** Research complete — recommendation for Jonathan to decide
+
+---
+
+## Key Finding
+
+"Agency Teams MCP" and "WorkIQ" are **not competitors** — they're **different servers in the same Microsoft "Work IQ" ecosystem** (Agent 365). They serve fundamentally different purposes and are complementary.
+
+---
+
+## What Is Each Thing?
+
+| Aspect | Agency Teams MCP (`agency mcp teams`) | WorkIQ (`@microsoft/workiq`) |
+|--------|---------------------------------------|------------------------------|
+| **Full name** | Work IQ Teams | Work IQ Copilot |
+| **Server ID** | `mcp_TeamsServer` | WorkIQ via `ask_work_iq` |
+| **Launch command** | `agency mcp teams` | `npx -y @microsoft/workiq mcp` |
+| **Nature** | Deterministic Graph API operations | Natural language M365 Copilot query |
+| **Scope** | Teams-only (chats, channels, messages, members) | All M365 (email, meetings, files, chats, calendar) |
+| **Input** | Structured API calls with explicit parameters | Free-text question to M365 Copilot |
+| **Output** | Structured data / confirmation | AI-generated answer with context |
+| **Auth** | EntraID via agency HTTP proxy | M365 Copilot license (EULA acceptance) |
+
+---
+
+## Agency Teams MCP — Detailed Capabilities
+
+Full CRUD operations via Microsoft Graph:
+
+**Chat tools (12 operations):**
+- `addChatMember` — Add member to a chat
+- `createChat` — Create 1:1 or group chat
+- `deleteChat` — Soft-delete a chat
+- `deleteChatMessage` — Soft-delete a message
+- `getChat` — Retrieve chat metadata
+- `getChatMessage` — Get specific message
+- `listChatMembers` — List participants
+- `listChatMessages` — List messages (with filter/orderby/top)
+- `listChats` — List user's chats (with filter/expand)
+- `postMessage` — Send message to chat
+- `updateChat` — Update chat topic
+- `updateChatMessage` — Edit a sent message
+
+**Channel & Team tools (14 operations):**
+- `addChannelMember` — Add member to private/shared channel
+- `createChannel` — Create standard channel
+- `createPrivateChannel` — Create private channel with members
+- `getChannel` — Get channel details
+- `getTeam` — Get team properties
+- `listChannelMembers` — List channel members
+- `listChannelMessages` — List channel messages (with expand for replies)
+- `listChannels` — List team channels
+- `listTeams` — List user's joined teams
+- `postChannelMessage` — Post to channel
+- `replyToChannelMessage` — Reply in thread
+- `updateChannel` — Update channel name/description
+- `updateChannelMember` — Change member role
+
+**Total: ~26 deterministic operations**
+
+---
+
+## WorkIQ — Detailed Capabilities
+
+Single tool: `ask_work_iq` — Ask M365 Copilot any question.
+
+**What it covers:**
+- Emails (search, summarize, find attachments)
+- Meetings (who's in them, agenda, conflicts)
+- Files (find documents, what was shared)
+- Teams chats (what was discussed, who said what)
+- Calendar (upcoming events, schedule conflicts)
+- People (who reports to whom, org chart)
+
+**What it CANNOT do:**
+- Send messages
+- Create chats or channels
+- Modify anything (read-only intelligence layer)
+- Perform deterministic operations with guaranteed outcomes
+
+---
+
+## Side-by-Side Comparison for Our Use Cases
+
+| Use Case | Agency Teams MCP | WorkIQ | Winner |
+|----------|-----------------|--------|--------|
+| **Scan Teams chats for unread messages** | ✅ `listChats` + `listChatMessages` with filters | ⚠️ Can ask "what unread messages do I have" but results are AI-summarized, not structured | **Agency Teams** |
+| **Read channel notifications** | ✅ `listChannelMessages` with time filters | ⚠️ Can ask about channel activity | **Agency Teams** |
+| **Send notification/message** | ✅ `postMessage`, `postChannelMessage` | ❌ Cannot send | **Agency Teams** |
+| **Get meeting summaries** | ❌ No meeting tools | ✅ Can ask about meetings, agendas, attendees | **WorkIQ** |
+| **Summarize what happened in a chat** | ⚠️ Gets raw messages, agent must summarize | ✅ M365 Copilot summarizes natively | **WorkIQ** |
+| **Create/manage chats** | ✅ Full CRUD | ❌ Read-only | **Agency Teams** |
+| **Search across all M365** | ❌ Teams only | ✅ Email, files, calendar, Teams | **WorkIQ** |
+| **Email awareness** | ❌ No email tools | ✅ Full email Q&A | **WorkIQ** |
+| **Deterministic automation** | ✅ Guaranteed API calls | ❌ AI-interpreted, non-deterministic | **Agency Teams** |
+
+---
+
+## The Full Agency MCP M365 Family
+
+`agency mcp` also exposes these related servers:
+- `agency mcp mail` — Work IQ Mail (email CRUD)
+- `agency mcp calendar` — Work IQ Calendar (events CRUD)
+- `agency mcp sharepoint` — Work IQ SharePoint (files, lists)
+- `agency mcp word` — Work IQ Word (documents, comments)
+- `agency mcp teams` — Work IQ Teams (chats, channels)
+
+These are the **granular action servers**. WorkIQ (`ask_work_iq`) is the **intelligence/query layer** on top.
+
+---
+
+## Recommendation
+
+**Use BOTH, for different purposes:**
+
+1. **Agency Teams MCP (`agency mcp teams`)** — Add to our MCP config for:
+   - Teams-watchdog chat scanning (structured message retrieval)
+   - Notification delivery (posting messages to chats/channels)
+   - Any automation that needs deterministic, reliable outcomes
+
+2. **WorkIQ (`ask_work_iq`)** — Keep for:
+   - Cross-M365 intelligence queries ("what did I miss today?")
+   - Meeting awareness and summaries
+   - Broad contextual questions that span email + calendar + Teams
+
+3. **Consider also adding:**
+   - `agency mcp mail` for email notification delivery
+   - `agency mcp calendar` for meeting-aware scheduling
+
+**Config to add:**
+```json
+"agency-teams": {
+  "type": "stdio",
+  "command": "agency",
+  "args": ["mcp", "teams"],
+  "tools": ["*"]
+}
+```
+
+---
+
+**Routing:** Jonathan — decide whether to add `agency mcp teams` to our MCP config and whether to pursue the full Agency M365 suite.
