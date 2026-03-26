@@ -992,7 +992,7 @@ Ralph always appears in `team.md`: `| Ralph | Work Monitor | — | 🔄 Monitor 
 | "Ralph, idle" / "Take a break" / "Stop monitoring" | Fully deactivate (stop loop + idle-watch) |
 | "Ralph, scope: just issues" / "Ralph, skip CI" | Adjust what Ralph monitors this session |
 | References PR feedback or changes requested | Spawn agent to address PR review feedback |
-| "merge PR #N" / "merge it" (recent context) | Merge via `gh pr merge` |
+| "merge PR #N" / "merge it" (recent context) | Merge via `gh pr merge`, then `git pull origin main` to sync local |
 
 These are intent signals, not exact strings — match meaning, not words.
 
@@ -1023,7 +1023,7 @@ gh pr list --state open --draft --json number,title,author,labels,checks --limit
 | **Draft PRs** | PR in draft from squad member | Check if agent needs to continue; if stalled, nudge |
 | **Review feedback** | PR has `CHANGES_REQUESTED` review | Route feedback to PR author agent to address |
 | **CI failures** | PR checks failing | Notify assigned agent to fix, or create a fix issue |
-| **Approved PRs** | PR approved, CI green, ready to merge | Merge and close related issue |
+| **Approved PRs** | PR approved, CI green, ready to merge | Merge via `gh pr merge`, then `git pull origin main` to sync local, and close related issue |
 | **No work found** | All clear | Report: "📋 Board is clear. Ralph is idling." Suggest `npx github:bradygaster/squad watch` for persistent polling. |
 
 **Step 3 — Act on highest-priority item:**
@@ -1117,6 +1117,8 @@ Store `## Issue Source` in `team.md` with repository, connection date, and filte
 ### Issue → PR → Merge Lifecycle
 
 Agents create branch (`squad/{issue-number}-{slug}`), do work, commit referencing issue, push, and open PR via `gh pr create`. See `.squad/templates/issue-lifecycle.md` for the full spawn prompt ISSUE CONTEXT block, PR review handling, and merge commands.
+
+**⚠️ Post-merge local sync (coordinator obligation):** After every `gh pr merge`, the coordinator MUST run `git pull origin main` to sync the local checkout. PR merges advance origin/main but leave local HEAD stale. Scripts, the scheduler, and Scribe all run from the local filesystem — without this pull, they execute outdated code.
 
 After issue work completes, follow standard After Agent Work flow.
 

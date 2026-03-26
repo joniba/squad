@@ -30,8 +30,9 @@ After collecting agent results for issue-linked work:
 3. **If no PR:** Create one: `gh pr create --title "{title}" --body "Closes #{N}" --base main --head {branch}`
 4. **Route to reviewer.** Spawn the project's designated reviewer (sync) with the PR diff for code review.
 5. **On APPROVE:** Merge via `gh pr merge {pr_number} --squash --delete-branch`
-6. **On REJECT:** Route reviewer's feedback to the original author agent. Re-spawn author to address feedback. After fixes are committed and pushed, repeat from step 4 (route to reviewer again). This cycle continues until the reviewer APPROVEs.
-7. **Issue auto-closes** via "Closes #N" in PR body. Do NOT use `gh issue close` for file-producing work.
+6. **Sync local checkout:** `git pull origin main` — PR merges advance origin/main but leave local HEAD stale. Scripts, the scheduler, and Scribe all run from the local filesystem and will use outdated code until this pull completes.
+7. **On REJECT:** Route reviewer's feedback to the original author agent. Re-spawn author to address feedback. After fixes are committed and pushed, repeat from step 4 (route to reviewer again). This cycle continues until the reviewer APPROVEs.
+8. **Issue auto-closes** via "Closes #N" in PR body. Do NOT use `gh issue close` for file-producing work.
 
 ## Issue Closure Rules
 
