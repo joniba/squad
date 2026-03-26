@@ -30,6 +30,9 @@ $ErrorActionPreference = "Stop"
 $root = Split-Path $PSScriptRoot -Parent
 $watermarkPath = Join-Path $root ".squad\icm-scan-watermark.json"
 
+# --- Ensure correct gh account (prevents joniba/jbenami_microsoft drift) ---
+gh auth switch --user jbenami_microsoft 2>$null
+
 # --- Handle -Reset ---
 if ($Reset) {
     if (Test-Path $watermarkPath) {
