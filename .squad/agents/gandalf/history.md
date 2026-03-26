@@ -128,3 +128,19 @@ Archived history from gandalf. Preserved core metadata and most recent activity 
 - [HIGH] "Was the instruction fix tried?" is a necessary question before adding tool-layer controls. Evidence-based justification (13 post-fix violations) is stronger than assumption-based justification
 - [MED] Alternative analysis is valuable even when alternatives are clearly worse — the analysis itself documents the decision rationale for future readers
 
+### 2025-07-25 — Issue Triage (10 Open Issues)
+**Context:** Jonathan requested triage of 10 open issues to separate stale from actionable. GitHub CLI was unreachable (underscore in org name `jbenami_microsoft/ms-pa`), so dependency status was inferred from project history and decisions.md.
+
+**Verdicts:** 3 CLOSE, 7 KEEP.
+- **Closed #89, #90:** External dependency chain (PR 15064785 in microsoft/Sentinel-TiPipeline) — repo unreachable, monitoring task is pure waste. Both issues dead-ended.
+- **Closed #117:** P3-low, depends on unverified #113, notification architecture redesigned (#132-135 supersede Phase 1.x scheme).
+- **Kept #159, #152, #123, #118, #116, #111, #107:** All have concrete remaining work, met dependencies, or active PRs.
+
+**Decisions written to:** `.squad/decisions/inbox/gandalf-issue-triage.md`
+
+## Learnings
+- [HIGH] Monitoring issues for external repos you can't access are inherently stale — close them and rely on discovery through other channels
+- [HIGH] When an architecture is redesigned (e.g., notifications #132-135), old phase-numbered issues from the prior architecture should be closed, not carried forward
+- [MED] GitHub CLI failures due to repo naming (underscores vs hyphens) should be flagged for Jonathan to fix the remote — it blocks all automated issue management
+- [MED] Dependency chain staleness is transitive — if a blocker is stale, everything blocked on it is also stale
+

@@ -110,4 +110,30 @@ Archived history from aragorn. Preserved core metadata and most recent activity 
 
 **Delivered:** docs/investigations/icm-768693081-investigation.md, .squad/decisions/inbox/aragorn-icm-768693081.md
 
+### 2026-03-26: ICM #768706934 — CosmosDbPublisher NorthEurope Falling Behind (Commit & PR)
+
+**Context:** Audit found existing investigation report sitting uncommitted on disk. Report was complete and thorough (220 lines) — a traffic surge investigation showing genuine upstream volume spike (~2x NE, ~3x WE) hitting fixed-capacity NE/WE fleet with autoscale disabled. Root cause distinct from the retry-storm pattern in sister incidents (#768125136, #768693081).
+
+**Actions Taken:**
+1. Confirmed report at `docs/investigations/icm-768706934-investigation.md` — already complete, high quality
+2. Copied to worktree branch `squad/159-icm-northeurope-cosmosdb`
+3. Committed, pushed, and opened PR #168 (closes #159)
+
+**Key Distinction from Sister Incident:**
+- ICM #768693081 (WEU, PR #160): Retry storm from Cosmos DB 429 throttling → infinite retry policy
+- ICM #768706934 (NEU): Genuine traffic surge → no Cosmos errors, no retries → pipeline simply overwhelmed by volume
+- Same region pair, same monitor, different failure mechanism. The NEU incident is capacity, not bugs.
+
+**Learnings:**
+
+**[HIGH] Uncommitted investigation reports are a process gap — always commit immediately after completing an investigation.**
+- This report was sitting on disk from a prior session, complete but never committed. The audit caught it.
+- Future practice: every investigation session must end with commit + PR, not just file creation.
+
+**[MED] NE/WE fixed-capacity architecture is a distinct failure class from the retry-storm pattern.**
+- The retry-storm incidents (429 → infinite retry → checkpoint stall) have a code fix (bounded retry + DLQ).
+- The capacity incidents (traffic surge → queue growth) require infrastructure changes (scale-up or dynamic autoscale).
+- Must distinguish these in triage — same monitor, same alert, different root cause, different remediation.
+
+**Delivered:** PR #168, docs/investigations/icm-768706934-investigation.md
 

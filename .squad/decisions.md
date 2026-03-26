@@ -3154,3 +3154,71 @@ These are the **granular action servers**. WorkIQ (`ask_work_iq`) is the **intel
 ---
 
 **Routing:** Jonathan — decide whether to add `agency mcp teams` to our MCP config and whether to pursue the full Agency M365 suite.
+
+---
+
+## 2026-03-26: Aragorn — Issue #159, ICM 768706934 Investigation
+
+### Decision 1: Commit-on-complete policy for investigation reports
+
+**Category:** Process  
+**Priority:** HIGH  
+
+The ICM 768706934 investigation report was complete and high quality but sat uncommitted on disk. This creates risk of lost work and delays issue closure.
+
+**Recommendation:** Enforce a hard rule: every investigation session must end with git commit + git push + gh pr create. No investigation is considered "done" until the PR link exists. Add as checklist item in the ICM investigator skill pipeline.
+
+### Decision 2: Distinguish traffic-surge vs retry-storm incidents in triage
+
+**Category:** Technical / Triage  
+**Priority:** MEDIUM  
+
+ICM 768706934 (NorthEurope) and ICM 768693081 (WestEurope) fired from the same monitor on the same day but have fundamentally different root causes:
+- **NEU (768706934):** Genuine upstream traffic surge → no errors, pipeline overwhelmed by volume → needs capacity fix
+- **WEU (768693081):** Cosmos DB 429 throttling → infinite retry storm → needs code fix (bounded retry + DLQ)
+
+**Recommendation:** Add a triage decision tree to the CosmosDbPublisher TSG: check CosmosOperation Status=429 and ItemProcessingStatus Status=Failure first. If both are zero, classify as capacity issue (scale-up). If either is elevated, classify as error-handling issue (code fix).
+
+### Decision 3: PR #168 ready for review
+
+**Category:** Delivery  
+**Priority:** HIGH  
+
+PR #168 opened on branch squad/159-icm-northeurope-cosmosdb with the investigation report for ICM 768706934. Closes #159. Sister incident PR #160 (WEU) already merged.
+
+**Action needed:** Review and merge PR #168.
+
+---
+
+## 2026-03-26T21:11: User directive — Squad ownership of issue closure
+
+**By:** Jonathan (via Copilot)  
+
+The squad is responsible for closing issues — never hand that off to the user. If gh CLI has auth/resolution issues, the coordinator must fix them (switch accounts, fix remotes) and close issues directly.
+
+---
+
+## 2026-03-26T19:13: User directive — gh auth account
+
+**By:** Jonathan (via Copilot)  
+
+Always use gh account jbenami_microsoft for this repo. Run 'gh auth switch --user jbenami_microsoft' at session start before any gh operations. Auth mismatch causes all gh write operations to fail.
+
+---
+
+## 2026-03-25: Galadriel — PR #157 Review Decision
+
+**Author:** Galadriel (Reviewer)  
+**PR:** #157  
+**Linked Issue:** #152
+
+PR #157 is APPROVED on its own merits (thorough investigation, practical action plan, sound review). However, **issue #152 is NOT resolved by this PR**.
+
+Issue #152 requests a specific routing rule: "coordinator MUST attempt to spawn the agent before declaring blocked." PR #157 investigates the broader routing enforcement bypass problem (worktree/PR pipeline violations) but does not implement the specific rule.
+
+**Action Required:**
+- Issue #152 should remain open
+- A follow-up PR should add the routing rule to outing.md
+- The follow-up should reference the investigation findings from PR #157
+
+**Routing:** Jonathan, Gandalf (routing.md change requires the standard pipeline)
